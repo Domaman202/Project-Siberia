@@ -9,6 +9,7 @@ import ru.DmN.siberia.utils.isPrimitive
 class Lexer(private val input: String) : Iterator<Token?> {
     private var ptr: Int = 0
     private var line: Int = 0
+    private var symbols: Int = 0
 
     /**
      * Проверка на наличие следующего токена.
@@ -21,8 +22,12 @@ class Lexer(private val input: String) : Iterator<Token?> {
     override fun next(): Token? {
         if (ptr >= input.length)
             return null
-        while (ptr < input.length && (input[ptr] == ' ' || input[ptr] == '\t' || input[ptr] == '\n'))
-            inc()
+        while (ptr < input.length) {
+            when (input[ptr]) {
+                ' ', '\t', '\n' -> inc()
+                else -> break
+            }
+        }
         if (ptr >= input.length)
             return null
         when (val char = input[inc()]) {
@@ -54,29 +59,80 @@ class Lexer(private val input: String) : Iterator<Token?> {
                 return Token(line, CHAR, input[inc() - 1].toString())
             }
             '"' -> {
-                val str = StringBuilder()
-                var prev: Char? = null
-                while (true) {
-                    val c = input[inc()]
-                    str.append(
-                        when (c) {
-                            '"' -> if (prev == '\\') '\"' else break
-                            'n' -> if (prev == '\\') '\n' else 'n'
-                            't' -> if (prev == '\\') '\t' else 't'
-                            '\\' -> {
-                                prev = if (prev == '\\') {
-                                    str.append(c)
-                                    null
-                                } else c
-                                continue
-                            }
+                if (input[ptr] == '"' && input[ptr + 1] == '"') {
+                    // MULTILINE
+                    inc()
+                    inc()
+                    val str = StringBuilder()
+                    var prev: Char? = null
+                    var sc = symbols
+                    println("symbols $symbols")
+                    while (true) {
+                        val c = input[ptr++]
+                        str.append(
+                            when (c) {
+                                '"' -> {
+                                    if (prev != '\\' && input[ptr] == '"' && input[ptr + 1] == '"') {
+                                        ptr += 2
+                                        break
+                                    } else '\"'
+                                }
+                                'n' -> if (prev == '\\') '\n' else 'n'
+                                't' -> if (prev == '\\') '\t' else 't'
+                                '\\' -> {
+                                    prev = if (prev == '\\') {
+                                        str.append(c)
+                                        null
+                                    } else c
+                                    continue
+                                }
+                                '\n' -> {
+                                    sc = symbols
+                                    c
+                                }
+                                ' ' -> {
+                                    println("sc $sc")
+                                    if (sc-- < 0) c
+                                    else continue
+                                }
+                                '\t' -> {
+                                    println("sc $sc")
+                                    sc -= 4
+                                    if (sc + 4 < 0) c
+                                    else continue
+                                }
 
-                            else -> c
-                        }
-                    )
-                    prev = c
+                                else -> c
+                            }
+                        )
+                    }
+                    return Token(line, STRING, str.toString())
+                } else {
+                    // NORMAL STRING
+                    val str = StringBuilder()
+                    var prev: Char? = null
+                    while (true) {
+                        val c = input[inc()]
+                        str.append(
+                            when (c) {
+                                '"' -> if (prev == '\\') '\"' else break
+                                'n' -> if (prev == '\\') '\n' else 'n'
+                                't' -> if (prev == '\\') '\t' else 't'
+                                '\\' -> {
+                                    prev = if (prev == '\\') {
+                                        str.append(c)
+                                        null
+                                    } else c
+                                    continue
+                                }
+
+                                else -> c
+                            }
+                        )
+                        prev = c
+                    }
+                    return Token(line, STRING, str.toString())
                 }
-                return Token(line, STRING, str.toString())
             }
 
             else -> {
@@ -125,9 +181,20 @@ class Lexer(private val input: String) : Iterator<Token?> {
 
     private fun inc(): Int {
         val i = ptr++
-        return if (input[i] == '\n') {
-            line++
-            ptr
-        } else i
+        return when (input[i]) {
+            '\n' -> {
+                line++
+                symbols = 0
+                ptr
+            }
+            '\t' -> {
+                symbols += 4
+                i
+            }
+            else -> {
+                symbols++
+                i
+            }
+        }
     }
 }
