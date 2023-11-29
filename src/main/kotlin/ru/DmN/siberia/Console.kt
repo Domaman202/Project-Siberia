@@ -17,6 +17,8 @@ import java.io.FileOutputStream
 import java.net.URLClassLoader
 
 object Console {
+    private var CompileWithoutFrameCompute = false
+
     @JvmStatic
     fun main(args: Array<String>) {
         while (true) {
@@ -26,20 +28,20 @@ object Console {
                 1. Вывод информации о модуле
                 2. Компиляция модуля
                 3. Компиляция и запуск модуля
+                4. Изменить параметры
                 
                 Выберите действие
                 > 
                 """.trimIndent()
             )
-            val action = readln().toInt()
-            println()
-            when (action) {
+            when (val action0 = readln().toInt().apply { println() }) {
                 0 -> {
                     println("""
-                        Проект: Пихта
-                        Версия: 1.0.0
+                        Проект: Сибирь
+                        Версия: 1.0.1
                         Автор:  DomamaN202
-                    """.trimIndent())
+                        """.trimIndent()
+                    )
                 }
 
                 1 -> {
@@ -64,7 +66,27 @@ object Console {
                     println(Class.forName("App", true, URLClassLoader(arrayOf(File("dump").toURL()))).getMethod("main").invoke(null))
                 }
 
-                else -> println("Неизвестное действие №$action.")
+                4 -> {
+                    while (true) {
+                        print("""
+                            Список действий
+                            0. Выйти
+                            1. CompileWithoutFrameCompute (${CompileWithoutFrameCompute})
+                            
+                            Выберите действие
+                            > 
+                            """.trimIndent()
+                        )
+
+                        when (val action1 = readln().toInt().apply { println() }) {
+                            0 -> break
+                            1 -> CompileWithoutFrameCompute = !CompileWithoutFrameCompute
+                            else -> println("Неизвестное действие №$action1.")
+                        }
+                    }
+                }
+
+                else -> println("Неизвестное действие №$action0.")
             }
             println()
         }
@@ -118,7 +140,10 @@ object Console {
             if (it.name.contains('/'))
                 File("dump/${it.name.substring(0, it.name.lastIndexOf('/'))}").mkdirs()
             FileOutputStream("dump/${it.name}.class").use { stream ->
-                val writer = ClassWriter(ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS)
+                val writer = ClassWriter(
+                    if (CompileWithoutFrameCompute) 0
+                    else ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS
+                )
                 it.accept(writer)
                 val b = writer.toByteArray()
                 stream.write(b)
