@@ -65,8 +65,8 @@ class Lexer(private val input: String) : Iterator<Token?> {
                     inc()
                     val str = StringBuilder()
                     var prev: Char? = null
+                    var flag = true
                     var sc = symbols
-                    println("symbols $symbols")
                     while (true) {
                         val c = input[ptr++]
                         str.append(
@@ -87,16 +87,18 @@ class Lexer(private val input: String) : Iterator<Token?> {
                                     continue
                                 }
                                 '\n' -> {
+                                    if (flag) {
+                                        flag = false
+                                        continue
+                                    }
                                     sc = symbols
                                     c
                                 }
                                 ' ' -> {
-                                    println("sc $sc")
                                     if (sc-- < 0) c
                                     else continue
                                 }
                                 '\t' -> {
-                                    println("sc $sc")
                                     sc -= 4
                                     if (sc + 4 < 0) c
                                     else continue
