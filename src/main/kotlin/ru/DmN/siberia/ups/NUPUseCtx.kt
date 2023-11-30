@@ -11,6 +11,7 @@ import ru.DmN.siberia.compilers.NCDefault
 import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parsers.NPDefault
+import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.*
 import ru.DmN.siberia.processors.NRDefault
 import ru.DmN.siberia.unparser.UnparsingContext
@@ -62,7 +63,7 @@ object NUPUseCtx : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
 
     override fun process(node: NodeParsedUse, processor: Processor, ctx: ProcessingContext, mode: ValType): Node {
         val processed = ArrayList<Node>()
-        processor.pushTask(ctx, ProcessingStage.MODULE_POST_INIT) {
+        processor.stageManager.pushTask(ProcessingStage.MODULE_POST_INIT) {
             val context = ctx.subCtx()
             injectModules(node, processor, context, ValType.NO_VALUE, processed)
             node.exports.forEach { NRDefault.process(it, processor, ctx, ValType.NO_VALUE) }

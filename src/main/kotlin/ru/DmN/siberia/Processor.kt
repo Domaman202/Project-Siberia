@@ -1,7 +1,7 @@
 package ru.DmN.siberia
 
 import ru.DmN.siberia.ast.Node
-import ru.DmN.siberia.processor.utils.ProcessingContext
+import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.ProcessingStage
 import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processors.INodeProcessor
@@ -17,9 +17,9 @@ class Processor(
     val tp: TypesProvider
 ) {
     /**
-     * Список задач.
+     * Менеджер стадий обработки.
      */
-    val tasks: DefaultEnumMap<ProcessingStage, MutableList<() -> Unit>> = DefaultEnumMap(ProcessingStage::class.java) { java.util.ArrayList() }
+    val stageManager = StupidStageManager.of(ProcessingStage.UNKNOWN)
 
     /**
      * Глобальные контексты.
@@ -51,16 +51,5 @@ class Processor(
             val module = name.substring(0, i)
             return ctx.loadedModules.find { it.name == module }!!.processors.getRegex(name.substring(i + 1)) as INodeProcessor<Node>
         }
-    }
-
-    /**
-     * Помещает новую задачу в список.
-     *
-     * @param stage Стадия обработки.
-     */
-    fun pushTask(ctx: ProcessingContext, stage: ProcessingStage, task: () -> Unit) {
-        if (stage.ordinal <= ctx.stage.get().ordinal)
-            task()
-        else tasks[stage] += task
     }
 }

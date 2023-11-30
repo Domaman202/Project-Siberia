@@ -1,19 +1,15 @@
-package ru.DmN.siberia.processor.utils
+package ru.DmN.siberia.processor.ctx
 
+import ru.DmN.siberia.Siberia
 import ru.DmN.siberia.utils.IContextCollection
 import ru.DmN.siberia.utils.Module
 import ru.DmN.siberia.utils.SubList
 import ru.DmN.siberia.utils.SubMap
-import java.util.concurrent.atomic.AtomicReference
 
 /**
  * Контекст обработки.
  */
 class ProcessingContext(
-    /**
-     * Текущая стадия обработки.
-     */
-    val stage: AtomicReference<ProcessingStage>,
     /**
      * Загруженные модули.
      */
@@ -27,7 +23,7 @@ class ProcessingContext(
      * Создаёт под-контекст.
      */
     fun subCtx() =
-        ProcessingContext(stage, SubList(loadedModules), SubMap(contexts))
+        ProcessingContext(SubList(loadedModules), SubMap(contexts))
 
     /**
      * Создаёт под-контекст с общими модульными зависимостями.
@@ -37,12 +33,12 @@ class ProcessingContext(
      * @param ctx Новый элемент контекста.
      */
     override fun with(name: String, ctx: Any?): ProcessingContext =
-        ProcessingContext(stage, loadedModules, contexts.toMutableMap().apply { this[name] = ctx })
+        ProcessingContext(loadedModules, contexts.toMutableMap().apply { this[name] = ctx })
     companion object {
         /**
          * Создаёт базовый контекст.
          */
         fun base() =
-            ProcessingContext(AtomicReference(ProcessingStage.UNKNOWN), mutableListOf(ru.DmN.siberia.Siberia))
+            ProcessingContext(mutableListOf(Siberia))
     }
 }

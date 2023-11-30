@@ -17,9 +17,9 @@ class Compiler(
     val tp: TypesProvider
 ) {
     /**
-     * Список задач.
+     * Менеджер стадий компиляции.
      */
-    val tasks: DefaultEnumMap<CompilingStage, MutableList<() -> Unit>> = DefaultEnumMap(CompilingStage::class.java) { ArrayList() }
+    val stageManager = StupidStageManager.of(CompilingStage.UNKNOWN)
 
     /**
      * Глобальные контексты.
@@ -56,16 +56,5 @@ class Compiler(
             val module = name.substring(0, i)
             return ctx.loadedModules.find { it.name == module }!!.javaCompilers.getRegex(name.substring(i + 1)) as INodeCompiler<Node>
         }
-    }
-
-    /**
-     * Помещает новую задачу в список.
-     *
-     * @param stage Стадия компиляции.
-     */
-    fun pushTask(ctx: CompilationContext, stage: CompilingStage, task: () -> Unit) {
-        if (stage.ordinal <= ctx.stage.get().ordinal)
-            task()
-        else tasks[stage] += task
     }
 }

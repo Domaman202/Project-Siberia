@@ -7,7 +7,7 @@ import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.processor.utils.Platform
-import ru.DmN.siberia.processor.utils.ProcessingContext
+import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processor.utils.with
 import ru.DmN.siberia.utils.Module
@@ -124,17 +124,11 @@ object Console {
         val processor = Processor(TypesProvider.JAVA)
         val pctx = ProcessingContext.base().with(Platform.JAVA)
         processed += module.load(processor, pctx, ValType.NO_VALUE)!!
-        processor.tasks.forEach {
-            pctx.stage.set(it.key)
-            it.value.forEach { it() }
-        }
+        processor.stageManager.runAll()
         val compiler = Compiler(TypesProvider.JAVA)
         val cctx = CompilationContext.base()
         processed.forEach { compiler.compile(it, cctx) }
-        compiler.tasks.forEach {
-            cctx.stage.set(it.key)
-            it.value.forEach { it() }
-        }
+        compiler.stageManager.runAll()
         File("dump").mkdir()
         compiler.classes.values.forEach {
             if (it.name.contains('/'))
