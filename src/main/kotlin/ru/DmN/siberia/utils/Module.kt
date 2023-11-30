@@ -62,11 +62,12 @@ open class Module(val name: String, var init: Boolean = false) {
         if (!ctx.loadedModules.contains(this)) {
             ctx.loadedModules.add(0, this)
             files.map {
+                val parser = Parser(getModuleFile(it))
                 val pctx = ParsingContext.base()
                 processor.process(
                     nodeProgn(-1, mutableListOf(
-                        NUPUse.parse(uses, Token.operation(-1, "use"), Parser(""), pctx),
-                        Parser(getModuleFile(it)).parseNode(pctx)!!
+                        NUPUse.parse(uses, Token.operation(-1, "use"), parser, pctx),
+                        parser.parseNode(pctx)!!
                     )),
                     ctx,
                     mode
