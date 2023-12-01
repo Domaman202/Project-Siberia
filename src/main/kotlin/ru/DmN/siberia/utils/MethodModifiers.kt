@@ -8,5 +8,5 @@ data class MethodModifiers(
     var ctor: Boolean = false,
     var static: Boolean = false,
     var abstract: Boolean = false,
-    var extend: Boolean = false
+    var extension: Boolean = false
 )

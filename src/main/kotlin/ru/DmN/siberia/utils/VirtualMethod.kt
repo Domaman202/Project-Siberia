@@ -41,7 +41,7 @@ abstract class VirtualMethod {
     /**
      * Расширяемый тип, если таковой имеется, в противном случае null.
      */
-    abstract val extend: VirtualType?
+    abstract val extension: VirtualType?
 
     /**
      * Дескриптор аргументов.
@@ -153,6 +153,6 @@ abstract class VirtualMethod {
         override var argsc: List<VirtualType>,
         override var argsn: List<String>,
         override var modifiers: MethodModifiers,
-        override var extend: VirtualType? = null
+        override var extension: VirtualType? = null
     ) : VirtualMethod()
 }

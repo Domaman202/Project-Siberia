@@ -42,7 +42,7 @@ enum class ProcessingStage {
     /**
      * Импорт расширений.
      */
-    EXTENDS_IMPORT,
+    EXTENSIONS_IMPORT,
 
     /**
      * Обработка тел методов.
