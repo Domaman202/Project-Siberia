@@ -3,6 +3,7 @@ package ru.DmN.siberia.utils
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+import java.lang.reflect.TypeVariable
 
 /**
  * Абстрантный виртуальный метод.
@@ -42,6 +43,11 @@ abstract class VirtualMethod {
      * Расширяемый тип, если таковой имеется, в противном случае null.
      */
     abstract val extension: VirtualType?
+
+    /**
+     * Возвращаемый тип это generic?
+     */
+    abstract val genericRettype: Boolean
 
     /**
      * Дескриптор аргументов.
@@ -113,7 +119,8 @@ abstract class VirtualMethod {
                     static = Modifier.isStatic(method.modifiers),
                     abstract = method.declaringClass.isInterface
                 ),
-                null
+                null,
+                false
             )
         }
 
@@ -138,7 +145,8 @@ abstract class VirtualMethod {
                     static = Modifier.isStatic(method.modifiers),
                     abstract = method.declaringClass.isInterface
                 ),
-                null
+                null,
+                method.genericReturnType is TypeVariable<*>
             )
         }
     }
@@ -153,6 +161,7 @@ abstract class VirtualMethod {
         override var argsc: List<VirtualType>,
         override var argsn: List<String>,
         override var modifiers: MethodModifiers,
-        override var extension: VirtualType? = null
+        override var extension: VirtualType? = null,
+        override var genericRettype: Boolean
     ) : VirtualMethod()
 }

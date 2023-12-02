@@ -30,6 +30,7 @@ object CompilerMain {
         val cctx = CompilationContext.base()
         compiler.compile(processed, cctx)
         compiler.stageManager.runAll()
+        compiler.finalizers.forEach { it.value.run() }
         compiler.classes.values.forEach {
             if (it.name.contains('/'))
                 File("dump/${it.name.substring(0, it.name.lastIndexOf('/'))}").mkdirs()

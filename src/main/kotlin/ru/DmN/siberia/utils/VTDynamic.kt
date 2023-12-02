@@ -1,9 +1,5 @@
 package ru.DmN.siberia.utils
 
-import ru.DmN.siberia.utils.VirtualField
-import ru.DmN.siberia.utils.VirtualMethod
-import ru.DmN.siberia.utils.VirtualType
-
 object VTDynamic : VirtualType() {
     override val name: String
         get() = "dynamic"
@@ -21,6 +17,8 @@ object VTDynamic : VirtualType() {
         get() = false
     override val isFinal: Boolean
         get() = false
+    override val generics: List<String>
+        get() = emptyList()
 
     override val simpleName: String
         get() = "dynamic"

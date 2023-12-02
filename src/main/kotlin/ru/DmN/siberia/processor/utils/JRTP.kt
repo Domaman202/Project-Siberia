@@ -40,6 +40,7 @@ class JRTP : TypesProvider() {
             fields += klass.declaredFields.map { VirtualField.of(::typeOf, it) }
             methods += klass.declaredConstructors.map { VirtualMethod.of(::typeOf, it) }
             scanTypeMethods(methods, klass)
+            generics += klass.typeParameters.map { it.name }
         }
     }
 

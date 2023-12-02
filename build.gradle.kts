@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "ru.DmN.siberia"
-version = "1.1.2"
+version = "1.2.1"
 
 repositories {
     mavenCentral()
@@ -35,7 +35,16 @@ tasks {
                 sourcesMain.output
         from(contents)
     }
+
     build {
         dependsOn(fatJar) // Trigger fat jar creation during build
+    }
+
+    java {
+        withSourcesJar()
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }

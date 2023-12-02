@@ -129,6 +129,7 @@ object Console {
         val cctx = CompilationContext.base()
         processed.forEach { compiler.compile(it, cctx) }
         compiler.stageManager.runAll()
+        compiler.finalizers.forEach { it.value.run() }
         File("dump").mkdir()
         compiler.classes.values.forEach {
             if (it.name.contains('/'))

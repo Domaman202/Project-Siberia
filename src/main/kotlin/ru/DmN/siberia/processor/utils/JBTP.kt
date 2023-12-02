@@ -70,7 +70,9 @@ class JBTP : TypesProvider() {
                             it.access and Opcodes.ACC_STATIC != 0,
                             it.access and Opcodes.ACC_ABSTRACT != 0,
                             false,
-                        )
+                        ),
+                        null,
+                        it.signature.indexOf(")T") != -1 // todo: check
                     )
                 }
             }

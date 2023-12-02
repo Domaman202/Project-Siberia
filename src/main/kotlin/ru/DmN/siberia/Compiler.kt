@@ -32,6 +32,11 @@ class Compiler(
     val classes: MutableMap<String, ClassNode> = HashMap()
 
     /**
+     * Задачи для конечного этапа компиляции.
+     */
+    val finalizers: MutableMap<String, Runnable> = HashMap()
+
+    /**
      * Компилирует ноду без значения.
      */
     fun compile(node: Node, ctx: CompilationContext) =

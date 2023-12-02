@@ -5,7 +5,7 @@ import kotlin.math.absoluteValue
 /**
  * Переменная.
  */
-data class Variable(
+open class Variable(
     /**
      * Имя.
      */
@@ -30,6 +30,12 @@ data class Variable(
      */
     fun type(): VirtualType =
         type ?: VirtualType.ofKlass("java.lang.Object")
+
+    override fun hashCode(): Int =
+        name.hashCode() + type.hashCode() + id.hashCode()
+
+    override fun equals(other: Any?): Boolean =
+        other is Variable && other.hashCode() == hashCode()
 
     companion object {
         /**
