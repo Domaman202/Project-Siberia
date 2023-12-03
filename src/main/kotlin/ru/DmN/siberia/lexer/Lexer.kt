@@ -6,10 +6,10 @@ import ru.DmN.siberia.utils.isPrimitive
 /**
  * Лексический анализатор
  */
-class Lexer(private val input: String) : Iterator<Token?> {
-    private var ptr: Int = 0
-    private var line: Int = 0
-    private var symbols: Int = 0
+class Lexer(val input: String) : Iterator<Token?> {
+    var ptr: Int = 0
+    var line: Int = 0
+    var symbols: Int = 0
 
     /**
      * Проверка на наличие следующего токена.
