@@ -16,6 +16,8 @@ import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.unparsers.INodeUnparser
 import ru.DmN.siberia.ups.NUPUse
 import ru.DmN.pht.std.module.StdModule
+import ru.DmN.siberia.processor.utils.module
+import ru.DmN.siberia.processor.utils.moduleOrNull
 import ru.DmN.siberia.processor.utils.nodeProgn
 import java.io.File
 import java.io.FileNotFoundException
@@ -61,9 +63,10 @@ open class Module(val name: String, var init: Boolean = false) {
     open fun load(processor: Processor, ctx: ProcessingContext, mode: ValType): List<Node>? =
         if (!ctx.loadedModules.contains(this)) {
             ctx.loadedModules.add(0, this)
+            ctx.module = this
             files.map {
                 val parser = Parser(getModuleFile(it))
-                val pctx = ParsingContext.base()
+                val pctx = ParsingContext.base().apply { this.module = this@Module }
                 processor.process(
                     nodeProgn(-1, mutableListOf(
                         NUPUse.parse(uses, Token.operation(-1, "use"), parser, pctx),

@@ -1,10 +1,7 @@
 package ru.DmN.siberia.ups
 
 import ru.DmN.pht.std.module.StdModule
-import ru.DmN.siberia.Compiler
-import ru.DmN.siberia.Parser
-import ru.DmN.siberia.Processor
-import ru.DmN.siberia.Unparser
+import ru.DmN.siberia.*
 import ru.DmN.siberia.ast.*
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.compilers.NCDefault
@@ -88,12 +85,12 @@ object NUPUseCtx : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
      *
      * @param names Имена модулей.
      */
-    fun loadModules(names: List<String>, parser: Parser, context: ParsingContext) {
+    fun loadModules(names: List<String>, parser: Parser, ctx: ParsingContext) {
         names.forEach { name ->
             val module = Module[name]
             if (module?.init != true)
-                Parser(Module.getModuleFile(name)).parseNode(ParsingContext.of(ru.DmN.siberia.Siberia, StdModule))
-            (module ?: Module.getOrThrow(name)).load(parser, context)
+                Parser(Module.getModuleFile(name)).parseNode(ParsingContext.of(Siberia, StdModule))
+            (module ?: Module.getOrThrow(name)).load(parser, ctx)
         }
     }
 
@@ -102,12 +99,12 @@ object NUPUseCtx : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
      *
      * @param names Имена модулей.
      */
-    fun loadModules(names: List<String>, unparser: Unparser, context: UnparsingContext) {
+    fun loadModules(names: List<String>, unparser: Unparser, ctx: UnparsingContext) {
         names.forEach { name ->
             val module = Module[name]
             if (module?.init != true)
-                Parser(Module.getModuleFile(name)).parseNode(ParsingContext.of(ru.DmN.siberia.Siberia, StdModule))
-            (module ?: Module.getOrThrow(name)).load(unparser, context)
+                Parser(Module.getModuleFile(name)).parseNode(ParsingContext.of(Siberia, StdModule))
+            (module ?: Module.getOrThrow(name)).load(unparser, ctx)
         }
     }
 
