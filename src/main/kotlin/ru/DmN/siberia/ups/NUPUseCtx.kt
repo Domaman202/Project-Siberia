@@ -25,22 +25,28 @@ import java.util.*
 object NUPUseCtx : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node {
         val names = ArrayList<String>()
-        val exports = ArrayList<NodeNodesList>()
         var tk = parser.nextToken()!!
         while (tk.type == Token.Type.OPERATION) {
             names.add(tk.text!!)
             tk = parser.nextToken()!!
         }
         parser.tokens.push(tk)
+        return parse(names, parser, ctx) { exports, context ->
+            NPDefault.parse(parser, context) { NodeParsedUse(token, names, it, exports) }.apply {
+                context.exports.pop()
+                context.loadedModules.filter { names.contains(it.name) }.forEach { it.clear(parser, context) }
+            }
+        }
+    }
+    
+    fun parse(names: List<String>, parser: Parser, ctx: ParsingContext, parse: (exports: MutableList<NodeNodesList>, context: ParsingContext) -> Node): Node {
+        val exports = ArrayList<NodeNodesList>()
         val context = ctx.subCtx()
         if (context.isExports())
             context.exports.push(exports)
         else context.exports = Stack<MutableList<NodeNodesList>>().apply { push(exports) }
         loadModules(names, parser, context)
-        return NPDefault.parse(parser, context) { NodeParsedUse(token, names, it, exports) }.apply {
-            context.exports.pop()
-            context.loadedModules.filter { names.contains(it.name) }.forEach { it.clear(parser, context) }
-        }
+        return parse(exports, context)
     }
 
     override fun unparse(node: NodeUse, unparser: Unparser, ctx: UnparsingContext, indent: Int) {

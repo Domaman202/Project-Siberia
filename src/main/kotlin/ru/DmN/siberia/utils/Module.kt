@@ -6,19 +6,17 @@ import ru.DmN.siberia.Unparser
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.Compiler
 import ru.DmN.siberia.compiler.ctx.CompilationContext
-import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parsers.INodeParser
 import ru.DmN.siberia.processor.ctx.ProcessingContext
-import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processors.INodeProcessor
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.unparsers.INodeUnparser
-import ru.DmN.siberia.ups.NUPUse
 import ru.DmN.pht.std.module.StdModule
-import ru.DmN.siberia.processor.utils.module
-import ru.DmN.siberia.processor.utils.moduleOrNull
-import ru.DmN.siberia.processor.utils.nodeProgn
+import ru.DmN.siberia.ast.NodeParsedUse
+import ru.DmN.siberia.lexer.Token
+import ru.DmN.siberia.processor.utils.*
+import ru.DmN.siberia.ups.NUPUseCtx
 import java.io.File
 import java.io.FileNotFoundException
 import ru.DmN.siberia.compilers.INodeCompiler as JavaNodeCompiler
@@ -64,14 +62,21 @@ open class Module(val name: String, var init: Boolean = false) {
         if (!ctx.loadedModules.contains(this)) {
             ctx.loadedModules.add(0, this)
             ctx.module = this
-            files.map {
+            files.map { it ->
                 val parser = Parser(getModuleFile(it))
                 val pctx = ParsingContext.base().apply { this.module = this@Module }
                 processor.process(
-                    nodeProgn(-1, mutableListOf(
-                        NUPUse.parse(uses, Token.operation(-1, "use"), parser, pctx),
-                        parser.parseNode(pctx)!!
-                    )),
+                    NUPUseCtx.parse(uses, parser, pctx) { exports, context ->
+                        NodeParsedUse(
+                            Token.operation(-1, "use-ctx"),
+                            uses,
+                            mutableListOf(parser.parseNode(context)!!),
+                            exports
+                        ).apply {
+                            context.exports.pop()
+                            context.loadedModules.filter { uses.contains(it.name) }.forEach { it.clear(parser, context) }
+                        }
+                    },
                     ctx,
                     mode
                 )
