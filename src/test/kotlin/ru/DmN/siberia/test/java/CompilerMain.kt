@@ -21,12 +21,13 @@ import java.net.URLClassLoader
 object CompilerMain {
     @JvmStatic
     fun main(args: Array<String>) {
+        val tp = TypesProvider.java()
         val source = Parser(String(CompilerMain::class.java.getResourceAsStream("/test.pht")!!.readBytes())).parseNode(ParsingContext.base())!!
-        val processor = Processor(TypesProvider.JAVA)
+        val processor = Processor(tp)
         val pctx = ProcessingContext.base().with(Platform.JAVA)
         val processed = processor.process(source, pctx, ValType.NO_VALUE)!!
         processor.stageManager.runAll()
-        val compiler = Compiler(TypesProvider.JAVA)
+        val compiler = Compiler(tp)
         val cctx = CompilationContext.base()
         compiler.compile(processed, cctx)
         compiler.stageManager.runAll()

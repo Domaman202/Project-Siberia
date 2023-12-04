@@ -20,7 +20,7 @@ object ProcessorMain {
             ParsingContext.base())!!
         logTxt("pre", source.print())
         logPht("pre-unparse", Unparser().let { it.unparse(source, UnparsingContext.base(), 0); it.out.toString() })
-        val processor = Processor(TypesProvider.JAVA)
+        val processor = Processor(TypesProvider.java())
         val ctx = ProcessingContext.base().with(Platform.JAVA)
         val processed = processor.process(source, ctx, ValType.NO_VALUE)!!
         processor.stageManager.runAll()

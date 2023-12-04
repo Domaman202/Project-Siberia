@@ -24,6 +24,7 @@ abstract class TypesProvider {
         try { typeOf(name) } catch (_: ClassNotFoundException) { null }
 
     companion object {
-        val JAVA = JRTP()
+        fun java() =
+            JRTP()
     }
 }
