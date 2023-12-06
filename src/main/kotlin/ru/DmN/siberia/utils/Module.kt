@@ -1,29 +1,31 @@
 package ru.DmN.siberia.utils
 
+import ru.DmN.siberia.Compiler
 import ru.DmN.siberia.Parser
 import ru.DmN.siberia.Processor
 import ru.DmN.siberia.Unparser
 import ru.DmN.siberia.ast.Node
-import ru.DmN.siberia.Compiler
+import ru.DmN.siberia.ast.NodeNodesList
+import ru.DmN.siberia.ast.NodeParsedUse
 import ru.DmN.siberia.compiler.ctx.CompilationContext
+import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parsers.INodeParser
 import ru.DmN.siberia.processor.ctx.ProcessingContext
+import ru.DmN.siberia.processor.utils.ValType
+import ru.DmN.siberia.processor.utils.module
 import ru.DmN.siberia.processors.INodeProcessor
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.unparsers.INodeUnparser
-import ru.DmN.pht.std.module.StdModule
-import ru.DmN.siberia.ast.NodeParsedUse
-import ru.DmN.siberia.lexer.Token
-import ru.DmN.siberia.processor.utils.*
 import ru.DmN.siberia.ups.NUPUseCtx
 import java.io.File
 import java.io.FileNotFoundException
 import ru.DmN.siberia.compilers.INodeCompiler as JavaNodeCompiler
 
-open class Module(val name: String, var init: Boolean = false) {
-    lateinit var version: String
-    lateinit var author: String
+open class Module(val name: String) {
+    var init: Boolean = false
+    var version: String = "0.0.0"
+    var author: String = "unknown"
     val deps: MutableList<String> = ArrayList()
     val uses: MutableList<String> = ArrayList()
     val files: MutableList<String> = ArrayList()
@@ -31,10 +33,25 @@ open class Module(val name: String, var init: Boolean = false) {
     val unparsers: MutableMap<Regex, INodeUnparser<*>> = HashMap()
     val processors: MutableMap<Regex, INodeProcessor<*>> = HashMap()
     val javaCompilers: MutableMap<Regex, JavaNodeCompiler<*>> = HashMap()
+    val nodes: MutableList<Node> = ArrayList()
+    val exports: MutableList<NodeNodesList> = ArrayList()
 
     fun init() {
         if (!init) {
-            Parser(getModuleFile(name)).parseNode(ParsingContext.of(StdModule))
+            init = true
+            files.forEach {
+                val parser = Parser(getModuleFile(it))
+                val pctx = ParsingContext.base().apply { this.module = this@Module }
+                nodes.add(
+                    NUPUseCtx.parse(uses, parser, pctx) { context ->
+                        NodeParsedUse(
+                            Token.operation(-1, "use-ctx"),
+                            uses,
+                            mutableListOf(parser.parseNode(context)!!),
+                        )
+                    },
+                )
+            }
         }
     }
 
@@ -58,30 +75,11 @@ open class Module(val name: String, var init: Boolean = false) {
         }
     }
 
-    open fun load(processor: Processor, ctx: ProcessingContext, mode: ValType): List<Node>? =
+    open fun load(processor: Processor, ctx: ProcessingContext, mode: ValType): Boolean =
         if (!ctx.loadedModules.contains(this)) {
             ctx.loadedModules.add(0, this)
-            ctx.module = this
-            files.map { it ->
-                val parser = Parser(getModuleFile(it))
-                val pctx = ParsingContext.base().apply { this.module = this@Module }
-                processor.process(
-                    NUPUseCtx.parse(uses, parser, pctx) { exports, context ->
-                        NodeParsedUse(
-                            Token.operation(-1, "use-ctx"),
-                            uses,
-                            mutableListOf(parser.parseNode(context)!!),
-                            exports
-                        ).apply {
-                            context.exports.pop()
-                            context.loadedModules.filter { uses.contains(it.name) }.forEach { it.clear(parser, context) }
-                        }
-                    },
-                    ctx,
-                    mode
-                )
-            }.requireNoNulls()
-        } else null
+            true
+        } else false
 
     open fun load(compiler: Compiler, ctx: CompilationContext): Variable? {
         if (!ctx.loadedModules.contains(this)) {

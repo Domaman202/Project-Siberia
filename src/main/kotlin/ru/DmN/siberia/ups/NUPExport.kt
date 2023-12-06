@@ -10,7 +10,7 @@ import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parsers.NPDefault
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.ValType
-import ru.DmN.siberia.processor.utils.exports
+import ru.DmN.siberia.processor.utils.module
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.unparsers.NUDefault
 import ru.DmN.siberia.utils.INUP
@@ -20,7 +20,9 @@ import ru.DmN.siberia.utils.INUP
  */
 object NUPExport : INUP<NodeNodesList, NodeNodesList> {
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node? =
-        NPDefault.parse(parser, ctx, token).apply { ctx.exports.peek() += this as NodeNodesList }
+        NPDefault.parse(parser, ctx, token).apply {
+            ctx.module.exports += this as NodeNodesList
+        }
 
     override fun unparse(node: NodeNodesList, unparser: Unparser, ctx: UnparsingContext, indent: Int) =
         NUDefault.unparse(node, unparser, ctx, indent)

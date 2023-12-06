@@ -34,4 +34,13 @@ abstract class SimpleNR<T : NodeNodesList> : INodeProcessor<T> {
             node.nodes[i] = processor.process(node.nodes[i], ctx, ValType.VALUE)!!
         return node
     }
+
+    /**
+     * Обрабатывает все под-ноды в режиме "NO_VALUE".
+     */
+    fun processNoValue(node: T, processor: Processor, ctx: ProcessingContext): T {
+        for (i in 0 until node.nodes.size)
+            node.nodes[i] = processor.process(node.nodes[i], ctx, ValType.NO_VALUE)!!
+        return node
+    }
 }

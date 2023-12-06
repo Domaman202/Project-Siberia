@@ -7,6 +7,12 @@ import ru.DmN.siberia.lexer.*
 import java.io.DataInputStream
 import java.io.InputStream
 
+fun Map<String, Any?>.copy(): MutableMap<String, Any?> {
+    val map = HashMap<String, Any?>()
+    this.forEach { map[it.key] = it.value }
+    return map
+}
+
 val Node.text
     get() = token.text!!
 val Node.line

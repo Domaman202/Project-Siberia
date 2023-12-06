@@ -37,13 +37,8 @@ object NUPUse : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
     }
 
     fun parse(names: List<String>, token: Token, parser: Parser, ctx: ParsingContext): NodeParsedUse {
-        val exports = ArrayList<NodeNodesList>()
-        if (ctx.isExports())
-            ctx.exports.push(exports)
-        else ctx.exports = Stack<MutableList<NodeNodesList>>().apply { push(exports) }
         NUPUseCtx.loadModules(names, parser, ctx)
-        ctx.exports.pop()
-        return NodeParsedUse(token, names, ArrayList(), exports)
+        return NodeParsedUse(token, names, ArrayList())
     }
 
     override fun unparse(node: NodeUse, unparser: Unparser, ctx: UnparsingContext, indent: Int) {
@@ -56,10 +51,12 @@ object NUPUse : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
     }
 
     override fun process(node: NodeParsedUse, processor: Processor, ctx: ProcessingContext, mode: ValType): Node {
+        val exports = ArrayList<NodeNodesList>()
         val processed = ArrayList<Node>()
-        NUPUseCtx.injectModules(node, processor, ctx, ValType.NO_VALUE, processed)
-        node.exports.forEach { NRDefault.process(it, processor, ctx, ValType.NO_VALUE) }
-        return NodeProcessedUse(node.token, node.names, ArrayList(), node.exports, processed)
+        NUPUseCtx.injectModules(node, processor, ctx, ValType.NO_VALUE, processed).forEach {
+            it.exports.forEach { exports += NRDefault.process(it, processor, ctx, ValType.NO_VALUE) }
+        }
+        return NodeProcessedUse(node.token, node.names, ArrayList(), exports, processed)
     }
 
     override fun compile(node: NodeProcessedUse, compiler: Compiler, ctx: CompilationContext) {

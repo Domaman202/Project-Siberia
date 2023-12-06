@@ -56,6 +56,7 @@ class Compiler(
         val i = name.lastIndexOf('/')
         if (i < 1) {
             ctx.loadedModules.forEach { it -> it.javaCompilers.getRegex(name)?.let { return it as INodeCompiler<Node> } }
+            println(ctx.loadedModules.map { it.name })
             throw RuntimeException("Compiler for \"$name\" not founded!")
         } else {
             val module = name.substring(0, i)

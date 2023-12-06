@@ -25,7 +25,6 @@ object NPModule : SimpleNP() {
                     else Class.forName(data["class"] as String).getField("INSTANCE").get(null) as Module
                 }
                 if (!module.init) {
-                    module.init = true
                     (data["version"] as String?)?.let { module.version = it }
                     (data["deps"] as List<String>?)?.let {
                         module.deps += it
@@ -34,6 +33,7 @@ object NPModule : SimpleNP() {
                     (data["uses"] as List<String>?)?.let { module.uses += it }
                     (data["files"] as List<String>?)?.let { module.files += it }
                     (data["author"] as String?)?.let { module.author = it }
+                    module.init()
                 }
             }
         }

@@ -1,10 +1,7 @@
 package ru.DmN.siberia.processor.ctx
 
 import ru.DmN.siberia.Siberia
-import ru.DmN.siberia.utils.IContextCollection
-import ru.DmN.siberia.utils.Module
-import ru.DmN.siberia.utils.SubList
-import ru.DmN.siberia.utils.SubMap
+import ru.DmN.siberia.utils.*
 
 /**
  * Контекст обработки.
@@ -33,7 +30,8 @@ class ProcessingContext(
      * @param ctx Новый элемент контекста.
      */
     override fun with(name: String, ctx: Any?): ProcessingContext =
-        ProcessingContext(loadedModules, contexts.toMutableMap().apply { this[name] = ctx })
+        ProcessingContext(loadedModules, SubMap(contexts).apply { this[name] = ctx })
+
     companion object {
         /**
          * Создаёт базовый контекст.

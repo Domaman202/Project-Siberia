@@ -8,9 +8,5 @@ import ru.DmN.siberia.lexer.Token
 open class NodeParsedUse(
     tkOperation: Token,
     names: List<String>,
-    nodes: MutableList<Node>,
-    /**
-     * Ноды для экспорта в использующий модули контекст.
-     */
-    val exports: MutableList<NodeNodesList>
+    nodes: MutableList<Node>
 ) : NodeUse(tkOperation, names, nodes)

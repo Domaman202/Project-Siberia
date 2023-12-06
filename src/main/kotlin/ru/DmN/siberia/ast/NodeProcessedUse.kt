@@ -9,9 +9,12 @@ class NodeProcessedUse(
     tkOperation: Token,
     names: List<String>,
     nodes: MutableList<Node>,
-    exports: MutableList<NodeNodesList>,
+    /**
+     * Обработанные ноды экспорта.
+     */
+    val exports: MutableList<NodeNodesList>,
     /**
      * Обработанные ноды используемых нод.
      */
     val processed: MutableList<Node>
-) : NodeParsedUse(tkOperation, names, nodes, exports)
+) : NodeParsedUse(tkOperation, names, nodes)
