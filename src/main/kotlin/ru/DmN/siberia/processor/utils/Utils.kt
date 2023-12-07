@@ -5,7 +5,6 @@ import ru.DmN.siberia.ast.NodeNodesList
 import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.utils.IContextCollection
 import ru.DmN.siberia.utils.Module
-import java.util.*
 
 fun nodeProgn(line: Int, nodes: MutableList<Node>) =
     NodeNodesList(Token.operation(line, "progn"), nodes)
@@ -37,10 +36,3 @@ var IContextCollection<*>.moduleOrNull
 var IContextCollection<*>.platform
     set(value) { this.contexts["siberia/platform"] = value }
     get() = this.contexts["siberia/platform"] as Platform
-
-/**
- * Экспорты
- */
-var IContextCollection<*>.exports
-    set(value) { contexts["pht/exports"] = value }
-    get() = contexts["pht/exports"] as Stack<MutableList<NodeNodesList>>

@@ -81,7 +81,7 @@ object ConsoleOld : Console() {
                 println("Модуль не был собран успешно.")
                 return@Runnable
             }
-            println("Модуль успешно собран.")
+            println("Модуль успешно собран.\n")
             println(Class.forName("App", true, URLClassLoader(arrayOf(File("dump").toURL()))).getMethod("main").invoke(null))
         }))
     }
@@ -161,6 +161,7 @@ object ConsoleOld : Console() {
             }
             return true
         } catch (error: Throwable) {
+            error.printStackTrace()
             return false
         }
     }
