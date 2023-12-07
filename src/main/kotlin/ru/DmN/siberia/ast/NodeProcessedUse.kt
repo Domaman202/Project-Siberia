@@ -6,7 +6,7 @@ import ru.DmN.siberia.lexer.Token
  * Обработанная нода использования модулей.
  */
 class NodeProcessedUse(
-    tkOperation: Token,
+    token: Token,
     names: List<String>,
     nodes: MutableList<Node>,
     /**
@@ -17,4 +17,7 @@ class NodeProcessedUse(
      * Обработанные ноды используемых нод.
      */
     val processed: MutableList<Node>
-) : NodeParsedUse(tkOperation, names, nodes)
+) : NodeUse(token, names, nodes) {
+    override fun copy(): NodeUse =
+        NodeProcessedUse(token, names, copyNodes(), exports.map { it.copy() }.toMutableList(), processed.map { it.copy() }.toMutableList())
+}

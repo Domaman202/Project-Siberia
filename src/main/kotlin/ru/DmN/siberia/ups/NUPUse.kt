@@ -11,8 +11,6 @@ import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.ValType
-import ru.DmN.siberia.processor.utils.exports
-import ru.DmN.siberia.processor.utils.isExports
 import ru.DmN.siberia.processors.NRDefault
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.utils.INUPC
@@ -24,7 +22,7 @@ import java.util.*
 /**
  * Универсальный обработчик инструкции использования.
  */
-object NUPUse : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
+object NUPUse : INUPC<NodeUse, NodeUse, NodeProcessedUse> {
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node {
         val names = ArrayList<String>()
         var tk = parser.nextToken()!!
@@ -36,9 +34,9 @@ object NUPUse : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
         return parse(names, token, parser, ctx)
     }
 
-    fun parse(names: List<String>, token: Token, parser: Parser, ctx: ParsingContext): NodeParsedUse {
+    fun parse(names: List<String>, token: Token, parser: Parser, ctx: ParsingContext): NodeUse {
         NUPUseCtx.loadModules(names, parser, ctx)
-        return NodeParsedUse(token, names, ArrayList())
+        return NodeUse(token, names, ArrayList())
     }
 
     override fun unparse(node: NodeUse, unparser: Unparser, ctx: UnparsingContext, indent: Int) {
@@ -50,11 +48,13 @@ object NUPUse : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
         }
     }
 
-    override fun process(node: NodeParsedUse, processor: Processor, ctx: ProcessingContext, mode: ValType): Node {
+    override fun process(node: NodeUse, processor: Processor, ctx: ProcessingContext, mode: ValType): Node {
         val exports = ArrayList<NodeNodesList>()
         val processed = ArrayList<Node>()
-        NUPUseCtx.injectModules(node, processor, ctx, ValType.NO_VALUE, processed).forEach {
-            it.exports.forEach { exports += NRDefault.process(it, processor, ctx, ValType.NO_VALUE) }
+        NUPUseCtx.injectModules(node, processor, ctx, ValType.NO_VALUE, processed).forEach { it ->
+            it.exports.forEach {
+                exports += NRDefault.process(it.copy(), processor, ctx, ValType.NO_VALUE)
+            }
         }
         return NodeProcessedUse(node.token, node.names, ArrayList(), exports, processed)
     }

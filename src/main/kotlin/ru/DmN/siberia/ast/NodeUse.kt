@@ -8,13 +8,13 @@ import ru.DmN.siberia.utils.text
  * Нода использования модулей.
  */
 open class NodeUse(
-    tkOperation: Token,
+    token: Token,
     /**
      * Модули для использования.
      */
     val names: List<String>,
     nodes: MutableList<Node>
-) : NodeNodesList(tkOperation, nodes) {
+) : NodeNodesList(token, nodes) {
 
     override fun copy(): NodeUse =
         NodeUse(token, names, copyNodes())

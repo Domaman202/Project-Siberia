@@ -6,7 +6,7 @@ import ru.DmN.siberia.Processor
 import ru.DmN.siberia.Unparser
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeNodesList
-import ru.DmN.siberia.ast.NodeParsedUse
+import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.parser.ctx.ParsingContext
@@ -44,7 +44,7 @@ open class Module(val name: String) {
                 val pctx = ParsingContext.base().apply { this.module = this@Module }
                 nodes.add(
                     NUPUseCtx.parse(uses, parser, pctx) { context ->
-                        NodeParsedUse(
+                        NodeUse(
                             Token.operation(-1, "use-ctx"),
                             uses,
                             mutableListOf(parser.parseNode(context)!!),

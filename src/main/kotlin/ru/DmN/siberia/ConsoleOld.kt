@@ -129,7 +129,7 @@ object ConsoleOld : Console() {
         val pctx = ProcessingContext.base().with(Platform.JAVA).apply { this.module = module }
         module.load(processor, pctx, ValType.NO_VALUE)
         module.nodes.forEach { it ->
-            processor.process(it, pctx, ValType.NO_VALUE)?.let {
+            processor.process(it.copy(), pctx, ValType.NO_VALUE)?.let {
                 processed += it
             }
         }

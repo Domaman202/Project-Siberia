@@ -23,7 +23,7 @@ import ru.DmN.siberia.utils.text
 /**
  * Универсальный обработчик инструкции использования в контексте.
  */
-object NUPUseCtx : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
+object NUPUseCtx : INUPC<NodeUse, NodeUse, NodeProcessedUse> {
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node {
         val names = ArrayList<String>()
         var tk = parser.nextToken()!!
@@ -33,7 +33,7 @@ object NUPUseCtx : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
         }
         parser.tokens.push(tk)
         return parse(names, parser, ctx) { context ->
-            NPDefault.parse(parser, context) { NodeParsedUse(token, names, it) }
+            NPDefault.parse(parser, context) { NodeUse(token, names, it) }
         }
     }
 
@@ -60,7 +60,7 @@ object NUPUseCtx : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
         }
     }
 
-    override fun process(node: NodeParsedUse, processor: Processor, ctx: ProcessingContext, mode: ValType): Node {
+    override fun process(node: NodeUse, processor: Processor, ctx: ProcessingContext, mode: ValType): Node {
         val exports = ArrayList<NodeNodesList>()
         val processed = ArrayList<Node>()
         processor.stageManager.pushTask(ProcessingStage.MODULE_POST_INIT) {
@@ -68,7 +68,7 @@ object NUPUseCtx : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
             injectModules(node, processor, context, ValType.NO_VALUE, processed).forEach { it ->
                 context.module = ctx.module
                 it.exports.forEach {
-                    exports += NRDefault.process(it, processor, context, ValType.NO_VALUE)
+                    exports += NRDefault.process(it.copy(), processor, context, ValType.NO_VALUE)
                 }
             }
             NRDefault.process(node, processor, context, mode)
@@ -128,8 +128,8 @@ object NUPUseCtx : INUPC<NodeUse, NodeParsedUse, NodeProcessedUse> {
             .onEachIndexed { i, it ->
                 if (it.load(processor, ctx, if (i + 1 < node.names.size) ValType.NO_VALUE else mode)) {
                     ctx.module = it
-                    it.nodes.forEach { n ->
-                        processor.process(n, ctx, ValType.NO_VALUE)?.let {
+                    it.nodes.forEach { it1 ->
+                        processor.process(it1.copy(), ctx, ValType.NO_VALUE)?.let {
                             processed += it
                         }
                     }
