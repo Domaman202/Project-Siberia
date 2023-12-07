@@ -4,11 +4,10 @@ import org.objectweb.asm.ClassWriter
 import ru.DmN.pht.std.module.StdModule
 import ru.DmN.pht.std.module.ast.NodeModule
 import ru.DmN.siberia.ast.Node
-import ru.DmN.siberia.ast.NodeProcessedUse
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.parser.ctx.ParsingContext
-import ru.DmN.siberia.processor.utils.Platform
 import ru.DmN.siberia.processor.ctx.ProcessingContext
+import ru.DmN.siberia.processor.utils.Platform
 import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processor.utils.module
 import ru.DmN.siberia.processor.utils.with
@@ -43,8 +42,8 @@ object ConsoleOld : Console() {
         this.actions.add(Triple("О программе", "Выводит информацию о программе.", Runnable {
             println("""
                 Проект: Сибирь
-                Версия: 1.3.0
-                Авторы: DomamaN202, AirBtw
+                Версия: 1.5.2
+                Авторы: DomamaN202, Wannebetheshy
             """.trimIndent())
         }))
     }
@@ -54,6 +53,8 @@ object ConsoleOld : Console() {
         this.actions.add(Triple("О модуле", "Выводит информацию о модуле.", Runnable {
             print("Введите название модуля: ")
             printModuleInfo(readln().let {
+                if (!validateModule(it))
+                    return@Runnable
                 val module = Module[it]
                 if (module?.init != true)
                     Parser(Module.getModuleFile(it)).parseNode(ParsingContext.of(StdModule))
@@ -74,9 +75,10 @@ object ConsoleOld : Console() {
     fun Console.initCompileAndRunModule() {
         this.actions.add(Triple("Собрать & Запустить", "Компилирует и запускает модуль.", Runnable {
             print("Введите расположение модуля: ")
-            compileModule(readln())
-            println()
-            println(Class.forName("App", true, URLClassLoader(arrayOf(File("dump").toURL()))).getMethod("main").invoke(null))
+            if (compileModule(readln())) {
+                println()
+                println(Class.forName("App", true, URLClassLoader(arrayOf(File("dump").toURL()))).getMethod("main").invoke(null))
+            }
         }))
     }
 
@@ -119,36 +121,55 @@ object ConsoleOld : Console() {
     }
 
     @JvmStatic
-    private fun compileModule(dir: String) {
-        val tp = TypesProvider.java()
-        val module = (Parser(Module.getModuleFile(dir)).parseNode(ParsingContext.of(StdModule)) as NodeModule).module
-        printModuleInfo(module)
-        module.init()
-        val processed = ArrayList<Node>()
-        val processor = Processor(tp)
-        val pctx = ProcessingContext.base().with(Platform.JAVA).apply { this.module = module }
-        module.load(processor, pctx, ValType.NO_VALUE)
-        module.nodes.forEach { it ->
-            processor.process(it.copy(), pctx, ValType.NO_VALUE)?.let {
-                processed += it
+    private fun compileModule(dir: String): Boolean {
+        if (!validateModule(dir))
+            return false
+        try {
+            val tp = TypesProvider.java()
+            val module = (Parser(Module.getModuleFile(dir)).parseNode(ParsingContext.of(StdModule)) as NodeModule).module
+            printModuleInfo(module)
+            module.init()
+            val processed = ArrayList<Node>()
+            val processor = Processor(tp)
+            val pctx = ProcessingContext.base().with(Platform.JAVA).apply { this.module = module }
+            module.load(processor, pctx, ValType.NO_VALUE)
+            module.nodes.forEach { it ->
+                processor.process(it.copy(), pctx, ValType.NO_VALUE)?.let {
+                    processed += it
+                }
+            }
+            processor.stageManager.runAll()
+            val compiler = Compiler(tp)
+            val cctx = CompilationContext.base()
+            processed.forEach { compiler.compile(it, cctx) }
+            compiler.stageManager.runAll()
+            compiler.finalizers.forEach { it.value.run() }
+            File("dump").mkdir()
+            compiler.classes.values.forEach {
+                if (it.name.contains('/'))
+                    File("dump/${it.name.substring(0, it.name.lastIndexOf('/'))}").mkdirs()
+                FileOutputStream("dump/${it.name}.class").use { stream ->
+                    val writer = ClassWriter(ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS)
+                    it.accept(writer)
+                    val b = writer.toByteArray()
+                    stream.write(b)
+                }
+            }
+        } catch (error: Throwable) {
+            return false
+        }
+        return true
+    }
+
+    @JvmStatic
+    fun validateModule(dir: String): Boolean {
+        if (Module::class.java.getResourceAsStream("/$dir/module.pht") == null) {
+            val file = File("$dir/module.pht")
+            if (!file.exists() || !file.isFile) {
+                println("Не удалось найти модуль '${dir}'.")
+                return false
             }
         }
-        processor.stageManager.runAll()
-        val compiler = Compiler(tp)
-        val cctx = CompilationContext.base()
-        processed.forEach { compiler.compile(it, cctx) }
-        compiler.stageManager.runAll()
-        compiler.finalizers.forEach { it.value.run() }
-        File("dump").mkdir()
-        compiler.classes.values.forEach {
-            if (it.name.contains('/'))
-                File("dump/${it.name.substring(0, it.name.lastIndexOf('/'))}").mkdirs()
-            FileOutputStream("dump/${it.name}.class").use { stream ->
-                val writer = ClassWriter(ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS)
-                it.accept(writer)
-                val b = writer.toByteArray()
-                stream.write(b)
-            }
-        }
+        return false
     }
 }
