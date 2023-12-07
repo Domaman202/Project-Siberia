@@ -42,7 +42,7 @@ object ConsoleOld : Console() {
         this.actions.add(Triple("О программе", "Выводит информацию о программе.", Runnable {
             println("""
                 Проект: Сибирь
-                Версия: 1.5.2
+                Версия: 1.5.3
                 Авторы: DomamaN202, Wannebetheshy
             """.trimIndent())
         }))
@@ -67,7 +67,9 @@ object ConsoleOld : Console() {
     fun Console.initCompileModule() {
         this.actions.add(Triple("Собрать", "Компилирует модуль.", Runnable {
             print("Введите расположение модуля: ")
-            compileModule(readln())
+            if (compileModule(readln()))
+                println("Модуль успешно собран.")
+            else println("Модуль не был собран успешно.")
         }))
     }
 
@@ -75,10 +77,12 @@ object ConsoleOld : Console() {
     fun Console.initCompileAndRunModule() {
         this.actions.add(Triple("Собрать & Запустить", "Компилирует и запускает модуль.", Runnable {
             print("Введите расположение модуля: ")
-            if (compileModule(readln())) {
-                println()
-                println(Class.forName("App", true, URLClassLoader(arrayOf(File("dump").toURL()))).getMethod("main").invoke(null))
+            if (!compileModule(readln())) {
+                println("Модуль не был собран успешно.")
+                return@Runnable
             }
+            println("Модуль успешно собран.")
+            println(Class.forName("App", true, URLClassLoader(arrayOf(File("dump").toURL()))).getMethod("main").invoke(null))
         }))
     }
 
@@ -155,10 +159,10 @@ object ConsoleOld : Console() {
                     stream.write(b)
                 }
             }
+            return true
         } catch (error: Throwable) {
             return false
         }
-        return true
     }
 
     @JvmStatic
@@ -170,6 +174,6 @@ object ConsoleOld : Console() {
                 return false
             }
         }
-        return false
+        return true
     }
 }
