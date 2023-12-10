@@ -2,7 +2,6 @@ package ru.DmN.siberia.compiler.ctx
 
 import ru.DmN.siberia.Siberia
 import ru.DmN.siberia.compiler.utils.withJCV
-import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.processor.utils.Platform
 import ru.DmN.siberia.processor.utils.with
 import ru.DmN.siberia.utils.*
@@ -47,6 +46,6 @@ class CompilationContext(
          * Создаёт базовый контекст с набором модулей.
          */
         fun of(vararg list: Module) =
-            ParsingContext.base().apply { loadedModules += list }
+            base().apply { loadedModules += list }
     }
 }
