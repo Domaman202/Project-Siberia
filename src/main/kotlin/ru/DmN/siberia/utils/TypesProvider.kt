@@ -24,6 +24,9 @@ abstract class TypesProvider {
         try { typeOf(name) } catch (_: ClassNotFoundException) { null }
 
     companion object {
+        fun void() =
+            VoidTypesProvider
+
         fun java() =
             JRTP()
     }
