@@ -24,6 +24,7 @@ fun Parser.baseParseNode(ctx: ParsingContext): Node? {
                 else -> throw RuntimeException()
             }
         }
+        OPEN_CBRACKET -> parseValn(ctx, startToken)
         OPERATION,
         PRIMITIVE,
         CLASS,
