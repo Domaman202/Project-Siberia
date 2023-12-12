@@ -3,7 +3,7 @@ package ru.DmN.siberia
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.lexer.Lexer
 import ru.DmN.siberia.lexer.Token
-import ru.DmN.siberia.lexer.Token.Type.CLOSE_BRACKET
+import ru.DmN.siberia.lexer.Token.DefaultType.CLOSE_BRACKET
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parser.utils.baseParseNode
 import ru.DmN.siberia.parsers.INodeParser

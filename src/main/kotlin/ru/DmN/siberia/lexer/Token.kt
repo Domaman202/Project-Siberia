@@ -11,7 +11,7 @@ data class Token(
     /**
      * Тип токена
      */
-    val type: Type,
+    val type: IType,
     /**
      * Текст токена
      */
@@ -28,13 +28,18 @@ data class Token(
          * Создаёт токен операции
          */
         fun operation(line: Int, text: String) =
-            Token(line, Type.OPERATION, text)
+            Token(line, DefaultType.OPERATION, text)
     }
 
     /**
      * Тип токена
      */
-    enum class Type {
+    interface IType
+
+    /**
+     * Стандартные типы токена
+     */
+    enum class DefaultType : IType {
         OPEN_BRACKET,
         CLOSE_BRACKET,
         OPEN_CBRACKET,

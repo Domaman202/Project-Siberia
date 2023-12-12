@@ -6,6 +6,7 @@ import ru.DmN.siberia.ast.*
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.compilers.NCDefault
 import ru.DmN.siberia.lexer.Token
+import ru.DmN.siberia.lexer.Token.DefaultType.OPERATION
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parsers.NPDefault
 import ru.DmN.siberia.processor.ctx.ProcessingContext
@@ -27,7 +28,7 @@ object NUPUseCtx : INUPC<NodeUse, NodeUse, NodeProcessedUse> {
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node {
         val names = ArrayList<String>()
         var tk = parser.nextToken()!!
-        while (tk.type == Token.Type.OPERATION) {
+        while (tk.type == OPERATION) {
             names.add(tk.text!!)
             tk = parser.nextToken()!!
         }

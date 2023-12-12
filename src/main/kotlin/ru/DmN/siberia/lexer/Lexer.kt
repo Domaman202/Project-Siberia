@@ -1,6 +1,6 @@
 package ru.DmN.siberia.lexer
 
-import ru.DmN.siberia.lexer.Token.Type.*
+import ru.DmN.siberia.lexer.Token.DefaultType.*
 import ru.DmN.siberia.utils.isPrimitive
 
 /**
