@@ -29,7 +29,7 @@ tasks {
         dependsOn.addAll(listOf("compileJava", "compileKotlin", "processResources"))
         archiveClassifier.set("standalone")
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        manifest { attributes(mapOf("Main-Class" to "ru.DmN.pht.base.Console")) }
+        manifest { attributes(mapOf("Main-Class" to "ru.DmN.siberia.ConsoleOld")) }
         val sourcesMain = sourceSets.main.get()
         val contents = configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) } + sourcesMain.output
         from(contents)
