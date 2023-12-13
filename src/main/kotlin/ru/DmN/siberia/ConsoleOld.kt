@@ -97,7 +97,7 @@ object ConsoleOld : Console() {
     }
 
     @JvmStatic
-    private fun printModuleInfo(module: Module) {
+    fun printModuleInfo(module: Module) {
         println("""
             Имя:           ${module.name}
             Версия:        ${module.version}
@@ -111,7 +111,7 @@ object ConsoleOld : Console() {
     }
 
     @JvmStatic
-    private val Module.dependencies: String
+    val Module.dependencies: String
         get() {
             val list = ArrayList<Pair<Int, String>>()
             printDeps(this, list, 0)
@@ -119,13 +119,13 @@ object ConsoleOld : Console() {
         }
 
     @JvmStatic
-    private fun printDeps(module: Module, list: MutableList<Pair<Int, String>>, i: Int) {
+    fun printDeps(module: Module, list: MutableList<Pair<Int, String>>, i: Int) {
         list.addAll(module.deps.map { Pair(i, it) })
         module.deps.forEach { printDeps(Module.getOrThrow(it), list, i + 1) }
     }
 
     @JvmStatic
-    private fun compileModule(dir: String): Boolean {
+    fun compileModule(dir: String): Boolean {
         if (!validateModule(dir))
             return false
         try {
