@@ -25,6 +25,11 @@ abstract class VirtualMethod {
     abstract val rettype: VirtualType
 
     /**
+     * Generic имя возвращаемого типа
+     */
+    abstract val retgen: String?
+
+    /**
      * Типы аргументов.
      */
     abstract val argsc: List<VirtualType>
@@ -33,6 +38,11 @@ abstract class VirtualMethod {
      * Имена аргументов.
      */
     abstract val argsn: List<String>
+
+    /**
+     * Generic имена аргументов.
+     */
+    abstract val argsg: List<String?>
 
     /**
      * Модификаторы метода.
@@ -45,9 +55,9 @@ abstract class VirtualMethod {
     abstract val extension: VirtualType?
 
     /**
-     * Возвращаемый тип это generic?
+     * Generic's (Name / Type)
      */
-    abstract val genericRettype: Boolean
+    abstract val generics: List<Pair<String, VirtualType>>
 
     /**
      * Дескриптор аргументов.
@@ -104,23 +114,27 @@ abstract class VirtualMethod {
         private fun of(declaringClass: VirtualType, method: Constructor<*>): VirtualMethod {
             val argsc = ArrayList<VirtualType>()
             val argsn = ArrayList<String>()
-            method.parameters.forEach {
+            val argsg = ArrayList<String?>()
+            method.parameters.forEachIndexed { i, it ->
                 argsc += VirtualType.ofKlass(it.type)
                 argsn += it.name
+                argsg += if (it.parameterizedType is TypeVariable<*>) (it.parameterizedType as TypeVariable<*>).name else null
             }
             return VirtualMethodImpl(
                 declaringClass,
                 "<init>",
                 VirtualType.VOID,
+                null,
                 argsc,
                 argsn,
+                argsg,
                 MethodModifiers(
                     varargs = method.isVarArgs,
                     static = Modifier.isStatic(method.modifiers),
                     abstract = method.declaringClass.isInterface
                 ),
                 null,
-                false
+                emptyList() // todo:
             )
         }
 
@@ -130,23 +144,27 @@ abstract class VirtualMethod {
         private fun of(declaringClass: VirtualType, method: Method): VirtualMethod {
             val argsc = ArrayList<VirtualType>()
             val argsn = ArrayList<String>()
-            method.parameters.forEach {
+            val argsg = ArrayList<String?>()
+            method.parameters.forEachIndexed { i, it ->
                 argsc += VirtualType.ofKlass(it.type)
                 argsn += it.name
+                argsg += if (it.parameterizedType is TypeVariable<*>) (it.parameterizedType as TypeVariable<*>).name else null
             }
             return VirtualMethodImpl(
                 declaringClass,
                 method.name,
                 VirtualType.ofKlass(method.returnType),
+                if (method.genericReturnType is TypeVariable<*>) (method.genericReturnType as TypeVariable<*>).name else null,
                 argsc,
                 argsn,
+                argsg,
                 MethodModifiers(
                     varargs = method.isVarArgs,
                     static = Modifier.isStatic(method.modifiers),
                     abstract = method.declaringClass.isInterface
                 ),
                 null,
-                method.genericReturnType is TypeVariable<*>
+                emptyList() // todo:
             )
         }
     }
@@ -158,10 +176,12 @@ abstract class VirtualMethod {
         override var declaringClass: VirtualType?,
         override var name: String,
         override var rettype: VirtualType,
+        override val retgen: String?,
         override var argsc: List<VirtualType>,
         override var argsn: List<String>,
+        override val argsg: List<String?>,
         override var modifiers: MethodModifiers,
-        override var extension: VirtualType? = null,
-        override var genericRettype: Boolean
+        override var extension: VirtualType?,
+        override val generics: List<Pair<String, VirtualType>>
     ) : VirtualMethod()
 }

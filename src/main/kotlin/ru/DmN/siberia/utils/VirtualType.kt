@@ -49,9 +49,9 @@ abstract class VirtualType {
     abstract val isFinal: Boolean
 
     /**
-     * Generic's
+     * Generic's (Name / Type)
      */
-    abstract val generics: List<String>
+    abstract val generics: List<Pair<String, VirtualType>>
 
     /**
      * Имя без пакета.
@@ -194,6 +194,6 @@ abstract class VirtualType {
         override var isAbstract: Boolean = false,
         override var isFinal: Boolean = false,
         //
-        override var generics: List<String> = ArrayList()
+        override var generics: List<Pair<String, VirtualType>> = ArrayList()
     ) : VirtualType()
 }

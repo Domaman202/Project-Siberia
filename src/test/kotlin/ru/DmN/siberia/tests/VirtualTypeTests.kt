@@ -1,9 +1,9 @@
 package ru.DmN.siberia.tests
 
 import ru.DmN.siberia.utils.TypesProvider
+import ru.DmN.siberia.utils.VirtualType
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class VirtualTypeTests {
@@ -14,8 +14,8 @@ internal class VirtualTypeTests {
     @Test
     fun testGenerics() {
         assertTrue(vtList.generics.isNotEmpty())
-        assertEquals(vtList.generics, listOf("E"))
-        assertFalse(mAdd.genericRettype)
-        assertTrue(mGet.genericRettype)
+        assertEquals(vtList.generics, listOf(Pair("E", VirtualType.ofKlass(Any::class.java))))
+        assertEquals(mAdd.argsg, listOf("E"))
+        assertEquals(mGet.retgen, "E")
     }
 }
