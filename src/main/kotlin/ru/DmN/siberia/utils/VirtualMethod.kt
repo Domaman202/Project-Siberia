@@ -147,7 +147,7 @@ abstract class VirtualMethod {
                     abstract = method.declaringClass.isInterface
                 ),
                 null,
-                emptyList() // todo:
+                declaringClass.generics // todo:
             )
         }
 
@@ -177,7 +177,7 @@ abstract class VirtualMethod {
                     abstract = method.declaringClass.isInterface
                 ),
                 null,
-                emptyList() // todo:
+                declaringClass.generics // todo:
             )
         }
     }
