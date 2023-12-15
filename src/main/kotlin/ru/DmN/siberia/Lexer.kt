@@ -176,20 +176,27 @@ class Lexer(val input: String) : Iterator<Token?> {
                     return Token(line, type, str.toString())
                 }
 
-                val str = StringBuilder()
-                str.append(char)
+                val sb = StringBuilder()
+                sb.append(char)
                 while (ptr < input.length) {
                     val c = input[ptr]
                     if (c.isWhitespace() || c == '(' || c == ')' || c == '[' || c == ']')
                         break
                     else {
                         inc()
-                        str.append(c)
+                        sb.append(c)
                     }
                 }
-                return str.toString().let {
-                    Token(line, if (it == "nil") NIL else if (it == "true" || it == "false") BOOLEAN else if (it.endsWith('^')) CLASS else OPERATION, it)
-                }
+                val str = sb.toString()
+                return Token(
+                    line,
+                    when (str) {
+                        "nil" -> NIL
+                        "false", "true" -> BOOLEAN
+                        else -> OPERATION
+                    },
+                    str
+                )
             }
         }
     }

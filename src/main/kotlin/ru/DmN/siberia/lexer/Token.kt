@@ -52,6 +52,7 @@ data class Token(
         PRIMITIVE,
         CLASS,
         CLASS_WITH_GEN,
+        NAME_WITH_GEN,
         NAMING,
 
         NIL,

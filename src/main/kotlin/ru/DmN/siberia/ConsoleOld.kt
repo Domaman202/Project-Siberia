@@ -42,7 +42,7 @@ object ConsoleOld : Console() {
         this.actions.add(Triple("О программе", "Выводит информацию о программе.", Runnable {
             println("""
                 Проект: Сибирь
-                Версия: 1.5.5
+                Версия: 1.7.4
                 Авторы: DomamaN202, Wannebetheshy
             """.trimIndent())
         }))
