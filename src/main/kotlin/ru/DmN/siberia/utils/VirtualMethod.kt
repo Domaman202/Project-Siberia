@@ -83,7 +83,18 @@ abstract class VirtualMethod {
             if (generics.isEmpty())
                 null
             else {
-                val sb = StringBuilder().append('(')
+                val sb = StringBuilder()
+                if (!modifiers.static && declaringClass != null) {
+                    val list = generics.drop(declaringClass!!.generics.size)
+                    if (list.isNotEmpty()) {
+                        sb.append('<')
+                        list.forEach {
+                            sb.append(it.first).append(':').append(it.second.desc)
+                        }
+                        sb.append('>')
+                    }
+                }
+                sb.append('(')
                 argsg.forEach { sb.append('T').append(it).append(';') }
                 sb.append(')').append(retgen?.let { "T${retgen};" } ?: rettype.desc).toString()
             }
