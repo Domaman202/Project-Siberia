@@ -75,6 +75,19 @@ abstract class VirtualMethod {
     val desc: String
         get() = "($argsDesc)${if (name.startsWith("<")) "V" else rettype.desc}"
 
+    /**
+     * Сигнатура метода.
+     */
+    val signature: String?
+        get() =
+            if (generics.isEmpty())
+                null
+            else {
+                val sb = StringBuilder().append('(')
+                argsg.forEach { sb.append('T').append(it).append(';') }
+                sb.append(')').append(retgen?.let { "T${retgen};" } ?: rettype.desc).toString()
+            }
+
     override fun hashCode(): Int =
         name.hashCode() + desc.hashCode() + (declaringClass?.hashCode() ?: 0)
 

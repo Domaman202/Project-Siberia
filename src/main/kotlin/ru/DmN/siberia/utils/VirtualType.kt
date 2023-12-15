@@ -99,20 +99,36 @@ abstract class VirtualType {
      * Дескриптор.
      */
     open val desc: String
-        get() = if (this.isArray)
-            "[${componentType!!.desc}"
-        else when (name) {
-            "void"      -> "V"
-            "boolean"   -> "Z"
-            "byte"      -> "B"
-            "short"     -> "S"
-            "char"      -> "C"
-            "int"       -> "I"
-            "long"      -> "J"
-            "float"     -> "F"
-            "double"    -> "D"
-            else -> "L$className;"
-        }
+        get() =
+            if (this.isArray)
+                "[${componentType!!.desc}"
+            else when (name) {
+                "void" -> "V"
+                "boolean" -> "Z"
+                "byte" -> "B"
+                "short" -> "S"
+                "char" -> "C"
+                "int" -> "I"
+                "long" -> "J"
+                "float" -> "F"
+                "double" -> "D"
+                else -> "L$className;"
+            }
+
+    /**
+     * Сигнатура.
+     */
+
+    open val signature: String?
+        get() =
+            if (generics.isEmpty())
+                null
+            else {
+                val sb = StringBuilder().append('<')
+                generics.forEach { sb.append(it.first).append(':').append(it.second.desc) }
+                sb.append('>').append(superclass!!.desc).toString()
+            }
+
 
     /**
      * Тип можно получить из целевого?
