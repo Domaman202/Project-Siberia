@@ -1,5 +1,7 @@
 package ru.DmN.siberia.lexer
 
+import ru.DmN.siberia.lexer.Token.DefaultType.OPERATION
+
 /**
  * Токен
  */
@@ -28,7 +30,7 @@ data class Token(
          * Создаёт токен операции
          */
         fun operation(line: Int, text: String) =
-            Token(line, DefaultType.OPERATION, text)
+            Token(line, OPERATION, text)
     }
 
     /**
@@ -49,6 +51,7 @@ data class Token(
 
         PRIMITIVE,
         CLASS,
+        CLASS_WITH_GEN,
         NAMING,
 
         NIL,

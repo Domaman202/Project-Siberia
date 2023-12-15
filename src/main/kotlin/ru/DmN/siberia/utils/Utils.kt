@@ -146,7 +146,7 @@ fun String.getPrimitive(): Klass {
 /**
  * Проверяет на примитивность тип.
  */
-fun String.isPrimitive(): Boolean {
+fun CharSequence.isPrimitive(): Boolean {
     return when (this) {
         "void",
         "boolean",

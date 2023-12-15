@@ -1,5 +1,6 @@
-package ru.DmN.siberia.lexer
+package ru.DmN.siberia
 
+import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.lexer.Token.DefaultType.*
 import ru.DmN.siberia.utils.isPrimitive
 
@@ -35,7 +36,25 @@ class Lexer(val input: String) : Iterator<Token?> {
             ')' -> return Token(line, CLOSE_BRACKET, ")")
             '[' -> return Token(line, OPEN_CBRACKET, "[")
             ']' -> return Token(line, CLOSE_CBRACKET, "]")
-            '^', '#' -> {
+            '^' -> {
+                val sb = StringBuilder()
+                while (ptr < input.length) {
+                    var c = input[ptr]
+                    if (c.isLetter() || c == '.') {
+                        inc()
+                        sb.append(c)
+                    } else if (c == '<') {
+                        while (c != '>') {
+                            c = input[inc()]
+                            sb.append(c)
+                        }
+                        return Token(line, CLASS_WITH_GEN, sb.toString())
+                    } else break
+                }
+                return Token(line, if (sb.isPrimitive()) PRIMITIVE else CLASS, sb.toString())
+            }
+
+            '#' -> {
                 val str = StringBuilder()
                 while (ptr < input.length) {
                     val c = input[ptr]
@@ -46,13 +65,7 @@ class Lexer(val input: String) : Iterator<Token?> {
                         str.append(c)
                     }
                 }
-                return str.toString().let {
-                    Token(
-                        line,
-                        if (char == '^') if (it.isPrimitive()) PRIMITIVE else CLASS else NAMING,
-                        it
-                    )
-                }
+                return Token(line, NAMING, str.toString())
             }
             '\'' -> {
                 inc()
