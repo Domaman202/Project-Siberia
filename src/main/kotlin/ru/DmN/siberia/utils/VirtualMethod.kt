@@ -195,6 +195,6 @@ abstract class VirtualMethod {
         override val argsg: List<String?>,
         override var modifiers: MethodModifiers,
         override var extension: VirtualType?,
-        override val generics: List<Pair<String, VirtualType>>
+        override var generics: List<Pair<String, VirtualType>>
     ) : VirtualMethod()
 }
