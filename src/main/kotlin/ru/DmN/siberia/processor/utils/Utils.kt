@@ -2,12 +2,13 @@ package ru.DmN.siberia.processor.utils
 
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeNodesList
-import ru.DmN.siberia.lexer.Token
+import ru.DmN.siberia.node.INodeInfo
+import ru.DmN.siberia.node.NodeTypes
 import ru.DmN.siberia.utils.IContextCollection
 import ru.DmN.siberia.utils.Module
 
-fun nodeProgn(line: Int, nodes: MutableList<Node>) =
-    NodeNodesList(Token.operation(line, "progn"), nodes)
+fun nodeProgn(info: INodeInfo, nodes: MutableList<Node>) =
+    NodeNodesList(info.withType(NodeTypes.PROGN), nodes)
 
 fun <T : IContextCollection<T>> T.with(ctx: Platform) =
     this.with("siberia/platform", ctx)

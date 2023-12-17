@@ -12,14 +12,14 @@ import java.util.*
  */
 class JRTP : TypesProvider() {
     init {
-        types.add(VTDynamic)
+        this += VTDynamic
     }
 
     override fun typeOf(name: String): VirtualType =
-        types.find { it.name == name } ?: addType(klassOf(name))
+        types[name.hashCode()] ?: addType(klassOf(name))
 
     private fun typeOf(klass: Klass): VirtualType =
-        types.find { it.name == klass.name } ?: addType(klass)
+        types[klass.name.hashCode()] ?: addType(klass)
 
     private fun addType(klass: Klass): VirtualType {
         val parents: MutableList<VirtualType> = ArrayList()
@@ -36,7 +36,7 @@ class JRTP : TypesProvider() {
             isInterface = klass.isInterface,
             isFinal = Modifier.isFinal(klass.modifiers) || klass.isEnum
         ).apply {
-            types += this
+            this@JRTP += this
             fields += klass.declaredFields.map { VirtualField.of(::typeOf, it) }
             methods += klass.declaredConstructors.map { VirtualMethod.of(::typeOf, it) }
             scanTypeMethods(methods, klass)

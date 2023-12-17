@@ -3,8 +3,6 @@ package ru.DmN.siberia
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.unparsers.INodeUnparser
-import ru.DmN.siberia.utils.getRegex
-import ru.DmN.siberia.utils.text
 
 /**
  * Де-парсер
@@ -25,8 +23,8 @@ class Unparser {
      * Возвращает де-парсер нод.
      */
     fun get(ctx: UnparsingContext, node: Node): INodeUnparser<Node> {
-        val name = node.text
-        ctx.loadedModules.forEach { it -> it.unparsers.getRegex(name)?.let { return it as INodeUnparser<Node> } }
-        throw RuntimeException()
+        val type = node.info.type
+        ctx.loadedModules.forEach { it -> it.unparsers[type]?.let { return it as INodeUnparser<Node> } }
+        throw RuntimeException("Unparser for \"$type\" not founded!")
     }
 }

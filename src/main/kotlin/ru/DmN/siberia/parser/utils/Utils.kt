@@ -62,3 +62,10 @@ fun Parser.parseValue(ctx: ParsingContext, token: Token) =
 var ParsingContext.parsersPool
     set(value) { this.contexts["siberia/pp"] = value }
     get() = this.contexts["siberia/pp"] as Stack<Parser.(ctx: ParsingContext) -> Node?>
+
+/**
+ * Текущий файл.
+ */
+var ParsingContext.file
+    set(value) { this.contexts["siberia/file"] = value }
+    get() = this.contexts["siberia/file"] as String

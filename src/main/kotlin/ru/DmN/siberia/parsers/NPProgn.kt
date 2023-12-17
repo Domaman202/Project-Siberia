@@ -1,6 +1,8 @@
 package ru.DmN.siberia.parsers
 
+import ru.DmN.siberia.node.NodeTypes
+
 /**
  * Парсер нод с под-нодами.
  */
-object NPDefault : SimpleNP()
+object NPProgn : SimpleNP(NodeTypes.PROGN)

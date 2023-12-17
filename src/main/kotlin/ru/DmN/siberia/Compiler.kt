@@ -5,6 +5,8 @@ import ru.DmN.siberia.compilers.INodeCompiler
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.compiler.utils.CompilingStage
 import ru.DmN.siberia.ast.Node
+import ru.DmN.siberia.processor.utils.Platform
+import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.utils.*
 
 /**
@@ -52,15 +54,11 @@ class Compiler(
      * Возвращает компилятор нод.
      */
     fun get(ctx: CompilationContext, node: Node): INodeCompiler<Node> {
-        val name = node.text
-        val i = name.lastIndexOf('/')
-        if (i < 1) {
-            ctx.loadedModules.forEach { it -> it.javaCompilers.getRegex(name)?.let { return it as INodeCompiler<Node> } }
-            println(ctx.loadedModules.map { it.name })
-            throw RuntimeException("Compiler for \"$name\" not founded!")
-        } else {
-            val module = name.substring(0, i)
-            return ctx.loadedModules.find { it.name == module }!!.javaCompilers.getRegex(name.substring(i + 1)) as INodeCompiler<Node>
-        }
+        val platform = ctx.platform
+        val type = node.info.type
+        ctx.loadedModules.forEach { it -> it.compilers[ctx.platform]?.get(type)?.let { return it as INodeCompiler<Node> } }
+        if (platform != Platform.UNIVERSAL)
+            ctx.loadedModules.forEach { it -> it.compilers[Platform.UNIVERSAL]?.get(type)?.let { return it as INodeCompiler<Node> } }
+        throw RuntimeException("Compiler for \"$type\" not founded!")
     }
 }

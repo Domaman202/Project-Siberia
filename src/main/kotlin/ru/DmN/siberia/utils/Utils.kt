@@ -14,9 +14,7 @@ fun Map<String, Any?>.copy(): MutableMap<String, Any?> {
 }
 
 val Node.text
-    get() = token.text!!
-val Node.line
-    get() = token.line
+    get() = info.type.tokenText
 
 /**
  * Читает все байты из потока в массив.

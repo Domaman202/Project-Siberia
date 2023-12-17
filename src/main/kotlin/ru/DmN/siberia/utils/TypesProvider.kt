@@ -9,19 +9,26 @@ abstract class TypesProvider {
     /**
      * Список типов.
      */
-    val types: MutableList<VirtualType> = ArrayList()
+    val types: MutableMap<Int, VirtualType> = HashMap()
 
     /**
      * Ищет тип по имени, иначе выкидывает исключение.
      */
     open fun typeOf(name: String): VirtualType =
-        types.find { it.name == name } ?: throw RuntimeException("Type '$name not founded!'")
+        types[name.hashCode()] ?: throw RuntimeException("Type '$name not founded!'")
 
     /**
      * Ищет тип по имени, иначе возвращает null.
      */
     open fun typeOfOrNull(name: String) =
         try { typeOf(name) } catch (_: ClassNotFoundException) { null }
+
+    /**
+     * Добавляет тип в список типов.
+     */
+    open operator fun plusAssign(type: VirtualType) {
+        types[type.name.hashCode()] = type
+    }
 
     companion object {
         fun void() =

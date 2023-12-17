@@ -5,7 +5,9 @@ import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.ProcessingStage
 import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processors.INodeProcessor
-import ru.DmN.siberia.utils.*
+import ru.DmN.siberia.utils.StupidStageManager
+import ru.DmN.siberia.utils.TypesProvider
+import ru.DmN.siberia.utils.VirtualType
 
 /**
  * Обработчик.
@@ -42,14 +44,8 @@ class Processor(
      * Возвращает обработчик нод.
      */
     fun get(node: Node, ctx: ProcessingContext): INodeProcessor<Node> {
-        val name = node.text
-        val i = name.lastIndexOf('/')
-        if (i < 1) {
-            ctx.loadedModules.forEach { it -> it.processors.getRegex(name)?.let { return it as INodeProcessor<Node> } }
-            throw RuntimeException("Processor for \"$name\" not founded!")
-        } else {
-            val module = name.substring(0, i)
-            return ctx.loadedModules.find { it.name == module }!!.processors.getRegex(name.substring(i + 1)) as INodeProcessor<Node>
-        }
+        val type = node.info.type
+        ctx.loadedModules.forEach { it -> it.processors[type]?.let { return it as INodeProcessor<Node> } }
+        throw RuntimeException("Processor for \"$type\" not founded!")
     }
 }

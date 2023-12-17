@@ -1,15 +1,14 @@
 package ru.DmN.siberia.ast
 
-import ru.DmN.siberia.lexer.Token
+import ru.DmN.siberia.node.INodeInfo
 import ru.DmN.siberia.utils.indent
-import ru.DmN.siberia.utils.text
 
 /**
  * Нода с под-нодами.
  */
-open class NodeNodesList(token: Token, override val nodes: MutableList<Node> = mutableListOf()) : Node(token), INodesList {
+open class NodeNodesList(info: INodeInfo, override val nodes: MutableList<Node> = mutableListOf()) : Node(info), INodesList {
     override fun copy(): NodeNodesList =
-        NodeNodesList(token, copyNodes())
+        NodeNodesList(info, copyNodes())
 
     /**
      * Копирует под-ноды
@@ -18,7 +17,7 @@ open class NodeNodesList(token: Token, override val nodes: MutableList<Node> = m
         nodes.map { it.copy() }.toMutableList()
 
     override fun print(builder: StringBuilder, indent: Int): StringBuilder =
-        printNodes(builder.indent(indent).append('[').append(text), indent).append(']')
+        printNodes(builder.indent(indent).append('[').append(info.type), indent).append(']')
 
     fun printNodes(builder: StringBuilder, indent: Int): StringBuilder {
         if (nodes.isNotEmpty())

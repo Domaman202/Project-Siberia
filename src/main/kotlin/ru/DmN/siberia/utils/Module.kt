@@ -8,19 +8,23 @@ import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeNodesList
 import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.compiler.ctx.CompilationContext
-import ru.DmN.siberia.lexer.Token
+import ru.DmN.siberia.compilers.INodeCompiler
+import ru.DmN.siberia.node.INodeType
+import ru.DmN.siberia.node.NodeInfoImpl
+import ru.DmN.siberia.node.NodeTypes
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parsers.INodeParser
+import ru.DmN.siberia.parsers.NPUseCtx
 import ru.DmN.siberia.processor.ctx.ProcessingContext
+import ru.DmN.siberia.processor.utils.Platform
 import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processor.utils.module
 import ru.DmN.siberia.processors.INodeProcessor
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.unparsers.INodeUnparser
-import ru.DmN.siberia.ups.NUPUseCtx
 import java.io.File
 import java.io.FileNotFoundException
-import ru.DmN.siberia.compilers.INodeCompiler as JavaNodeCompiler
+import java.util.*
 
 open class Module(val name: String) {
     var init: Boolean = false
@@ -30,11 +34,30 @@ open class Module(val name: String) {
     val uses: MutableList<String> = ArrayList()
     val files: MutableList<String> = ArrayList()
     val parsers: MutableMap<Regex, INodeParser> = HashMap()
-    val unparsers: MutableMap<Regex, INodeUnparser<*>> = HashMap()
-    val processors: MutableMap<Regex, INodeProcessor<*>> = HashMap()
-    val javaCompilers: MutableMap<Regex, JavaNodeCompiler<*>> = HashMap()
+    val unparsers: MutableMap<INodeType, INodeUnparser<*>> = HashMap()
+    val processors: MutableMap<INodeType, INodeProcessor<*>> = HashMap()
+    val compilers: MutableMap<Platform, MutableMap<INodeType, INodeCompiler<*>>> = EnumMap(Platform::class.java)
     val nodes: MutableList<Node> = ArrayList()
     val exports: MutableList<NodeNodesList> = ArrayList()
+
+    init {
+        initParsers()
+        initUnparsers()
+        initProcessors()
+        initCompilers()
+    }
+
+    open fun initParsers() =
+        Unit
+
+    open fun initUnparsers() =
+        Unit
+
+    open fun initProcessors() =
+        Unit
+
+    open fun initCompilers() =
+        Unit
 
     fun init() {
         if (!init) {
@@ -43,9 +66,9 @@ open class Module(val name: String) {
                 val parser = Parser(getModuleFile(it))
                 val pctx = ParsingContext.base().apply { this.module = this@Module }
                 nodes.add(
-                    NUPUseCtx.parse(uses, parser, pctx) { context ->
+                    NPUseCtx.parse(uses, parser, pctx) { context ->
                         NodeUse(
-                            Token.operation(-1, "use-ctx"),
+                            NodeInfoImpl(NodeTypes.USE_CTX, null, null),
                             uses,
                             mutableListOf(parser.parseNode(context)!!),
                         )
@@ -99,20 +122,20 @@ open class Module(val name: String) {
         return String(stream.readBytes())
     }
 
-    fun add(name: String, compiler: JavaNodeCompiler<*>) =
-        add(name.toRegularExpr(), compiler)
-
-    fun add(name: Regex, compiler: JavaNodeCompiler<*>) {
-        javaCompilers[name] = compiler
+    fun add(regex: Regex, parser: INodeParser) {
+        parsers[regex] = parser
     }
 
-    fun add(name: String, parser: INodeParser? = null, unparser: INodeUnparser<*>? = null, processor: INodeProcessor<*>? = null) =
-        add(name.toRegularExpr(), parser, unparser, processor)
+    fun add(type: INodeType, unparser: INodeUnparser<*>) {
+        unparsers[type] = unparser
+    }
 
-    fun add(name: Regex, parser: INodeParser? = null, unparser: INodeUnparser<*>? = null, processor: INodeProcessor<*>? = null) {
-        parser      ?.let { parsers     [name] = it }
-        unparser    ?.let { unparsers   [name] = it }
-        processor   ?.let { processors  [name] = it }
+    fun add(type: INodeType, processor: INodeProcessor<*>) {
+        processors[type] = processor
+    }
+
+    fun add(platform: Platform, type: INodeType, compiler: INodeCompiler<*>) {
+        compilers.getOrPut(platform) { HashMap() }[type] = compiler
     }
 
     override fun toString(): String =

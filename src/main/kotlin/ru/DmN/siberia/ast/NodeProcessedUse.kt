@@ -1,12 +1,13 @@
 package ru.DmN.siberia.ast
 
 import ru.DmN.siberia.lexer.Token
+import ru.DmN.siberia.node.INodeInfo
 
 /**
  * Обработанная нода использования модулей.
  */
 class NodeProcessedUse(
-    token: Token,
+    info: INodeInfo,
     names: List<String>,
     nodes: MutableList<Node>,
     /**
@@ -17,7 +18,7 @@ class NodeProcessedUse(
      * Обработанные ноды используемых нод.
      */
     val processed: MutableList<Node>
-) : NodeUse(token, names, nodes) {
+) : NodeUse(info, names, nodes) {
     override fun copy(): NodeUse =
-        NodeProcessedUse(token, names, copyNodes(), exports.map { it.copy() }.toMutableList(), processed.map { it.copy() }.toMutableList())
+        NodeProcessedUse(info, names, copyNodes(), exports.map { it.copy() }.toMutableList(), processed.map { it.copy() }.toMutableList())
 }

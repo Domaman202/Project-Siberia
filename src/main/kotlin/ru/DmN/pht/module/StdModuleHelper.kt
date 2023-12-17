@@ -5,10 +5,10 @@ import ru.DmN.pht.std.module.parsers.NPArgument
 import ru.DmN.pht.std.module.parsers.NPValue
 import ru.DmN.pht.std.module.parsers.NPValueList
 
-object StdModuleHelper : Module("pht/module/helper") {
+object StdModuleHelper : Module("pht/module/helper") { // todo: unparsers
     init {
-        add("name|version|files|class|deps|uses|author".toRegex(), NPArgument)
-        add("valn!",    NPValueList)
-        add("value!",   NPValue)
+        add(Regex("name|version|files|class|deps|uses|author"), NPArgument)
+        add(Regex("valn!"),  NPValueList)
+        add(Regex("value!"), NPValue)
     }
 }

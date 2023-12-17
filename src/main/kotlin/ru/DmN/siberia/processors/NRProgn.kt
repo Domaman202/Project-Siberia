@@ -5,4 +5,4 @@ import ru.DmN.siberia.ast.NodeNodesList
 /**
  * Обработчик нод с под-нодами.
  */
-object NRDefault : SimpleNR<NodeNodesList>()
+object NRProgn : SimpleNR<NodeNodesList>()
