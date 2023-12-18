@@ -13,8 +13,8 @@ fun Map<String, Any?>.copy(): MutableMap<String, Any?> {
     return map
 }
 
-val Node.text
-    get() = info.type.tokenText
+val Node.operation
+    get() = info.type.operation
 
 /**
  * Читает все байты из потока в массив.

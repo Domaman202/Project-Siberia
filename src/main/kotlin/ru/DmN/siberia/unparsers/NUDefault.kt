@@ -3,7 +3,7 @@ package ru.DmN.siberia.unparsers
 import ru.DmN.siberia.Unparser
 import ru.DmN.siberia.ast.NodeNodesList
 import ru.DmN.siberia.unparser.UnparsingContext
-import ru.DmN.siberia.utils.text
+import ru.DmN.siberia.utils.operation
 
 /**
  * Де-парсер для нод с под-нодами.
@@ -11,7 +11,7 @@ import ru.DmN.siberia.utils.text
 object NUDefault : INodeUnparser<NodeNodesList> {
     override fun unparse(node: NodeNodesList, unparser: Unparser, ctx: UnparsingContext, indent: Int) {
         unparser.out.run {
-            append('(').append(node.text)
+            append('(').append(node.operation)
             if (node.nodes.isNotEmpty())
                 append(' ')
             unparseNodes(node, unparser, ctx, indent)

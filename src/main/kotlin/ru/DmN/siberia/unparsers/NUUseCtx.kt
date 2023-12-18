@@ -8,13 +8,13 @@ import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.utils.Module
-import ru.DmN.siberia.utils.text
+import ru.DmN.siberia.utils.operation
 
 object NUUseCtx : INodeUnparser<NodeUse> {
     override fun unparse(node: NodeUse, unparser: Unparser, ctx: UnparsingContext, indent: Int) {
         loadModules(node.names, unparser, ctx)
         unparser.out.apply {
-            append('(').append(node.text).append(' ')
+            append('(').append(node.operation).append(' ')
             node.names.forEachIndexed { i, it ->
                 append(it)
                 if (node.names.size + 1 < i) {

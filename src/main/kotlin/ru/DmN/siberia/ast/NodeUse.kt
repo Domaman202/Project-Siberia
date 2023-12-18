@@ -2,7 +2,7 @@ package ru.DmN.siberia.ast
 
 import ru.DmN.siberia.node.INodeInfo
 import ru.DmN.siberia.utils.indent
-import ru.DmN.siberia.utils.text
+import ru.DmN.siberia.utils.operation
 
 /**
  * Нода использования модулей.
@@ -20,7 +20,7 @@ open class NodeUse(
         NodeUse(info, names, copyNodes())
 
     override fun print(builder: StringBuilder, indent: Int): StringBuilder {
-        builder.indent(indent).append('[').append(info.type)
+        builder.indent(indent).append('[').append(operation)
         names.forEach { builder.append(' ').append(it) }
         return printNodes(builder, indent).append(']')
     }

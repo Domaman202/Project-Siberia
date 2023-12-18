@@ -11,7 +11,10 @@ import ru.DmN.siberia.parsers.NPProgn
 import ru.DmN.siberia.parsers.NPUse
 import ru.DmN.siberia.parsers.NPUseCtx
 import ru.DmN.siberia.processor.utils.Platform.UNIVERSAL
-import ru.DmN.siberia.processors.*
+import ru.DmN.siberia.processors.NRExport
+import ru.DmN.siberia.processors.NRProgn
+import ru.DmN.siberia.processors.NRUse
+import ru.DmN.siberia.processors.NRUseCtx
 import ru.DmN.siberia.unparsers.NUDefault
 import ru.DmN.siberia.unparsers.NUUse
 import ru.DmN.siberia.unparsers.NUUseCtx
@@ -33,6 +36,7 @@ object Siberia : Module("siberia") {
         add(EXPORT,  NUDefault)
         // p
         add(PROGN,   NUDefault)
+        add(PROGN_,  NUDefault)
         // u
         add(USE,     NUUse)
         add(USE_,    NUUse)
@@ -47,14 +51,12 @@ object Siberia : Module("siberia") {
         add(PROGN,   NRProgn)
         // u
         add(USE,     NRUse)
-        add(USE_,    NREmpty)
         add(USE_CTX, NRUseCtx)
-        add(USE_CTX_,NREmpty)
     }
 
     override fun initCompilers() {
         // p
-        add(UNIVERSAL, PROGN,   NCDefault)
+        add(UNIVERSAL, PROGN_,  NCDefault)
         // u
         add(UNIVERSAL, USE_,    NCUse)
         add(UNIVERSAL, USE_CTX_,NCUseCtx)
