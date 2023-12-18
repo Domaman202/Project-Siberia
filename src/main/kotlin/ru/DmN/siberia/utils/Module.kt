@@ -30,9 +30,9 @@ open class Module(val name: String) {
     var init: Boolean = false
     var version: String = "0.0.0"
     var author: String = "unknown"
-    val deps: MutableList<String> = ArrayList()
-    val uses: MutableList<String> = ArrayList()
-    val files: MutableList<String> = ArrayList()
+    var deps: List<String> = ArrayList()
+    var uses: List<String> = ArrayList()
+    var files: List<String> = ArrayList()
     val parsers: MutableMap<Regex, INodeParser> = HashMap()
     val unparsers: MutableMap<INodeType, INodeUnparser<*>> = HashMap()
     val processors: MutableMap<INodeType, INodeProcessor<*>> = HashMap()

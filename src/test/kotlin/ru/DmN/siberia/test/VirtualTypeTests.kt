@@ -1,4 +1,4 @@
-package ru.DmN.siberia.tests
+package ru.DmN.siberia.test
 
 import ru.DmN.siberia.utils.TypesProvider
 import ru.DmN.siberia.utils.VirtualType

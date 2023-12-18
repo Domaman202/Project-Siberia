@@ -68,4 +68,5 @@ var ParsingContext.parsersPool
  */
 var ParsingContext.file
     set(value) { this.contexts["siberia/file"] = value }
-    get() = this.contexts["siberia/file"] as String
+//    get() = this.contexts["siberia/file"] as String // todo:
+    get() = "##### ВРЕМЕННО НЕ РАБОТАЕТ #####"
