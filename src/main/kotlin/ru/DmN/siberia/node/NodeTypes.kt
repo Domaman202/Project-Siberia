@@ -1,15 +1,41 @@
 package ru.DmN.siberia.node
 
-enum class NodeTypes(override val operation: String, override val processable: Boolean,
-                     override val compilable: Boolean) : INodeType {
+enum class NodeTypes : INodeType {
     // e
-    EXPORT("export", true, false),
+    EXPORT("export", Type.PARSED),
     // p
-    PROGN("progn", true, false),
-    PROGN_("progn", false, true),
+    PROGN("progn", Type.PARSED),
+    PROGN_("progn", Type.PROCESSED),
     // u
-    USE("use", true, false),
-    USE_("use", false, true),
-    USE_CTX("use-ctx",true, false),
-    USE_CTX_("use-ctx", false, true)
+    USE("use", Type.PARSED),
+    USE_("use", Type.PROCESSED),
+    USE_CTX("use-ctx", Type.PARSED),
+    USE_CTX_("use-ctx", Type.PROCESSED);
+
+
+    override val operation: String
+    override val processable: Boolean
+    override val compilable: Boolean
+
+    constructor(operation: String, processable: Boolean, compilable: Boolean) {
+        this.operation = operation
+        this.processable = processable
+        this.compilable = compilable
+    }
+
+    constructor(operation: String, type: Type) {
+        this.operation = operation
+        if (type == Type.PARSED) {
+            this.processable = true
+            this.compilable = false
+        } else {
+            this.processable = false
+            this.compilable = true
+        }
+    }
+
+    enum class Type {
+        PARSED,
+        PROCESSED
+    }
 }
