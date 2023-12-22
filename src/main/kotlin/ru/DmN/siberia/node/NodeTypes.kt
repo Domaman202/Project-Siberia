@@ -1,16 +1,19 @@
 package ru.DmN.siberia.node
 
+import ru.DmN.siberia.node.NodeTypes.Type.PARSED
+import ru.DmN.siberia.node.NodeTypes.Type.PROCESSED
+
 enum class NodeTypes : INodeType {
     // e
-    EXPORT("export", Type.PARSED),
+    EXPORT("export", PARSED),
     // p
-    PROGN("progn", Type.PARSED),
-    PROGN_("progn", Type.PROCESSED),
+    PROGN("progn", PARSED),
+    PROGN_("progn", PROCESSED),
     // u
-    USE("use", Type.PARSED),
-    USE_("use", Type.PROCESSED),
-    USE_CTX("use-ctx", Type.PARSED),
-    USE_CTX_("use-ctx", Type.PROCESSED);
+    USE("use", PARSED),
+    USE_("use", PROCESSED),
+    USE_CTX("use-ctx", PARSED),
+    USE_CTX_("use-ctx", PROCESSED);
 
 
     override val operation: String
@@ -25,7 +28,7 @@ enum class NodeTypes : INodeType {
 
     constructor(operation: String, type: Type) {
         this.operation = operation
-        if (type == Type.PARSED) {
+        if (type == PARSED) {
             this.processable = true
             this.compilable = false
         } else {

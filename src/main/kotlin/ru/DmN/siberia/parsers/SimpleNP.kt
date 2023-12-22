@@ -13,7 +13,7 @@ import ru.DmN.siberia.parser.utils.parseValue
 /**
  * Парсер-база для парсинга нод с под-нодами.
  */
-abstract class SimpleNP(val type: INodeType) : INodeParser {
+class SimpleNP(val type: INodeType) : INodeParser {
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node? =
         parse(parser, ctx) { NodeNodesList(NodeInfoImpl.of(type, ctx, token), it) }
 
