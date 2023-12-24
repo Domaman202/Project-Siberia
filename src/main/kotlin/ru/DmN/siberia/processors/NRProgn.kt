@@ -22,8 +22,8 @@ object NRProgn : INodeProcessor<NodeNodesList> {
             else {
                 val list =
                     node.nodes
+                        .dropLast(1) // todo: drop last for sequence
                         .asSequence()
-                        .drop(1)
                         .map { processor.process(it, ctx, ValType.NO_VALUE) }
                         .filterNotNull()
                         .toMutableList()
