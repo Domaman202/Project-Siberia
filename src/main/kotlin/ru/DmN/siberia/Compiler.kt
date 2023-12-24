@@ -1,13 +1,15 @@
 package ru.DmN.siberia
 
 import org.objectweb.asm.tree.ClassNode
-import ru.DmN.siberia.compilers.INodeCompiler
+import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.compiler.utils.CompilingStage
-import ru.DmN.siberia.ast.Node
+import ru.DmN.siberia.compilers.INodeCompiler
 import ru.DmN.siberia.processor.utils.Platform
 import ru.DmN.siberia.processor.utils.platform
-import ru.DmN.siberia.utils.*
+import ru.DmN.siberia.utils.StupidStageManager
+import ru.DmN.siberia.utils.TypesProvider
+import ru.DmN.siberia.utils.Variable
 
 /**
  * Компилятор.
@@ -41,14 +43,19 @@ class Compiler(
     /**
      * Компилирует ноду без значения.
      */
-    fun compile(node: Node, ctx: CompilationContext) =
-        get(ctx, node).compile(node, this, ctx)
+    fun compile(node: Node, ctx: CompilationContext) {
+        if (node.info.type.compilable) {
+            get(ctx, node).compile(node, this, ctx)
+        }
+    }
 
     /**
      * Компилирует ноду со значением.
      */
     fun compileVal(node: Node, ctx: CompilationContext): Variable =
-        get(ctx, node).compileVal(node, this, ctx)
+        if (node.info.type.compilable)
+            get(ctx, node).compileVal(node, this, ctx)
+        else throw UnsupportedOperationException()
 
     /**
      * Возвращает компилятор нод.

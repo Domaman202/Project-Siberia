@@ -1,17 +1,16 @@
 package ru.DmN.siberia.processors
 
-import ru.DmN.siberia.Compiler
 import ru.DmN.siberia.Processor
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeNodesList
 import ru.DmN.siberia.ast.NodeProcessedUse
 import ru.DmN.siberia.ast.NodeUse
-import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.node.NodeTypes
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.ProcessingStage
 import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processor.utils.module
+import ru.DmN.siberia.processor.utils.processNodesList
 import ru.DmN.siberia.utils.Module
 
 object NRUseCtx : INodeProcessor<NodeUse> {
@@ -26,7 +25,7 @@ object NRUseCtx : INodeProcessor<NodeUse> {
                     exports += NRProgn.process(it.copy(), processor, context, ValType.NO_VALUE)
                 }
             }
-            NRProgn.process(node, processor, context, mode)
+            processNodesList(node, processor, context, mode)
         }
         return NodeProcessedUse(node.info.withType(NodeTypes.USE_CTX_), node.names, node.nodes, exports, processed)
     }

@@ -38,7 +38,9 @@ class Processor(
      * Обрабатывает ноду.
      */
     fun process(node: Node, ctx: ProcessingContext, mode: ValType): Node? =
-        get(node, ctx).process(node, this, ctx, mode)
+        if (node.info.type.processable)
+            get(node, ctx).process(node, this, ctx, mode)
+        else node
 
     /**
      * Возвращает обработчик нод.
