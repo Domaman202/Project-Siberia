@@ -19,8 +19,9 @@ open class Node(val info: INodeInfo) {
      *
      * @param indent отступ
      */
-    open fun print(builder: StringBuilder, indent: Int): StringBuilder =
+    open fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder =
         builder.indent(indent).append('[').append(info.type).append(']')
 
-    fun print(): String = print(StringBuilder(), 0).toString()
+    fun print(short: Boolean = true): String =
+        print(StringBuilder(), 0, short).toString()
 }
