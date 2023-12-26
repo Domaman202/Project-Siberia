@@ -1,7 +1,5 @@
 package ru.DmN.siberia.utils
 
-import ru.DmN.siberia.compiler.utils.CompilingStage
-
 /**
  * Менеджер стадий.
  */

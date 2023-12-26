@@ -19,6 +19,9 @@ open class NodeNodesList(info: INodeInfo, override val nodes: MutableList<Node> 
     override fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder =
         printNodes(builder.indent(indent).append('[').append(info.type), indent, short).append(']')
 
+    /**
+     * Печатает под-ноды в "builder".
+     */
     fun printNodes(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder {
         if (nodes.isNotEmpty())
             builder.append('\n')

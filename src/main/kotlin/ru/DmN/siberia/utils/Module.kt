@@ -26,18 +26,74 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.util.*
 
+/**
+ * Модуль.
+ *
+ * @param name Имя модуля.
+ */
 open class Module(val name: String) {
+    /**
+     * Модуль инициализирован?
+     */
     var init: Boolean = false
+
+    /**
+     * Версия модуля.
+     */
     var version: String = "0.0.0"
+
+    /**
+     * Автор(ы) модуля.
+     */
     var author: String = "unknown"
+
+    /**
+     * Зависимости модуля.
+     */
     var deps: List<String> = ArrayList()
+
+    /**
+     * Используемые модули.
+     */
     var uses: List<String> = ArrayList()
+
+    /**
+     * Файлы исходного кода модуля.
+     */
     var files: List<String> = ArrayList()
+
+    /**
+     * Парсеры.
+     */
     val parsers: MutableMap<Regex, INodeParser> = HashMap()
+
+    /**
+     * Де-парсеры.
+     */
     val unparsers: MutableMap<INodeType, INodeUnparser<*>> = HashMap()
+
+    /**
+     * Обработчики.
+     */
     val processors: MutableMap<INodeType, INodeProcessor<*>> = HashMap()
+
+    /**
+     * Компиляторы.
+     */
     val compilers: MutableMap<Platform, MutableMap<INodeType, INodeCompiler<*>>> = EnumMap(Platform::class.java)
+
+    /**
+     * Ноды.
+     *
+     * Список нод получается при инициализации модуля, в процессе обработки его исходного кода.
+     */
     val nodes: MutableList<Node> = ArrayList()
+
+    /**
+     * Экспортируемые ноды.
+     *
+     * Список экспортируемых нод получается при инициализации модуля, в процессе обработки его исходного кода.
+     */
     val exports: MutableList<NodeNodesList> = ArrayList()
 
     init {
@@ -47,18 +103,37 @@ open class Module(val name: String) {
         initCompilers()
     }
 
+    /**
+     * Инициализация парсеров.
+     */
     open fun initParsers() =
         Unit
 
+    /**
+     * Инициализация де-парсеров.
+     */
     open fun initUnparsers() =
         Unit
 
+    /**
+     * Инициализация обработчиков.
+     */
     open fun initProcessors() =
         Unit
 
+    /**
+     * Инициализация компиляторов.
+     *
+     * @see ru.DmN.siberia.compiler.utils.ModuleCompilers
+     */
     open fun initCompilers() =
         Unit
 
+    /**
+     * Инициализация модуля.
+     *
+     * Определяет ноды, экспортируемые ноды модуля.
+     */
     fun init() {
         if (!init) {
             init = true
@@ -78,32 +153,66 @@ open class Module(val name: String) {
         }
     }
 
+    /**
+     * Загружает модуль в контекст парсинга.
+     *
+     * @param parser Парсер.
+     * @param ctx Контекст парсинга.
+     */
     open fun load(parser: Parser, ctx: ParsingContext) {
         if (!ctx.loadedModules.contains(this)) {
             ctx.loadedModules.add(0, this)
         }
     }
 
-    open fun clear(parser: Parser, ctx: ParsingContext) = Unit
+    /**
+     * Очищает контекст парсинга от модуля.
+     */
+    open fun clear(parser: Parser, ctx: ParsingContext) =
+        Unit
 
+    /**
+     * Выгружает модуль из контекста парсинга.
+     *
+     * @param parser Парсер.
+     * @param ctx Контекст парсинга.
+     */
     open fun unload(parser: Parser, ctx: ParsingContext) {
         if (ctx.loadedModules.contains(this)) {
             ctx.loadedModules.remove(this)
         }
     }
 
+    /**
+     * Загружает модуль в контекст де-парсинга.
+     *
+     * @param unparser Де-парсер.
+     * @param ctx Контекст де-парсинга.
+     */
     open fun load(unparser: Unparser, ctx: UnparsingContext) {
         if (!ctx.loadedModules.contains(this)) {
             ctx.loadedModules.add(0, this)
         }
     }
 
+    /**
+     * Загружает модуль в контекст обработки.
+     *
+     * @param processor Обработчик.
+     * @param ctx Контекст обработки.
+     */
     open fun load(processor: Processor, ctx: ProcessingContext, mode: ValType): Boolean =
         if (!ctx.loadedModules.contains(this)) {
             ctx.loadedModules.add(0, this)
             true
         } else false
 
+    /**
+     * Загружает модуль в контекст компиляции.
+     *
+     * @param compiler Компилятор.
+     * @param ctx Контекст компиляции.
+     */
     open fun load(compiler: Compiler, ctx: CompilationContext): Variable? {
         if (!ctx.loadedModules.contains(this)) {
             ctx.loadedModules.add(0, this)
@@ -111,6 +220,12 @@ open class Module(val name: String) {
         return null
     }
 
+    /**
+     * Читает определённый файл текущего модуля.
+     *
+     * @param file Файл.
+     * @return Данные этого файла (в виде строки).
+     */
     fun getModuleFile(file: String): String {
         val stream = Module::class.java.getResourceAsStream("/$name/$file")
         if (stream == null) {
@@ -122,18 +237,43 @@ open class Module(val name: String) {
         return String(stream.readBytes())
     }
 
-    fun add(regex: Regex, parser: INodeParser) {
-        parsers[regex] = parser
+    /**
+     * Добавляет новый парсер нод.
+     *
+     * @param pattern Шаблон парсинга.
+     * @param parser Парсер.
+     */
+    fun add(pattern: Regex, parser: INodeParser) {
+        parsers[pattern] = parser
     }
 
+    /**
+     * Добавляет де-парсер нод.
+     *
+     * @param type Тип нод.
+     * @param unparser Де-парсер.
+     */
     fun add(type: INodeType, unparser: INodeUnparser<*>) {
         unparsers[type] = unparser
     }
 
+    /**
+     * Добавляет обработчик нод.
+     *
+     * @param type Тип нод.
+     * @param processor Обработчик.
+     */
     fun add(type: INodeType, processor: INodeProcessor<*>) {
         processors[type] = processor
     }
 
+    /**
+     * Добавляет компилятор нод.
+     *
+     * @param platform Платформа на которую ориентирован компилятор.
+     * @param type Тип нод.
+     * @param compiler Компилятор.
+     */
     fun add(platform: Platform, type: INodeType, compiler: INodeCompiler<*>) {
         compilers.getOrPut(platform) { HashMap() }[type] = compiler
     }
@@ -144,12 +284,31 @@ open class Module(val name: String) {
     companion object {
         private val MODULES: MutableList<Module> = ArrayList()
 
+        /**
+         * Получает модуль, в случае его отсутствия либо выполняет метод для его добавления.
+         *
+         * @param name Имя модуля.
+         * @param put Метод для добавления модуля.
+         * @return Модуль.
+         */
         fun getOrPut(name: String, put: () -> Module): Module =
             get(name) ?: put().apply { MODULES.add(this) }
 
+        /**
+         * Получает модуль, в случае его отсутствия кидает исключение.
+         *
+         * @param name Имя модуля.
+         * @return Модуль.
+         */
         fun getOrThrow(name: String) =
             get(name) ?: throw RuntimeException("Module '$name' not founded!")
 
+        /**
+         * Получает модуль, в случае его отсутствия возвращает null.
+         *
+         * @param name Имя модуля.
+         * @return Модуль - в случае наличия, в случае отсутствия - null.
+         */
         operator fun get(name: String): Module? {
             for (i in 0 until MODULES.size) {
                 val module = MODULES[i]
@@ -161,6 +320,12 @@ open class Module(val name: String) {
             return null
         }
 
+        /**
+         * Читает данные из заголовка модуля.
+         *
+         * @param name Имя модуля.
+         * @return Данные заголовка.
+         */
         fun getModuleFile(name: String): String {
             val stream = Module::class.java.getResourceAsStream("/$name/module.pht")
             if (stream == null) {
@@ -172,6 +337,9 @@ open class Module(val name: String) {
             return String(stream.readBytes())
         }
 
+        /**
+         * Преобразует имя операции в регулярное выражение.
+         */
         fun String.toRegularExpr(): Regex =
             this.replace(".", "\\.")
                 .replace("^", "\\^")

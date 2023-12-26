@@ -1,6 +1,11 @@
 package ru.DmN.siberia
 
-open class Console : Runnable {
+/**
+ * Консоль.
+ *
+ * Реализуйте класс для создания своей консоли.
+ */
+abstract class Console : Runnable {
     val actions: MutableList<Triple<String, String, Runnable>> = ArrayList()
 
     override fun run() {

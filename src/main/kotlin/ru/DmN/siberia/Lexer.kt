@@ -201,6 +201,10 @@ class Lexer(val input: String) : Iterator<Token?> {
         }
     }
 
+    /**
+     * Инкриментирует указатель.
+     * Прибавляет нужные переменные (line / symbols) в случае необходимости.
+     */
     private fun inc(): Int {
         val i = ptr++
         return when (input[i]) {

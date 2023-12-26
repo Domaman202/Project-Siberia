@@ -17,7 +17,15 @@ import java.io.File
 import java.io.FileOutputStream
 import java.net.URLClassLoader
 
+/**
+ * Стандартная консоль Проекта "Сибирь".
+ */
 object ConsoleOld : Console() {
+    /**
+     * Добавляет действия помощи.
+     *
+     * Действие выводит информацию о взаимодействии с действием.
+     */
     @JvmStatic
     fun Console.initHelp() {
         this.actions.add(Triple("Помощь", "Выводит информацию о действиях.", Runnable {
@@ -37,17 +45,27 @@ object ConsoleOld : Console() {
         }))
     }
 
+    /**
+     * Добавляет действие вывода информации о программе.
+     *
+     * Действие выводит информацию о Проекте "Сибирь".
+     */
     @JvmStatic
     fun Console.initProgramInfo() {
         this.actions.add(Triple("О программе", "Выводит информацию о программе.", Runnable {
             println("""
                 Проект: Сибирь
-                Версия: 1.8.4
+                Версия: 1.8.7
                 Авторы: DomamaN202, Wannebetheshy
             """.trimIndent())
         }))
     }
 
+    /**
+     * Добавляет действие вывода информации о модуле.
+     *
+     * Выводит всю информацию о выбраном модуле.
+     */
     @JvmStatic
     fun Console.initModuleInfo() {
         this.actions.add(Triple("О модуле", "Выводит информацию о модуле.", Runnable {
@@ -63,6 +81,11 @@ object ConsoleOld : Console() {
         }))
     }
 
+    /**
+     * Добавляет действие компиляции модуля.
+     *
+     * Действие компилирует выбранный модуль (в java байт-код).
+     */
     @JvmStatic
     fun Console.initCompileModule() {
         this.actions.add(Triple("Собрать", "Компилирует модуль.", Runnable {
@@ -73,6 +96,11 @@ object ConsoleOld : Console() {
         }))
     }
 
+    /**
+     * Добавляет действие компиляции и запуска модуля.
+     *
+     * Действие компилирует выбранный модуль (в java байт-код) и запускает его.
+     */
     @JvmStatic
     fun Console.initCompileAndRunModule() {
         this.actions.add(Triple("Собрать & Запустить", "Компилирует и запускает модуль.", Runnable {
@@ -96,6 +124,9 @@ object ConsoleOld : Console() {
         run()
     }
 
+    /**
+     * Выводит в консоль всю информацию о модуле.
+     */
     @JvmStatic
     fun printModuleInfo(module: Module) {
         println("""
@@ -110,6 +141,9 @@ object ConsoleOld : Console() {
         )
     }
 
+    /**
+     * Список зависимостей выбранного модуля.
+     */
     @JvmStatic
     val Module.dependencies: String
         get() {
@@ -118,12 +152,22 @@ object ConsoleOld : Console() {
             return list.map { "${"'".repeat(it.first)}${it.second}" }.toString()
         }
 
+    /**
+     * Записывает все зависимости модуля и его под-модулей в "list".
+     *
+     * @param module Можуль.
+     * @param list Список зависимостей (Номер модуля; Список зависимостей в виде строки)
+     * @param i Номер модуля.
+     */
     @JvmStatic
     fun printDeps(module: Module, list: MutableList<Pair<Int, String>>, i: Int) {
         list.addAll(module.deps.map { Pair(i, it) })
         module.deps.forEach { printDeps(Module.getOrThrow(it), list, i + 1) }
     }
 
+    /**
+     * Компилирует модуль в java байт-код.
+     */
     @JvmStatic
     fun compileModule(dir: String): Boolean {
         if (!validateModule(dir))
@@ -166,6 +210,10 @@ object ConsoleOld : Console() {
         }
     }
 
+    /**
+     * Проверяет наличие модуля.
+     * В случае отсутствия модуля пишет об этом в консоль.
+     */
     @JvmStatic
     fun validateModule(dir: String): Boolean {
         if (Module::class.java.getResourceAsStream("/$dir/module.pht") == null) {

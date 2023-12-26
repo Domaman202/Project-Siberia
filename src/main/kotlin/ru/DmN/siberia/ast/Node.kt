@@ -17,11 +17,17 @@ open class Node(val info: INodeInfo) {
     /**
      * Печатает ноду.
      *
-     * @param indent отступ
+     * @param indent отступ.
+     * @param short Режим краткого вывода.
      */
     open fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder =
         builder.indent(indent).append('[').append(info.type).append(']')
 
+    /**
+     * Печатает ноду.
+     *
+     * @param short Режим краткого вывода.
+     */
     fun print(short: Boolean = true): String =
         print(StringBuilder(), 0, short).toString()
 }

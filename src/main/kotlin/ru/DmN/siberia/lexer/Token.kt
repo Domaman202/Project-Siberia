@@ -19,12 +19,6 @@ data class Token(
      */
     val text: String? = null
 ) {
-    /**
-     * Создаёт "обработанную" версию токена
-     */
-    fun processed() =
-        Token(line, type, "!$text")
-
     companion object {
         /**
          * Создаёт токен операции

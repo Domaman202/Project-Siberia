@@ -6,7 +6,7 @@ import ru.DmN.siberia.Siberia
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.lexer.Token
-import ru.DmN.siberia.node.NodeInfoImpl
+import ru.DmN.siberia.node.INodeInfo
 import ru.DmN.siberia.node.NodeTypes
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.utils.Module
@@ -21,7 +21,7 @@ object NPUseCtx : INodeParser {
         }
         parser.tokens.push(tk)
         return parse(names, parser, ctx) { context ->
-            NPProgn.parse(parser, context) { NodeUse(NodeInfoImpl.of(NodeTypes.USE_CTX, ctx, token), names, it) }
+            NPProgn.parse(parser, context) { NodeUse(INodeInfo.of(NodeTypes.USE_CTX, ctx, token), names, it) }
         }
     }
 
@@ -29,7 +29,7 @@ object NPUseCtx : INodeParser {
         val context = ctx.subCtx()
         loadModules(names, parser, context)
         val node = parse(context)
-        context.loadedModules.filter { names.contains(it.name) }.forEach { it.clear(parser, context) }
+        context.loadedModules.filter { names.contains(it.name) }.forEach { it.clear(parser, context) } // todo: clear?
         return node
     }
 
