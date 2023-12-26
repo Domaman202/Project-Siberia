@@ -7,7 +7,7 @@ import ru.DmN.pht.std.module.ast.NodeModule
 import ru.DmN.siberia.Parser
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.lexer.Token
-import ru.DmN.siberia.node.NodeInfoImpl
+import ru.DmN.siberia.node.INodeInfo
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parsers.NPProgn
 import ru.DmN.siberia.parsers.NPUseCtx
@@ -19,7 +19,7 @@ object NPModule : SimpleNP(NodeTypes.MODULE) {
         val context = ctx.subCtx()
         context.loadedModules.add(0, StdModuleHelper)
         return NPProgn.parse(parser, context) { it ->
-            NodeModule(NodeInfoImpl.of(NodeTypes.MODULE, ctx, token), it.associate { it as NodeArgument; Pair(it.name, it.value) }).apply {
+            NodeModule(INodeInfo.of(NodeTypes.MODULE, ctx, token), it.associate { it as NodeArgument; Pair(it.name, it.value) }).apply {
                 val name = data["name"] as String
                 module = Module.getOrPut(name) {
                     if (data["class"] == null)

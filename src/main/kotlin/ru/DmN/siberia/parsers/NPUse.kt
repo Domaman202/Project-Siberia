@@ -4,7 +4,7 @@ import ru.DmN.siberia.Parser
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.lexer.Token
-import ru.DmN.siberia.node.NodeInfoImpl
+import ru.DmN.siberia.node.INodeInfo
 import ru.DmN.siberia.node.NodeTypes
 import ru.DmN.siberia.parser.ctx.ParsingContext
 
@@ -22,6 +22,6 @@ object NPUse : INodeParser {
 
     fun parse(names: List<String>, token: Token, parser: Parser, ctx: ParsingContext): NodeUse {
         NPUseCtx.loadModules(names, parser, ctx)
-        return NodeUse(NodeInfoImpl.of(NodeTypes.USE, ctx, token), names, ArrayList())
+        return NodeUse(INodeInfo.of(NodeTypes.USE, ctx, token), names, ArrayList())
     }
 }

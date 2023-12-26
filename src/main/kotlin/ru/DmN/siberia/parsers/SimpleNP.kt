@@ -5,8 +5,8 @@ import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeNodesList
 import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.lexer.Token.DefaultType.*
+import ru.DmN.siberia.node.INodeInfo
 import ru.DmN.siberia.node.INodeType
-import ru.DmN.siberia.node.NodeInfoImpl
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parser.utils.parseValue
 
@@ -15,7 +15,7 @@ import ru.DmN.siberia.parser.utils.parseValue
  */
 open class SimpleNP(val type: INodeType) : INodeParser {
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node? =
-        parse(parser, ctx) { NodeNodesList(NodeInfoImpl.of(type, ctx, token), it) }
+        parse(parser, ctx) { NodeNodesList(INodeInfo.of(type, ctx, token), it) }
 
     override fun skip(parser: Parser, ctx: ParsingContext, token: Token) {
         var i = 1
