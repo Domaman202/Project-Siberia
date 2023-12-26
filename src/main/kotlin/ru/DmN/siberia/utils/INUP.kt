@@ -20,7 +20,7 @@ interface INUP<A : Node, B : Node> : INodeParser, INodeUnparser<A>, INodeProcess
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node? =
         throw UnsupportedOperationException("Not yet implemented")
 
-    override fun unparse(node: A, unparser: Unparser, ctx: UnparsingContext, indent: Int): Unit =
+    override fun unparse(node: A, unparser: Unparser, ctx: UnparsingContext, indent: Int, line: Boolean): Unit =
         throw UnsupportedOperationException("Not yet implemented")
 
     override fun calc(node: B, processor: Processor, ctx: ProcessingContext): VirtualType? =

@@ -11,7 +11,7 @@ import ru.DmN.siberia.utils.Module
 import ru.DmN.siberia.utils.operation
 
 object NUUseCtx : INodeUnparser<NodeUse> {
-    override fun unparse(node: NodeUse, unparser: Unparser, ctx: UnparsingContext, indent: Int) {
+    override fun unparse(node: NodeUse, unparser: Unparser, ctx: UnparsingContext, indent: Int, line: Boolean) {
         loadModules(node.names, unparser, ctx)
         unparser.out.apply {
             append('(').append(node.operation).append(' ')
@@ -21,7 +21,10 @@ object NUUseCtx : INodeUnparser<NodeUse> {
                     append(' ')
                 }
             }
-            NUDefault.unparseNodes(node, unparser, ctx, indent)
+            if (line) {
+                append('\n').append("\t".repeat(indent + 1))
+                NUDefault.unparseNodes(node, unparser, ctx, indent + 1)
+            } else NUDefault.unparseNodes(node, unparser, ctx, indent)
             append(')')
         }
     }
