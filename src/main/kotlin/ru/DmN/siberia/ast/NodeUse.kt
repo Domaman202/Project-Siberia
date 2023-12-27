@@ -22,6 +22,6 @@ open class NodeUse(
         indent(indent).append('[').append(info.type).append('\n')
             .indent(indent + 1).append("(modules = ")
         names.forEach { builder.append(' ').append(it) }
-        printNodes(append(")\n"), indent, short).append(']')
+        printNodes(append(')'), indent, short).append(']')
     }
 }
