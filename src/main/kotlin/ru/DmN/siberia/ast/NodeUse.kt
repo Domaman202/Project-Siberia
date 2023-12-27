@@ -18,9 +18,10 @@ open class NodeUse(
     override fun copy(): NodeUse =
         NodeUse(info, names, copyNodes())
 
-    override fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder {
-        builder.indent(indent).append('[').append(info.type)
+    override fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder = builder.apply {
+        indent(indent).append('[').append(info.type).append('\n')
+            .indent(indent + 1).append("(modules = ")
         names.forEach { builder.append(' ').append(it) }
-        return printNodes(builder, indent, short).append(']')
+        printNodes(append(")\n"), indent, short).append(']')
     }
 }

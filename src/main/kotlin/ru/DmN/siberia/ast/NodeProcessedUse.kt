@@ -24,8 +24,9 @@ class NodeProcessedUse(
 
     override fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder {
         return builder.apply {
-            indent(indent).append('[').append(info.type)
-            names.forEach { append(' ').append(it) }
+            indent(indent).append('[').append(info.type).append('\n')
+                .indent(indent + 1).append("(modules = ")
+            names.forEach { builder.append(' ').append(it) }
             var flag = false
             if (nodes.isNotEmpty()) {
                 append('\n').indent(indent + 1).append("(NODES:\n")
