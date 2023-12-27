@@ -20,8 +20,11 @@ open class NodeUse(
 
     override fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder = builder.apply {
         indent(indent).append('[').append(info.type).append('\n')
-            .indent(indent + 1).append("(modules = ")
-        names.forEach { builder.append(' ').append(it) }
-        printNodes(append(')'), indent, short).append(']')
+        if (names.isNotEmpty()) {
+            indent(indent + 1).append("(modules =")
+            names.forEach { append(' ').append(it) }
+            append(')')
+        }
+        printNodes(builder, indent, short).append(']')
     }
 }
