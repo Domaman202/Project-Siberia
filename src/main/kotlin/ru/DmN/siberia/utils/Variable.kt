@@ -31,11 +31,11 @@ open class Variable(
     fun type(): VirtualType =
         type ?: VirtualType.ofKlass("java.lang.Object")
 
-    override fun hashCode(): Int =
-        name.hashCode() + type.hashCode() + id.hashCode()
-
     override fun equals(other: Any?): Boolean =
         other is Variable && other.hashCode() == hashCode()
+
+    override fun hashCode(): Int =
+        (name.hashCode() * 31 + type.hashCode()) * 31 + id.hashCode()
 
     companion object {
         /**

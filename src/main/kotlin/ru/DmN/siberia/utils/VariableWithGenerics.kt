@@ -10,6 +10,9 @@ class VariableWithGenerics(
      */
     val generics: List<VirtualType>
 ) : Variable(name, type, id, tmp) {
+    override fun equals(other: Any?): Boolean =
+        super.equals(other) && other is VariableWithGenerics && generics == other.generics
+
     override fun hashCode(): Int =
-        super.hashCode() + generics.hashCode()
+        super.hashCode() * 31 + generics.hashCode()
 }

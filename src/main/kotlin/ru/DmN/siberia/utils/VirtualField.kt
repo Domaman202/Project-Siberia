@@ -38,11 +38,11 @@ abstract class VirtualField {
     val desc
         get() = type.desc
 
-    override fun hashCode(): Int =
-        name.hashCode() + type.hashCode() + (declaringClass?.hashCode() ?: 0)
-
     override fun equals(other: Any?): Boolean =
         other is VirtualField && other.hashCode() == hashCode()
+
+    override fun hashCode(): Int =
+        name.hashCode() + type.hashCode() + (declaringClass?.hashCode() ?: 0)
 
     companion object {
         /**

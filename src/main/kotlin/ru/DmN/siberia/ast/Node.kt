@@ -30,4 +30,10 @@ open class Node(val info: INodeInfo) {
      */
     fun print(short: Boolean = true): String =
         print(StringBuilder(), 0, short).toString()
+
+    override fun equals(other: Any?): Boolean =
+        other === this || (other is Node && other.info == info)
+
+    override fun hashCode(): Int =
+        info.hashCode()
 }

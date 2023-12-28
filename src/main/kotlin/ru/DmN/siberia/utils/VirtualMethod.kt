@@ -99,11 +99,11 @@ abstract class VirtualMethod {
                 sb.append(')').append(retgen?.let { "T${retgen};" } ?: rettype.desc).toString()
             }
 
-    override fun hashCode(): Int =
-        name.hashCode() + desc.hashCode() + (declaringClass?.hashCode() ?: 0)
-
     override fun equals(other: Any?): Boolean =
         other is VirtualMethod && other.hashCode() == hashCode()
+
+    override fun hashCode(): Int =
+        (name.hashCode() * 31 + desc.hashCode()) * 31 + (declaringClass?.hashCode() ?: 0)
 
     companion object {
         /**
