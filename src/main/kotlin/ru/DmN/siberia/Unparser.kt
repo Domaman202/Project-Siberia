@@ -17,10 +17,9 @@ class Unparser {
      * Де-парсит ноду.
      *
      * @param indent Отступ табуляций.
-     * @param line Нода парситься в одной строке? (Нужно для того, чтобы в случае длинной ноды она переносилась на новую строку)
      */
-    fun unparse(node: Node, ctx: UnparsingContext, indent: Int, line: Boolean) =
-        get(ctx, node).unparse(node, this, ctx, indent, line)
+    fun unparse(node: Node, ctx: UnparsingContext, indent: Int) =
+        get(ctx, node).unparse(node, this, ctx, indent)
 
     /**
      * Возвращает де-парсер нод.

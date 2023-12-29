@@ -12,7 +12,6 @@ interface INodeUnparser<T : Node> {
      * Де-парсит ноду.
      *
      * @param indent Отступ табуляций.
-     * @param line Нода парситься в одной строке? (Нужно для того, чтобы в случае длинной ноды она переносилась на новую строку)
      */
-    fun unparse(node: T, unparser: Unparser, ctx: UnparsingContext, indent: Int, line: Boolean)
+    fun unparse(node: T, unparser: Unparser, ctx: UnparsingContext, indent: Int)
 }
