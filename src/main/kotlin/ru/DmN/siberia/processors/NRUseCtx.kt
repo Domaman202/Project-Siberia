@@ -7,14 +7,13 @@ import ru.DmN.siberia.ast.NodeProcessedUse
 import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.node.NodeTypes
 import ru.DmN.siberia.processor.ctx.ProcessingContext
-import ru.DmN.siberia.processor.utils.ProcessingStage
-import ru.DmN.siberia.processor.utils.ValType
-import ru.DmN.siberia.processor.utils.module
-import ru.DmN.siberia.processor.utils.processNodesList
+import ru.DmN.siberia.processor.utils.*
 import ru.DmN.siberia.utils.Module
 
 object NRUseCtx : INodeProcessor<NodeUse> {
     override fun process(node: NodeUse, processor: Processor, ctx: ProcessingContext, mode: ValType): Node {
+        if (node.names.isEmpty())
+            return NRProgn.process(nodeProgn(node.info, node.nodes), processor, ctx, mode)
         val exports = ArrayList<NodeNodesList>()
         val processed = ArrayList<Node>()
         processor.stageManager.pushTask(ProcessingStage.MODULE_POST_INIT) {
