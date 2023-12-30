@@ -23,9 +23,10 @@ object NRUseCtx : INodeProcessor<NodeUse> {
                 node.names.map(Module::getOrThrow),
                 {
                     it.load(processor, context, ValType.NO_VALUE)
-                    context.module = it
+                    val tmpContext = context.subCtx()
+                    tmpContext.module = it
                     it.nodes.forEach { nd ->
-                        processor.process(nd.copy(), context, ValType.NO_VALUE)?.let { pn ->
+                        processor.process(nd.copy(), tmpContext, ValType.NO_VALUE)?.let { pn ->
                             processed += pn
                         }
                     }
