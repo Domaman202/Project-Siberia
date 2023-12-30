@@ -7,17 +7,11 @@ import ru.DmN.siberia.utils.Module
 import ru.DmN.siberia.utils.Variable
 
 object NCUseCtx : INodeCompiler<NodeProcessedUse> {
-    override fun compile(node: NodeProcessedUse, compiler: Compiler, ctx: CompilationContext) {
-        val context = injectModules(node, compiler, ctx)
-        node.exports.forEach { NCDefault.compile(it, compiler, context) }
-        NCDefault.compile(node, compiler, context)
-    }
+    override fun compile(node: NodeProcessedUse, compiler: Compiler, ctx: CompilationContext) =
+        NCDefault.compile(node, compiler, injectModules(node, compiler, ctx))
 
-    override fun compileVal(node: NodeProcessedUse, compiler: Compiler, ctx: CompilationContext): Variable {
-        val context = injectModules(node, compiler, ctx)
-        node.exports.forEach { NCDefault.compile(it, compiler, ctx) }
-        return NCDefault.compileVal(node, compiler, context)
-    }
+    override fun compileVal(node: NodeProcessedUse, compiler: Compiler, ctx: CompilationContext): Variable =
+        NCDefault.compileVal(node, compiler, injectModules(node, compiler, ctx))
 
     /**
      * Загружает модули в локальный контекст.
@@ -28,6 +22,7 @@ object NCUseCtx : INodeCompiler<NodeProcessedUse> {
         val context = ctx.subCtx()
         node.names.forEach { Module.getOrThrow(it).load(compiler, context) }
         node.processed.forEach { compiler.compile(it, context) }
+        node.exports.forEach { NCDefault.compile(it, compiler, ctx) }
         return context
     }
 }

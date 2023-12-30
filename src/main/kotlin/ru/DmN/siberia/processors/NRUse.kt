@@ -14,7 +14,7 @@ object NRUse : INodeProcessor<NodeUse> {
     override fun process(node: NodeUse, processor: Processor, ctx: ProcessingContext, mode: ValType): Node {
         val exports = ArrayList<NodeNodesList>()
         val processed = ArrayList<Node>()
-        injectModules(node, processor, ctx, ValType.NO_VALUE, processed).forEach { it ->
+        injectModules(node, processor, ctx, processed).forEach { it ->
             it.exports.forEach {
                 exports += NRProgn.process(it.copy(), processor, ctx, ValType.NO_VALUE)
             }

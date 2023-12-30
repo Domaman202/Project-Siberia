@@ -18,12 +18,23 @@ object NRUseCtx : INodeProcessor<NodeUse> {
         val processed = ArrayList<Node>()
         processor.stageManager.pushTask(ProcessingStage.MODULE_POST_INIT) {
             val context = ctx.subCtx()
-            injectModules(node, processor, context, ValType.NO_VALUE, processed).forEach { it ->
-                context.module = ctx.module
-                it.exports.forEach {
-                    exports += NRProgn.process(it.copy(), processor, context, ValType.NO_VALUE)
+            injectModules(
+                context.loadedModules,
+                node.names.map(Module::getOrThrow),
+                {
+                    it.load(processor, context, ValType.NO_VALUE)
+                    context.module = it
+                    it.nodes.forEach { nd ->
+                        processor.process(nd.copy(), context, ValType.NO_VALUE)?.let { pn ->
+                            processed += pn
+                        }
+                    }
+                },
+                {
+                    context.module = ctx.module
+                    it.exports.forEach { nd -> exports += NRProgn.process(nd.copy(), processor, context, ValType.NO_VALUE) }
                 }
-            }
+            )
             processNodesList(node, processor, context, mode)
         }
         return NodeProcessedUse(node.info.withType(NodeTypes.USE_CTX_), node.names, node.nodes, exports, processed)
@@ -34,12 +45,12 @@ object NRUseCtx : INodeProcessor<NodeUse> {
      *
      * @param processed Список в который будут помещены обработанные ноды из модулей.
      */
-    fun injectModules(node: NodeUse, processor: Processor, ctx: ProcessingContext, mode: ValType, processed: MutableList<Node>): List<Module> =
+    fun injectModules(node: NodeUse, processor: Processor, ctx: ProcessingContext, processed: MutableList<Node>): List<Module> =
         node.names
             .asSequence()
             .map { Module.getOrThrow(it) }
-            .onEachIndexed { i, it ->
-                if (it.load(processor, ctx, if (i + 1 < node.names.size) ValType.NO_VALUE else mode)) {
+            .onEach { it ->
+                if (it.load(processor, ctx, ValType.NO_VALUE)) {
                     ctx.module = it
                     it.nodes.forEach { it1 ->
                         processor.process(it1.copy(), ctx, ValType.NO_VALUE)?.let {
@@ -49,4 +60,15 @@ object NRUseCtx : INodeProcessor<NodeUse> {
                 }
             }
             .toList()
+
+    /**
+     * Загружает незагруженные модули.
+     *
+     * @param modules Список загруженных модулей.
+     * @param uses Список необходимых модулей.
+     * @param init Инициализация загруженных модулей.
+     * @return Результат выполнения блока.
+     */
+    private inline fun injectModules(modules: MutableList<Module>, uses: List<Module>, load: (Module) -> Unit, init: (Module) -> Unit) =
+        uses.filter { !modules.contains(it) }.onEach(load).forEach(init)
 }

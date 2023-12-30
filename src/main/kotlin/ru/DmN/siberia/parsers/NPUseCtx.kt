@@ -25,12 +25,24 @@ object NPUseCtx : INodeParser {
         }
     }
 
+    /**
+     * Вспомогательная функция, для парсинга "use-ctx подобных" нод.
+     *
+     * @param names Список модулей.
+     * @param parser Парсер.
+     * @param ctx Контекст парсинга.
+     * @param parse Метод создающий ноду.
+     * @return Созданная нода.
+     */
     fun parse(names: List<String>, parser: Parser, ctx: ParsingContext, parse: (context: ParsingContext) -> Node): Node {
         val context = ctx.subCtx()
-        loadModules(names, parser, context)
-        val node = parse(context)
-        context.loadedModules.filter { names.contains(it.name) }.forEach { it.clear(parser, context) } // todo: clear?
-        return node
+        return injectModules(
+            context.loadedModules,
+            getModules(names),
+            { it.load(parser, context) },
+            { it.clear(parser, context) },
+            { parse(context) }
+        )
     }
 
     /**
@@ -38,12 +50,56 @@ object NPUseCtx : INodeParser {
      *
      * @param names Имена модулей.
      */
-    fun loadModules(names: List<String>, parser: Parser, ctx: ParsingContext) {
-        names.forEach {
+    fun loadModules(names: List<String>, parser: Parser, ctx: ParsingContext) =
+        getModules(names).forEach { it.load(parser, ctx) }
+
+    /**
+     * Получает список модулей по их имени.
+     * Парсит модули при необходимости.
+     *
+     * @param names Имена модулей.
+     * @return Список модулей.
+     */
+    private fun getModules(names: List<String>): List<Module> =
+        names.map {
             val module = Module[it]
             if (module?.init != true)
                 Parser(Module.getModuleFile(it)).parseNode(ParsingContext.of(Siberia, StdModule))
-            (module ?: Module.getOrThrow(it)).load(parser, ctx)
+            (module ?: Module.getOrThrow(it))
         }
+
+    /**
+     * Загружает незагруженные модули.
+     * Выполняет код блока, после выгружает модули.
+     *
+     * @param modules Список загруженных модулей.
+     * @param uses Список необходимых модулей.
+     * @param clean Очистка модулей.
+     * @param block Блок.
+     * @return Результат выполнения блока.
+     */
+    private inline fun <T> injectModules(modules: MutableList<Module>, uses: List<Module>, load: (Module) -> Unit, clean: (Module) -> Unit, block: () -> T): T {
+        val new = uses.filter { !modules.contains(it) }.onEach(load)
+        val result = block()
+        new.forEach(clean)
+        return result
     }
+
+    /*
+    fun <T> injectModules(modules: MutableList<Module>, uses: List<Module>, load: (Module) -> Unit, clean: (Module) -> Unit, block: () -> T): T {
+        val oldUses = ArrayList<Pair<Module, Int>>()
+        val newUses = ArrayList<Module>()
+        uses.forEach {
+            if (modules.contains(it))
+                oldUses += Pair(it, modules.indexOf(it))
+            else newUses += it
+        }
+        oldUses.forEach { modules.removeAt(it.second); modules.add(0, it.first) }
+        newUses.forEach { load(it) }
+        val result = block()
+        (0 until oldUses.size + newUses.size).forEach { _ -> modules.removeAt(0) }
+        oldUses.forEach { modules.add(it.second, it.first) }
+        newUses.forEach(clean)
+        return result
+     */
 }
