@@ -49,6 +49,7 @@ object Siberia : Module("siberia") {
         add(EXPORT,  NRExport)
         // p
         add(PROGN,   NRProgn)
+        add(PROGN_,  NRProgn)
         // u
         add(USE,     NRUse)
         add(USE_CTX, NRUseCtx)
