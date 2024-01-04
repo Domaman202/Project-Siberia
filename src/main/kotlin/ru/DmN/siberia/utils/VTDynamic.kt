@@ -17,8 +17,8 @@ object VTDynamic : VirtualType() {
         get() = false
     override val isFinal: Boolean
         get() = false
-    override val generics: List<Pair<String, VirtualType>>
-        get() = emptyList()
+    override val generics: Map<String, VirtualType>
+        get() = emptyMap()
 
     override val simpleName: String
         get() = "dynamic"

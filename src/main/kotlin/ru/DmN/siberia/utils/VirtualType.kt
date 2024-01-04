@@ -2,7 +2,6 @@ package ru.DmN.siberia.utils
 
 import java.lang.reflect.Modifier
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Абстрактный виртуальный тип.
@@ -51,7 +50,7 @@ abstract class VirtualType {
     /**
      * Generic's (Name / Type)
      */
-    abstract val generics: List<Pair<String, VirtualType>>
+    abstract val generics: Map<String, VirtualType>
 
     /**
      * Имя без пакета.
@@ -125,7 +124,7 @@ abstract class VirtualType {
                 null
             else {
                 val sb = StringBuilder().append('<')
-                generics.forEach { sb.append(it.first).append(':').append(it.second.desc) }
+                generics.forEach { (k, v) -> sb.append(k).append(':').append(v.desc) }
                 sb.append('>').append(superclass!!.desc).toString()
             }
 
@@ -210,6 +209,6 @@ abstract class VirtualType {
         override var isAbstract: Boolean = false,
         override var isFinal: Boolean = false,
         //
-        override var generics: List<Pair<String, VirtualType>> = ArrayList()
+        override var generics: MutableMap<String, VirtualType> = HashMap()
     ) : VirtualType()
 }

@@ -57,7 +57,7 @@ abstract class VirtualMethod {
     /**
      * Generic's (Name / Type)
      */
-    abstract val generics: List<Pair<String, VirtualType>>
+    abstract val generics: Map<String, VirtualType>
 
     /**
      * Дескриптор аргументов.
@@ -85,11 +85,11 @@ abstract class VirtualMethod {
             else {
                 val sb = StringBuilder()
                 if (!modifiers.static && declaringClass != null) {
-                    val list = generics.drop(declaringClass!!.generics.size)
+                    val list = generics.entries.drop(declaringClass!!.generics.size)
                     if (list.isNotEmpty()) {
                         sb.append('<')
                         list.forEach {
-                            sb.append(it.first).append(':').append(it.second.desc)
+                            sb.append(it.key).append(':').append(it.value.desc)
                         }
                         sb.append('>')
                     }
@@ -206,6 +206,6 @@ abstract class VirtualMethod {
         override val argsg: List<String?>,
         override var modifiers: MethodModifiers,
         override var extension: VirtualType?,
-        override var generics: List<Pair<String, VirtualType>>
+        override var generics: Map<String, VirtualType>
     ) : VirtualMethod()
 }
