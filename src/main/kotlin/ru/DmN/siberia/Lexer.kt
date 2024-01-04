@@ -40,7 +40,7 @@ class Lexer(val input: String) : Iterator<Token?> {
                 val sb = StringBuilder()
                 while (ptr < input.length) {
                     var c = input[ptr]
-                    if (c.isLetter() || c == '.') {
+                    if (c.isLetter() || c == '.' || c == '/') {
                         inc()
                         sb.append(c)
                     } else if (c == '<') {
