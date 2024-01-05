@@ -1,5 +1,6 @@
 package ru.DmN.siberia.utils
 
+import com.sun.org.apache.xpath.internal.operations.Mod
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
@@ -23,14 +24,9 @@ abstract class VirtualField {
     abstract val type: VirtualType
 
     /**
-     * Статическое ли поле?
+     * Модификаторы поля.
      */
-    abstract val isStatic: Boolean
-
-    /**
-     * Является ли поле instance-ом enum-а?
-     */
-    abstract val isEnum: Boolean
+    abstract val modifiers: FieldModifiers
 
     /**
      * Дескриптор поля.
@@ -50,13 +46,23 @@ abstract class VirtualField {
          * Использует typeOf метод для взятия новых типов по имени.
          */
         fun of(typeOf: (name: String) -> VirtualType, field: Field): VirtualField =
-            VirtualFieldImpl(typeOf(field.declaringClass.name), field.name, typeOf(field.type.name), Modifier.isStatic(field.modifiers), field.isEnumConstant)
+            VirtualFieldImpl(
+                typeOf(field.declaringClass.name),
+                field.name,
+                typeOf(field.type.name),
+                FieldModifiers(Modifier.isFinal(field.modifiers), Modifier.isStatic(field.modifiers), field.isEnumConstant)
+            )
 
         /**
          * Создаёт новое поле.
          */
         fun of(field: Field): VirtualField =
-            VirtualFieldImpl(VirtualType.ofKlass(field.type), field.name, VirtualType.ofKlass(field.type), Modifier.isStatic(field.modifiers), field.isEnumConstant)
+            VirtualFieldImpl(
+                VirtualType.ofKlass(field.type),
+                field.name,
+                VirtualType.ofKlass(field.type),
+                FieldModifiers(Modifier.isFinal(field.modifiers), Modifier.isStatic(field.modifiers), field.isEnumConstant)
+            )
     }
 
     /**
@@ -66,7 +72,6 @@ abstract class VirtualField {
         override var declaringClass: VirtualType?,
         override var name: String,
         override var type: VirtualType,
-        override var isStatic: Boolean,
-        override var isEnum: Boolean
+        override var modifiers: FieldModifiers
     ) : VirtualField()
 }

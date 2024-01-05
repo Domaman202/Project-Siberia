@@ -1,5 +1,6 @@
 package ru.DmN.siberia.utils
 
+import com.sun.org.apache.xpath.internal.operations.Mod
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
@@ -155,7 +156,8 @@ abstract class VirtualMethod {
                 MethodModifiers(
                     varargs = method.isVarArgs,
                     static = Modifier.isStatic(method.modifiers),
-                    abstract = method.declaringClass.isInterface
+                    abstract = method.declaringClass.isInterface,
+                    final = Modifier.isFinal(method.modifiers)
                 ),
                 null,
                 declaringClass.generics // todo:
@@ -185,7 +187,8 @@ abstract class VirtualMethod {
                 MethodModifiers(
                     varargs = method.isVarArgs,
                     static = Modifier.isStatic(method.modifiers),
-                    abstract = method.declaringClass.isInterface
+                    abstract = method.declaringClass.isInterface,
+                    final = Modifier.isFinal(method.modifiers)
                 ),
                 null,
                 declaringClass.generics // todo:
