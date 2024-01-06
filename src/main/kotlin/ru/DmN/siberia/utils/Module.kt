@@ -16,7 +16,7 @@ import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parsers.INodeParser
 import ru.DmN.siberia.parsers.NPUseCtx
 import ru.DmN.siberia.processor.ctx.ProcessingContext
-import ru.DmN.siberia.processor.utils.Platform
+import ru.DmN.siberia.processor.utils.Platforms
 import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processor.utils.module
 import ru.DmN.siberia.processors.INodeProcessor
@@ -80,7 +80,7 @@ open class Module(val name: String) {
     /**
      * Компиляторы.
      */
-    val compilers: MutableMap<Platform, MutableMap<INodeType, INodeCompiler<*>>> = EnumMap(Platform::class.java)
+    val compilers: MutableMap<Platforms, MutableMap<INodeType, INodeCompiler<*>>> = EnumMap(Platforms::class.java)
 
     /**
      * Ноды.
@@ -274,7 +274,7 @@ open class Module(val name: String) {
      * @param type Тип нод.
      * @param compiler Компилятор.
      */
-    fun add(platform: Platform, type: INodeType, compiler: INodeCompiler<*>) {
+    fun add(platform: Platforms, type: INodeType, compiler: INodeCompiler<*>) {
         compilers.getOrPut(platform) { HashMap() }[type] = compiler
     }
 

@@ -1,6 +1,8 @@
 package ru.DmN.siberia.processor.ctx
 
 import ru.DmN.siberia.Siberia
+import ru.DmN.siberia.ctx.IContextCollection
+import ru.DmN.siberia.ctx.IContextKey
 import ru.DmN.siberia.utils.*
 
 /**
@@ -14,7 +16,7 @@ class ProcessingContext(
     /**
      * Контексты
      */
-    override val contexts: MutableMap<String, Any?> = HashMap()
+    override val contexts: MutableMap<IContextKey, Any?> = HashMap()
 ) : IContextCollection<ProcessingContext> {
     /**
      * Создаёт под-контекст.
@@ -22,15 +24,9 @@ class ProcessingContext(
     fun subCtx() =
         ProcessingContext(SubList(loadedModules), SubMap(contexts))
 
-    /**
-     * Создаёт под-контекст с общими модульными зависимостями.
-     * Добавляет новый элемент контекста.
-     *
-     * @param name Имя нового элемента контекста.
-     * @param ctx Новый элемент контекста.
-     */
-    override fun with(name: String, ctx: Any?): ProcessingContext =
-        ProcessingContext(loadedModules, SubMap(contexts).apply { this[name] = ctx })
+
+    override fun with(key: IContextKey, ctx: Any?): ProcessingContext =
+        ProcessingContext(loadedModules, SubMap(contexts).apply { this[key] = ctx })
 
     companion object {
         /**

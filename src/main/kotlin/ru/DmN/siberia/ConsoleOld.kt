@@ -7,7 +7,7 @@ import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.processor.ctx.ProcessingContext
-import ru.DmN.siberia.processor.utils.Platform
+import ru.DmN.siberia.processor.utils.Platforms
 import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processor.utils.module
 import ru.DmN.siberia.processor.utils.with
@@ -179,7 +179,7 @@ object ConsoleOld : Console() {
             module.init()
             val processed = ArrayList<Node>()
             val processor = Processor(tp)
-            val pctx = ProcessingContext.base().with(Platform.JAVA).apply { this.module = module }
+            val pctx = ProcessingContext.base().with(Platforms.JAVA).apply { this.module = module }
             module.load(processor, pctx, ValType.NO_VALUE)
             module.nodes.forEach { it ->
                 processor.process(it.copy(), pctx, ValType.NO_VALUE)?.let {

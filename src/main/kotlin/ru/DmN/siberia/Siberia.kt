@@ -10,7 +10,7 @@ import ru.DmN.siberia.parsers.NPExport
 import ru.DmN.siberia.parsers.NPProgn
 import ru.DmN.siberia.parsers.NPUse
 import ru.DmN.siberia.parsers.NPUseCtx
-import ru.DmN.siberia.processor.utils.Platform.UNIVERSAL
+import ru.DmN.siberia.processor.utils.Platforms.UNIVERSAL
 import ru.DmN.siberia.processors.NRExport
 import ru.DmN.siberia.processors.NRProgn
 import ru.DmN.siberia.processors.NRUse

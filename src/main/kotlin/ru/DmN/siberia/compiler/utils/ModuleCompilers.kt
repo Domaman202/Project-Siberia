@@ -2,7 +2,7 @@ package ru.DmN.siberia.compiler.utils
 
 import ru.DmN.siberia.compilers.INodeCompiler
 import ru.DmN.siberia.node.INodeType
-import ru.DmN.siberia.processor.utils.Platform
+import ru.DmN.siberia.processor.utils.Platforms
 import ru.DmN.siberia.utils.Module
 
 /**
@@ -11,7 +11,7 @@ import ru.DmN.siberia.utils.Module
  * @param module Модуль.
  * @param platform Платформа.
  */
-abstract class ModuleCompilers(private val module: Module, private val platform: Platform) {
+abstract class ModuleCompilers(private val module: Module, private val platform: Platforms) {
     private var init = false
 
     /**

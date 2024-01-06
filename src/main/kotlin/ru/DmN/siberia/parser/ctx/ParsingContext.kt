@@ -2,7 +2,8 @@ package ru.DmN.siberia.parser.ctx
 
 import ru.DmN.siberia.Siberia
 import ru.DmN.siberia.parser.utils.parsersPool
-import ru.DmN.siberia.utils.IContextCollection
+import ru.DmN.siberia.ctx.IContextCollection
+import ru.DmN.siberia.ctx.IContextKey
 import ru.DmN.siberia.utils.Module
 import ru.DmN.siberia.utils.SubMap
 import ru.DmN.siberia.utils.SubList
@@ -20,7 +21,7 @@ class ParsingContext (
     /**
      * Контексты
      */
-    override val contexts: MutableMap<String, Any?> = HashMap()
+    override val contexts: MutableMap<IContextKey, Any?> = HashMap()
 ) : IContextCollection<ParsingContext> {
     /**
      * Создаёт под-контекст
@@ -28,15 +29,8 @@ class ParsingContext (
     fun subCtx() =
         ParsingContext(SubList(loadedModules), SubMap(contexts))
 
-    /**
-     * Создаёт под-контекст с общими модульными зависимостями.
-     * Добавляет новый элемент контекста.
-     *
-     * @param name Имя нового элемента контекста.
-     * @param ctx Новый элемент контекста.
-     */
-    override fun with(name: String, ctx: Any?): ParsingContext =
-        ParsingContext(SubList(loadedModules), SubMap(contexts).apply { this[name] = ctx })
+    override fun with(key: IContextKey, ctx: Any?): ParsingContext =
+        ParsingContext(SubList(loadedModules), SubMap(contexts).apply { this[key] = ctx })
 
     companion object {
         /**

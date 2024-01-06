@@ -1,4 +1,4 @@
-package ru.DmN.siberia.utils
+package ru.DmN.siberia.ctx
 
 /**
  * Коллекция контекстов.
@@ -7,13 +7,13 @@ interface IContextCollection<T : IContextCollection<T>> {
     /**
      * Контексты.
      */
-    val contexts: MutableMap<String, Any?>
+    val contexts: MutableMap<IContextKey, Any?>
 
     /**
      * Создаёт под-коллекцию с новым контекстом.
      *
-     * @param name Имя нового контекста.
+     * @param key Ключ нового контекста.
      * @param ctx Новый контекст.
      */
-    fun with(name: String, ctx: Any?): T
+    fun with(key: IContextKey, ctx: Any?): T
 }

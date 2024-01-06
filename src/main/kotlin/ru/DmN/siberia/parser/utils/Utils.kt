@@ -2,6 +2,7 @@ package ru.DmN.siberia.parser.utils
 
 import ru.DmN.siberia.Parser
 import ru.DmN.siberia.ast.Node
+import ru.DmN.siberia.ctx.ContextKeys
 import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.lexer.Token.DefaultType.*
 import ru.DmN.siberia.parser.ctx.ParsingContext
@@ -60,13 +61,13 @@ fun Parser.parseValue(ctx: ParsingContext, token: Token) =
  * После чего может быть возвращена обратно (pop).
  */
 var ParsingContext.parsersPool
-    set(value) { this.contexts["siberia/pp"] = value }
-    get() = this.contexts["siberia/pp"] as Stack<Parser.(ctx: ParsingContext) -> Node?>
+    set(value) { this.contexts[ContextKeys.PARSERS_POOL] = value }
+    get() = this.contexts[ContextKeys.PARSERS_POOL] as Stack<Parser.(ctx: ParsingContext) -> Node?>
 
 /**
  * Текущий файл.
  */
 var ParsingContext.file
-    set(value) { this.contexts["siberia/file"] = value }
-//    get() = this.contexts["siberia/file"] as String // todo:
-    get() = "##### ВРЕМЕННО НЕ РАБОТАЕТ #####"
+    set(value) { this.contexts[ContextKeys.FILE] = value }
+//    get() = this.contexts[ContextKeys.FILE] as String
+    get() = "TODO" // todo:

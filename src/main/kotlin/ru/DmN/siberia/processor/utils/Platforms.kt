@@ -1,9 +1,9 @@
 package ru.DmN.siberia.processor.utils
 
 /**
- * Платформы
+ * Стандартные целевые платформы.
  */
-enum class Platform {
+enum class Platforms : IPlatform {
     /**
      * Универсальная / Неопределенная
      */

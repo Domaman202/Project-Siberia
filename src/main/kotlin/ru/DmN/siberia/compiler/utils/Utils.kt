@@ -1,18 +1,21 @@
 package ru.DmN.siberia.compiler.utils
 
 import ru.DmN.siberia.compiler.ctx.CompilationContext
+import ru.DmN.siberia.ctx.ContextKeys
 
 /**
- * Возвращает контекст с определённой версией java классов.
+ * Возвращает контекст,
+ *
+ * С целевой (и/или текущей) версией java классов.
  *
  * @param ctx Версия java классов.
  */
 fun CompilationContext.withJCV(ctx: Int) =
-    this.with("siberia/jcv", ctx)
+    this.with(ContextKeys.JCV, ctx)
 
 /**
- * Версия java классив.
+ * Целевая (и/или текущая) версия java классов.
  */
 var CompilationContext.javaClassVersion
-    set(value) { this.contexts["siberia/jcv"] = value }
-    get() = this.contexts["siberia/jcv"] as Int
+    set(value) { this.contexts[ContextKeys.JCV] = value }
+    get() = this.contexts[ContextKeys.JCV] as Int

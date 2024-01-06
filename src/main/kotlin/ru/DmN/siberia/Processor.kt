@@ -1,6 +1,8 @@
 package ru.DmN.siberia
 
 import ru.DmN.siberia.ast.Node
+import ru.DmN.siberia.ctx.IContextCollection
+import ru.DmN.siberia.ctx.IContextKey
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.ProcessingStage
 import ru.DmN.siberia.processor.utils.ValType
@@ -26,7 +28,7 @@ class Processor(
     /**
      * Глобальные контексты.
      */
-    val contexts: MutableMap<String, Any?> = HashMap()
+    val contexts: MutableMap<IContextKey, Any?> = HashMap()
 
     /**
      * Вычисляет тип, который возвращает нода, в случае наличия такового, в противном случае возвращает null.
