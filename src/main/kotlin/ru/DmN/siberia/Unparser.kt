@@ -7,11 +7,11 @@ import ru.DmN.siberia.unparsers.INodeUnparser
 /**
  * Де-парсер
  */
-class Unparser {
+class Unparser(capacity: Int) {
     /**
      * Выход
      */
-    val out = StringBuilder()
+    val out = StringBuilder(capacity)
 
     /**
      * Де-парсит ноду.
