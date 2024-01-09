@@ -32,5 +32,10 @@ data class MethodModifiers(
     /**
      * Метод конечный?
      */
-    var final: Boolean = false
+    var final: Boolean = false,
+
+    /**
+     * Метод синхронизуемый?
+     */
+    var sync: Boolean = false
 )
