@@ -41,6 +41,7 @@ tasks {
 
     java {
         withSourcesJar()
+        withJavadocJar()
     }
 
     test {
