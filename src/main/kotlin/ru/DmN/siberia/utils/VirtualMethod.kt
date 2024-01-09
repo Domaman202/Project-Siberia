@@ -187,7 +187,7 @@ abstract class VirtualMethod {
                 MethodModifiers(
                     varargs = method.isVarArgs,
                     static = Modifier.isStatic(method.modifiers),
-                    abstract = method.declaringClass.isInterface,
+                    abstract = Modifier.isAbstract(method.modifiers),
                     final = Modifier.isFinal(method.modifiers)
                 ),
                 null,
