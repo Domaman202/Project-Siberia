@@ -47,5 +47,10 @@ enum class ProcessingStage {
     /**
      * Обработка тел методов.
      */
-    METHODS_BODY
+    METHODS_BODY,
+
+    /**
+     * Окончание всей обработки.
+     */
+    FINALIZATION
 }
