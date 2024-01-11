@@ -26,7 +26,9 @@ class SubMap<K, V>(val parent: Map<K, V>, val map: MutableMap<K, V> = HashMap())
         map.put(key, value)
 
     override fun get(key: K): V? =
-        map[key] ?: parent[key]
+        if (map.containsKey(key))
+            map[key]
+        else parent[key]
 
     override fun containsValue(value: V): Boolean =
         map.containsValue(value) || parent.containsValue(value)

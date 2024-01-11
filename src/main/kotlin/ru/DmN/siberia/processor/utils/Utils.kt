@@ -1,6 +1,7 @@
 package ru.DmN.siberia.processor.utils
 
 import ru.DmN.siberia.Processor
+import ru.DmN.siberia.ast.INodesList
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeNodesList
 import ru.DmN.siberia.ctx.ContextKeys
@@ -10,7 +11,7 @@ import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.ctx.IContextCollection
 import ru.DmN.siberia.utils.Module
 
-fun processNodesList(node: NodeNodesList, processor: Processor, ctx: ProcessingContext, mode: ValType) {
+fun processNodesList(node: INodesList, processor: Processor, ctx: ProcessingContext, mode: ValType) {
     if (node.nodes.isNotEmpty()) {
         val nodes = node.nodes
         var i = 0
