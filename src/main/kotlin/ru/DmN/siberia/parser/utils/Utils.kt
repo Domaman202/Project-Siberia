@@ -2,9 +2,9 @@ package ru.DmN.siberia.parser.utils
 
 import ru.DmN.siberia.Parser
 import ru.DmN.siberia.ast.Node
-import ru.DmN.siberia.ctx.ContextKeys
 import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.lexer.Token.DefaultType.*
+import ru.DmN.siberia.parser.ctx.ContextKeys
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import java.util.*
 

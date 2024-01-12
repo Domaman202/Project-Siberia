@@ -1,7 +1,7 @@
 package ru.DmN.siberia.compiler.utils
 
 import ru.DmN.siberia.compiler.ctx.CompilationContext
-import ru.DmN.siberia.ctx.ContextKeys
+import ru.DmN.siberia.compiler.ctx.ContextKeys
 
 /**
  * Возвращает контекст,
