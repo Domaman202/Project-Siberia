@@ -7,12 +7,14 @@ import ru.DmN.siberia.console.BuildCommands.MODULE_PRINT
 import ru.DmN.siberia.console.BuildCommands.MODULE_RUN
 import ru.DmN.siberia.console.BuildCommands.MODULE_RUN_TEST
 import ru.DmN.siberia.console.BuildCommands.MODULE_SELECT
+import ru.DmN.siberia.console.BuildCommands.MODULE_UNPARSE
 
 object ConsoleImpl : BaseConsole() {
     @JvmStatic
     fun main(args: Array<String>) {
         commands += HELP
         commands += MODULE_SELECT
+        commands += MODULE_UNPARSE
         commands += MODULE_PRINT
         commands += MODULE_COMPILE
         commands += MODULE_RUN

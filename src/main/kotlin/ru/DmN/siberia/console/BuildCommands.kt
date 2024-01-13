@@ -5,6 +5,7 @@ import ru.DmN.pht.std.module.StdModule
 import ru.DmN.siberia.Compiler
 import ru.DmN.siberia.Parser
 import ru.DmN.siberia.Processor
+import ru.DmN.siberia.Unparser
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.console.ctx.isModule
@@ -18,6 +19,7 @@ import ru.DmN.siberia.processor.utils.Platforms
 import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processor.utils.module
 import ru.DmN.siberia.processor.utils.with
+import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.utils.Module
 import ru.DmN.siberia.utils.TypesProvider
 import java.io.File
@@ -54,6 +56,17 @@ object BuildCommands {
         emptyList(),
         BuildCommands::moduleCtxAvailable,
         BuildCommands::modulePrint
+    )
+
+    val MODULE_UNPARSE = Command(
+        "module-unparse",
+        "mu",
+        "Модуль",
+        "Де-парсинг модуля",
+        "Де-парсит модуль.",
+        emptyList(),
+        BuildCommands::moduleCtxAvailable,
+        BuildCommands::moduleUnparse
     )
 
     val MODULE_COMPILE = Command(
@@ -125,27 +138,48 @@ object BuildCommands {
 
     @JvmStatic
     fun moduleCompile(console: Console, vararg args: Any?) {
-        val pair = processModule(console)
         console.println("Компиляция...")
-        //
-        val compiler = Compiler(pair.first)
-        val cctx = CompilationContext.base()
-        pair.second.forEach { compiler.compile(it, cctx) }
-        compiler.stageManager.runAll()
-        compiler.finalizers.forEach { it.value.run() }
-        File("dump").mkdir()
-        compiler.classes.values.forEach {
-            if (it.name.contains('/'))
-                File("dump/${it.name.substring(0, it.name.lastIndexOf('/'))}").mkdirs()
-            FileOutputStream("dump/${it.name}.class").use { stream ->
-                val writer = ClassWriter(ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS)
-                it.accept(writer)
-                val b = writer.toByteArray()
-                stream.write(b)
+        try {
+            val pair = processModule(console)
+            val compiler = Compiler(pair.first)
+            val cctx = CompilationContext.base()
+            pair.second.forEach { compiler.compile(it, cctx) }
+            compiler.stageManager.runAll()
+            compiler.finalizers.forEach { it.value.run() }
+            File("dump").mkdir()
+            compiler.classes.values.forEach {
+                if (it.name.contains('/'))
+                    File("dump/${it.name.substring(0, it.name.lastIndexOf('/'))}").mkdirs()
+                FileOutputStream("dump/${it.name}.class").use { stream ->
+                    val writer = ClassWriter(ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS)
+                    it.accept(writer)
+                    val b = writer.toByteArray()
+                    stream.write(b)
+                }
             }
+            console.println("Компиляция окончена успешно!")
+        } catch (t: Throwable) {
+            console.println("Компиляция окончена с ошибками:")
+            t.printStackTrace(console.print)
         }
-        //
-        console.println("Компиляция успешно завершена!")
+    }
+
+    @JvmStatic
+    fun moduleUnparse(console: Console, vararg args: Any?) {
+        console.println("Де-парсинг...")
+        try {
+            val pair = processModule(console)
+            FileOutputStream("dump/unparse.pht").use { out ->
+                val unparser = Unparser(1024 * 1024)
+                val uctx = UnparsingContext.base()
+                pair.second.forEach { unparser.unparse(it, uctx, 0) }
+                out.write(unparser.out.toString().toByteArray())
+            }
+            console.println("Де-парсинг окончен успешно!")
+        } catch (t: Throwable) {
+            console.println("Де-парсинг окончен с ошибками:")
+            t.printStackTrace(console.print)
+        }
     }
 
     @JvmStatic
