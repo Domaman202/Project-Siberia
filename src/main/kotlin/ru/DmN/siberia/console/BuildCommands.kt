@@ -151,8 +151,17 @@ object BuildCommands {
                 if (it.name.contains('/'))
                     File("dump/${it.name.substring(0, it.name.lastIndexOf('/'))}").mkdirs()
                 FileOutputStream("dump/${it.name}.class").use { stream ->
-                    val writer = ClassWriter(ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS)
-                    it.accept(writer)
+                    val writer =
+                        try {
+                            val writer = ClassWriter(ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS)
+                            it.accept(writer)
+                            writer
+                        } catch (_: ArrayIndexOutOfBoundsException) {
+                            println("Внимание: класс '${it.name}' скомпилирован без просчёта фреймов.")
+                            val writer = ClassWriter(ClassWriter.COMPUTE_MAXS)
+                            it.accept(writer)
+                            writer
+                        }
                     val b = writer.toByteArray()
                     stream.write(b)
                 }
