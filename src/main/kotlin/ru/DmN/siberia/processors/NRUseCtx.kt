@@ -6,6 +6,7 @@ import ru.DmN.siberia.ast.NodeNodesList
 import ru.DmN.siberia.ast.NodeProcessedUse
 import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.node.NodeTypes
+import ru.DmN.siberia.parsers.NPUseCtx.getModules
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.*
 import ru.DmN.siberia.utils.Module
@@ -20,7 +21,7 @@ object NRUseCtx : INodeProcessor<NodeUse> {
             val context = ctx.subCtx()
             injectModules(
                 context.loadedModules,
-                node.names.map(Module::getOrThrow),
+                getModules(node.names),
                 {
                     it.load(processor, context, ValType.NO_VALUE)
                     val tmpContext = context.subCtx()
@@ -47,20 +48,16 @@ object NRUseCtx : INodeProcessor<NodeUse> {
      * @param processed Список в который будут помещены обработанные ноды из модулей.
      */
     fun injectModules(node: NodeUse, processor: Processor, ctx: ProcessingContext, processed: MutableList<Node>): List<Module> =
-        node.names
-            .asSequence()
-            .map { Module.getOrThrow(it) }
-            .onEach { it ->
-                if (it.load(processor, ctx, ValType.NO_VALUE)) {
-                    ctx.module = it
-                    it.nodes.forEach { it1 ->
-                        processor.process(it1.copy(), ctx, ValType.NO_VALUE)?.let {
-                            processed += it
-                        }
+        getModules(node.names).onEach { it ->
+            if (it.load(processor, ctx, ValType.NO_VALUE)) {
+                ctx.module = it
+                it.nodes.forEach { it1 ->
+                    processor.process(it1.copy(), ctx, ValType.NO_VALUE)?.let {
+                        processed += it
                     }
                 }
             }
-            .toList()
+        }
 
     /**
      * Загружает незагруженные модули.

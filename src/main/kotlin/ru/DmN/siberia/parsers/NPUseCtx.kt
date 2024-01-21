@@ -60,7 +60,7 @@ object NPUseCtx : INodeParser {
      * @param names Имена модулей.
      * @return Список модулей.
      */
-    private fun getModules(names: List<String>): List<Module> =
+    fun getModules(names: List<String>): List<Module> =
         names.map {
             val module = Module[it]
             if (module?.init != true)
