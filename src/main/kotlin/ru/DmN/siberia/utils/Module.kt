@@ -58,9 +58,14 @@ open class Module(val name: String) {
     var uses: List<String> = ArrayList()
 
     /**
-     * Файлы исходного кода модуля.
+     * Файлы исходного кода.
      */
-    var files: List<String> = ArrayList()
+    var sources: List<String> = ArrayList()
+
+    /**
+     * Файлы ресурсов.
+     */
+    var resources: List<String> = ArrayList()
 
     /**
      * Парсеры.
@@ -137,7 +142,7 @@ open class Module(val name: String) {
     fun init() {
         if (!init) {
             init = true
-            files.forEach {
+            sources.forEach {
                 val parser = Parser(getModuleFile(it))
                 val pctx = ParsingContext.base().apply { this.module = this@Module }
                 nodes.add(

@@ -35,7 +35,7 @@ class CompilationContext(
          * Создаёт базовый контекст.
          */
         fun base(): CompilationContext =
-            CompilationContext(mutableListOf(Siberia)).with(Platforms.JAVA).withJCV(getJavaClassVersion())
+            CompilationContext(mutableListOf(Siberia)).with(Platforms.JVM).withJCV(getJavaClassVersion())
 
         /**
          * Создаёт базовый контекст с набором модулей.

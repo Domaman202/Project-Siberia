@@ -14,12 +14,9 @@ object NUUseCtx : INodeUnparser<NodeUse> {
     override fun unparse(node: NodeUse, unparser: Unparser, ctx: UnparsingContext, indent: Int) {
         loadModules(node.names, unparser, ctx)
         unparser.out.apply {
-            append('(').append(node.operation).append(' ')
+            append('(').append(node.operation)
             node.names.forEachIndexed { i, it ->
-                append(it)
-                if (node.names.size + 1 < i) {
-                    append(' ')
-                }
+                append(' ').append(it)
             }
             NUDefault.unparseNodes(node, unparser, ctx, indent)
             append(')')

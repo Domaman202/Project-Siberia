@@ -1,10 +1,10 @@
 package ru.DmN.siberia
 
-import org.objectweb.asm.tree.ClassNode
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.compiler.utils.CompilingStage
 import ru.DmN.siberia.compilers.INodeCompiler
+import ru.DmN.siberia.ctx.IContextKey
 import ru.DmN.siberia.processor.utils.Platforms
 import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.utils.StupidStageManager
@@ -28,17 +28,12 @@ class Compiler(
     /**
      * Глобальные контексты.
      */
-    val contexts: MutableMap<String, Any?> = HashMap()
-
-    /**
-     * Список классов.
-     */
-    val classes: MutableMap<String, ClassNode> = HashMap()
+    val contexts: MutableMap<IContextKey, Any?> = HashMap()
 
     /**
      * Задачи для конечного этапа компиляции.
      */
-    val finalizers: MutableMap<String, Runnable> = HashMap()
+    val finalizers: MutableList<(String) -> Unit> = ArrayList()
 
     /**
      * Компилирует ноду без значения.

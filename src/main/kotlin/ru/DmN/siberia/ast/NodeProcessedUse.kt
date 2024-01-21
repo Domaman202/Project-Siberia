@@ -28,31 +28,18 @@ class NodeProcessedUse(
                 .indent(indent + 1).append("(modules =")
             names.forEach { builder.append(' ').append(it) }
             append(')')
-            var flag = false
             if (nodes.isNotEmpty()) {
                 append('\n').indent(indent + 1).append("(NODES:\n")
                 nodes.forEach { it.print(this, indent + 2, short).append('\n') }
                 indent(indent + 1).append(')').append('\n').indent(indent)
-                flag = true
             }
-            if (!short) {
-                if (exports.isNotEmpty()) {
-                    if (flag)
-                        indent(1)
-                    else append('\n').indent(indent + 1)
-                    append("(EXPORTS:\n")
-                    exports.forEach { it.print(this, indent + 2, false).append('\n') }
-                    indent(indent + 1).append(')').append('\n').indent(indent)
-                    flag = true
-                }
-                if (processed.isNotEmpty()) {
-                    if (flag)
-                        indent(1)
-                    else append('\n').indent(indent + 1)
-                    append("(PROCESSED:\n")
-                    processed.forEach { it.print(this, indent + 2, false).append('\n') }
-                    indent(indent + 1).append(')').append('\n').indent(indent)
-                }
+            if (!short && exports.isNotEmpty()) {
+                if (nodes.isNotEmpty())
+                    indent(1)
+                else append('\n').indent(indent + 1)
+                append("(EXPORTS:\n")
+                exports.forEach { it.print(this, indent + 2, false).append('\n') }
+                indent(indent + 1).append(')').append('\n').indent(indent)
             }
             append(']')
         }

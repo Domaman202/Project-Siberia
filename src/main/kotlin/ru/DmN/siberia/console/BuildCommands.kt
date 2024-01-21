@@ -1,6 +1,5 @@
 package ru.DmN.siberia.console
 
-import org.objectweb.asm.ClassWriter
 import ru.DmN.pht.std.module.StdModule
 import ru.DmN.siberia.Compiler
 import ru.DmN.siberia.Parser
@@ -15,17 +14,12 @@ import ru.DmN.siberia.console.utils.ArgumentType
 import ru.DmN.siberia.console.utils.Command
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.processor.ctx.ProcessingContext
-import ru.DmN.siberia.processor.utils.Platforms
-import ru.DmN.siberia.processor.utils.ValType
-import ru.DmN.siberia.processor.utils.module
-import ru.DmN.siberia.processor.utils.with
+import ru.DmN.siberia.processor.utils.*
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.utils.Module
 import ru.DmN.siberia.utils.TypesProvider
 import java.io.File
 import java.io.FileOutputStream
-import java.io.PrintStream
-import java.net.URLClassLoader
 
 object BuildCommands {
     val MODULE_SELECT = Command(
@@ -58,6 +52,26 @@ object BuildCommands {
         BuildCommands::modulePrint
     )
 
+
+    val PLATFORM_SELECT = Command(
+        "platform",
+        "p",
+        "Модуль",
+        "Выбрать платформу",
+        "Выбирает целевую платформу для дальнейшей работы.",
+        listOf(
+            Argument(
+                "name",
+                "Название",
+                ArgumentType.STRING,
+                "Название платформы.",
+                "Введите название платформы"
+            )
+        ),
+        BuildCommands::moduleCtxAvailable,
+        BuildCommands::platformSelect
+    )
+
     val MODULE_UNPARSE = Command(
         "module-unparse",
         "mu",
@@ -74,67 +88,11 @@ object BuildCommands {
         "mc",
         "Модуль",
         "Компиляция модуля",
-        "Компилирует модуль в java байт-код.",
+        "Компилирует модуль.",
         emptyList(),
         BuildCommands::moduleCtxAvailable,
         BuildCommands::moduleCompile
     )
-
-    val MODULE_RUN = Command(
-        "module-run",
-        "mr",
-        "Модуль",
-        "Запуск модуля",
-        "Запускает модуль.",
-        emptyList(),
-        BuildCommands::moduleCtxAvailable,
-        BuildCommands::moduleRun
-    )
-
-    val MODULE_RUN_TEST = Command(
-        "module-run-test",
-        "mrt",
-        "Модуль",
-        "Запуск теста модуля",
-        "Запускает тест модуля.",
-        listOf(
-            Argument(
-                "index",
-                "Номер",
-                ArgumentType.INT,
-                "Номер теста модуля.",
-                "Введите номер теста"
-            )
-        ),
-        BuildCommands::moduleCtxAvailable,
-        BuildCommands::moduleRunTest
-    )
-
-    @JvmStatic
-    fun moduleRunTest(console: Console, vararg  args: Any?) {
-        val index = args[0] as Int
-        //
-        console.println("Запуск...")
-        try {
-            console.println(Class.forName("Test$index", true, URLClassLoader(arrayOf(File("dump").toURL()))).getMethod("test").invoke(null))
-            console.println("Запуск окончен успешно!")
-        } catch (t: Throwable) {
-            console.println("Запуск окончен с ошибками:")
-            t.printStackTrace(console.print)
-        }
-    }
-
-    @JvmStatic
-    fun moduleRun(console: Console, vararg  args: Any?) {
-        console.println("Запуск...")
-        try {
-            console.println(Class.forName("App", true, URLClassLoader(arrayOf(File("dump").toURL()))).getMethod("main").invoke(null))
-            console.println("Запуск окончен успешно!")
-        } catch (t: Throwable) {
-            console.println("Запуск окончен с ошибками:")
-            t.printStackTrace(console.print)
-        }
-    }
 
     @JvmStatic
     fun moduleCompile(console: Console, vararg args: Any?) {
@@ -145,32 +103,27 @@ object BuildCommands {
             val cctx = CompilationContext.base()
             pair.second.forEach { compiler.compile(it, cctx) }
             compiler.stageManager.runAll()
-            compiler.finalizers.forEach { it.value.run() }
             File("dump").mkdir()
-            compiler.classes.values.forEach {
-                if (it.name.contains('/'))
-                    File("dump/${it.name.substring(0, it.name.lastIndexOf('/'))}").mkdirs()
-                FileOutputStream("dump/${it.name}.class").use { stream ->
-                    val writer =
-                        try {
-                            val writer = ClassWriter(ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS)
-                            it.accept(writer)
-                            writer
-                        } catch (_: ArrayIndexOutOfBoundsException) {
-                            println("Внимание: класс '${it.name}' скомпилирован без просчёта фреймов.")
-                            val writer = ClassWriter(ClassWriter.COMPUTE_MAXS)
-                            it.accept(writer)
-                            writer
-                        }
-                    val b = writer.toByteArray()
-                    stream.write(b)
-                }
-            }
+            compiler.finalizers.forEach { it("dump") }
             console.println("Компиляция окончена успешно!")
         } catch (t: Throwable) {
             console.println("Компиляция окончена с ошибками:")
             t.printStackTrace(console.print)
         }
+    }
+
+    @JvmStatic
+    fun platformSelect(console: Console, vararg args: Any?) {
+        val name = (args[0] as String).toUpperCase()
+        //
+        val platform = Platforms.entries.find { it.name == name }
+        if (platform == null) {
+            console.println("Платформа '$name' не найдена!")
+            return
+        }
+        console.platform = platform
+        //
+        console.println("Выбрана платформа '$name'.")
     }
 
     @JvmStatic
@@ -201,7 +154,8 @@ object BuildCommands {
             console.println(" |> Автор(ы): $author")
             console.println(" |> Зависимости: $deps")
             console.println(" |> Использует модули: $uses")
-            console.println(" |> Исходные файлы: $files")
+            console.println(" |> Исходный код: $sources")
+            console.println(" |> Ресурсные: $resources")
             console.println(" |> Инициализация: ${if (init) "инициализирован" else "не инициализирован"}")
             console.println("[V]")
         }
@@ -235,7 +189,7 @@ object BuildCommands {
         val tp = TypesProvider.java()
         val processed = ArrayList<Node>()
         val processor = Processor(tp)
-        val pctx = ProcessingContext.base().with(Platforms.JAVA).apply { this.module = module }
+        val pctx = ProcessingContext.base().with(console.platform).apply { this.module = module }
         module.load(processor, pctx, ValType.NO_VALUE)
         module.nodes.forEach { it ->
             processor.process(it.copy(), pctx, ValType.NO_VALUE)?.let {

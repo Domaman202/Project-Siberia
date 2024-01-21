@@ -10,7 +10,7 @@ enum class Platforms : IPlatform {
     UNIVERSAL,
 
     /**
-     * Java
+     * JavaVirtualMachine
      */
-    JAVA
+    JVM
 }
