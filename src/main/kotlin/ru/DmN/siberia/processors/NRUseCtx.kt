@@ -18,28 +18,32 @@ object NRUseCtx : INodeProcessor<NodeUse> {
         val exports = ArrayList<NodeNodesList>()
         val processed = ArrayList<Node>()
         processor.stageManager.pushTask(ProcessingStage.MODULE_POST_INIT) {
-            val context = ctx.subCtx()
-            injectModules(
-                context.loadedModules,
-                getModules(node.names),
-                {
-                    it.load(processor, context, node.names)
-                    val tmpContext = context.subCtx()
-                    tmpContext.module = it
-                    it.nodes.forEach { nd ->
-                        processor.process(nd.copy(), tmpContext, ValType.NO_VALUE)?.let { pn ->
-                            processed += pn
-                        }
-                    }
-                },
-                {
-                    context.module = ctx.module
-                    it.exports.forEach { nd -> exports += NRProgn.process(nd.copy(), processor, context, ValType.NO_VALUE) }
-                }
-            )
-            processNodesList(node, processor, context, mode)
+            processNodesList(node, processor, injectModules(node.names, processed, exports, processor, ctx), mode)
         }
         return NodeProcessedUse(node.info.withType(NodeTypes.USE_CTX_), node.names, node.nodes, exports, processed)
+    }
+
+    fun <T : Node> injectModules(names: MutableList<String>, processed: MutableList<Node>, exports: MutableList<T>, processor: Processor, ctx: ProcessingContext): ProcessingContext {
+        val context = ctx.subCtx()
+        injectModules(
+            context.loadedModules,
+            getModules(names),
+            {
+                it.load(processor, context, names)
+                val tmpContext = context.subCtx()
+                tmpContext.module = it
+                it.nodes.forEach { nd ->
+                    processor.process(nd.copy(), tmpContext, ValType.NO_VALUE)?.let { pn ->
+                        processed += pn
+                    }
+                }
+            },
+            {
+                context.module = ctx.module
+                it.exports.forEach { nd -> exports += NRProgn.process(nd.copy(), processor, context, ValType.NO_VALUE) as T }
+            }
+        )
+        return context
     }
 
     /**

@@ -15,6 +15,7 @@ import ru.DmN.siberia.parsers.NPUseCtx.getModules
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.*
 import ru.DmN.siberia.processors.NRProgn
+import ru.DmN.siberia.processors.NRUse
 import ru.DmN.siberia.processors.NRUseCtx
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.utils.Module
@@ -186,29 +187,7 @@ object BuildCommands {
         val tp = TypesProvider.java()
         val processed = ArrayList<Node>()
         val processor = Processor(tp)
-        val pctx = ProcessingContext.base().with(console.platform).apply { this.module = module }
-        //
-        val modules = mutableListOf(module.name)
-        val context = pctx.subCtx()
-        NRUseCtx.injectModules(
-            context.loadedModules,
-            getModules(modules),
-            {
-                it.load(processor, context, modules)
-                val tmpContext = context.subCtx()
-                tmpContext.module = it
-                it.nodes.forEach { nd ->
-                    processor.process(nd.copy(), tmpContext, ValType.NO_VALUE)?.let { pn ->
-                        processed += pn
-                    }
-                }
-            },
-            {
-                context.module = pctx.module
-                it.exports.forEach { nd -> processed += NRProgn.process(nd.copy(), processor, context, ValType.NO_VALUE) }
-            }
-        )
-        //
+        NRUseCtx.injectModules(mutableListOf(module.name), processed, processed, processor, ProcessingContext.base().with(console.platform).apply { this.module = module })
         processor.stageManager.runAll()
         //
         console.println("Обработка успешна завершена!")
