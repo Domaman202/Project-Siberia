@@ -8,7 +8,7 @@ import ru.DmN.siberia.utils.indent
  */
 class NodeProcessedUse(
     info: INodeInfo,
-    names: List<String>,
+    names: MutableList<String>,
     nodes: MutableList<Node>,
     /**
      * Обработанные ноды экспорта.

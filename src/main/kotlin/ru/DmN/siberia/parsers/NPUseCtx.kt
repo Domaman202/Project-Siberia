@@ -1,5 +1,6 @@
 package ru.DmN.siberia.parsers
 
+import ru.DmN.pht.module.utils.getOrLoadModule
 import ru.DmN.pht.std.module.StdModule
 import ru.DmN.siberia.Parser
 import ru.DmN.siberia.Siberia
@@ -34,12 +35,12 @@ object NPUseCtx : INodeParser {
      * @param parse Метод создающий ноду.
      * @return Созданная нода.
      */
-    fun parse(names: List<String>, parser: Parser, ctx: ParsingContext, parse: (context: ParsingContext) -> Node): Node {
+    fun parse(names: MutableList<String>, parser: Parser, ctx: ParsingContext, parse: (context: ParsingContext) -> Node): Node {
         val context = ctx.subCtx()
         return injectModules(
             context.loadedModules,
             getModules(names),
-            { it.load(parser, context) },
+            { it.load(parser, context, names) },
             { it.clear(parser, context) },
             { parse(context) }
         )
@@ -50,8 +51,8 @@ object NPUseCtx : INodeParser {
      *
      * @param names Имена модулей.
      */
-    fun loadModules(names: List<String>, parser: Parser, ctx: ParsingContext) =
-        getModules(names).forEach { it.load(parser, ctx) }
+    fun loadModules(names: MutableList<String>, parser: Parser, ctx: ParsingContext) =
+        getModules(names).forEach { it.load(parser, ctx, names) }
 
     /**
      * Получает список модулей по их имени.
@@ -61,12 +62,7 @@ object NPUseCtx : INodeParser {
      * @return Список модулей.
      */
     fun getModules(names: List<String>): List<Module> =
-        names.map {
-            val module = Module[it]
-            if (module?.init != true)
-                Parser(Module.getModuleFile(it)).parseNode(ParsingContext.of(Siberia, StdModule))
-            (module ?: Module.getOrThrow(it))
-        }
+        names.map(::getOrLoadModule)
 
     /**
      * Загружает незагруженные модули.

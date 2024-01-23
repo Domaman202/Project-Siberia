@@ -1,8 +1,7 @@
 package ru.DmN.siberia.console
 
-import ru.DmN.pht.std.module.StdModule
+import ru.DmN.pht.module.utils.getOrLoadModule
 import ru.DmN.siberia.Compiler
-import ru.DmN.siberia.Parser
 import ru.DmN.siberia.Processor
 import ru.DmN.siberia.Unparser
 import ru.DmN.siberia.ast.Node
@@ -12,9 +11,11 @@ import ru.DmN.siberia.console.ctx.module
 import ru.DmN.siberia.console.utils.Argument
 import ru.DmN.siberia.console.utils.ArgumentType
 import ru.DmN.siberia.console.utils.Command
-import ru.DmN.siberia.parser.ctx.ParsingContext
+import ru.DmN.siberia.parsers.NPUseCtx.getModules
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.*
+import ru.DmN.siberia.processors.NRProgn
+import ru.DmN.siberia.processors.NRUseCtx
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.utils.Module
 import ru.DmN.siberia.utils.TypesProvider
@@ -167,13 +168,9 @@ object BuildCommands {
         //
         if (validateModule(console, name))
             return
-        val module = Module[name].let {
-            if (it?.init != true)
-                Parser(Module.getModuleFile(name)).parseNode(ParsingContext.of(StdModule))
-            (it ?: Module.getOrThrow(name))
-        }
+        val module = getOrLoadModule(name)
         console.module = module
-        module.init()
+        module.init(Platforms.UNIVERSAL)
         console.println("Выбран модуль '${module.name}'.")
     }
 
@@ -190,12 +187,28 @@ object BuildCommands {
         val processed = ArrayList<Node>()
         val processor = Processor(tp)
         val pctx = ProcessingContext.base().with(console.platform).apply { this.module = module }
-        module.load(processor, pctx, ValType.NO_VALUE)
-        module.nodes.forEach { it ->
-            processor.process(it.copy(), pctx, ValType.NO_VALUE)?.let {
-                processed += it
+        //
+        val modules = mutableListOf(module.name)
+        val context = pctx.subCtx()
+        NRUseCtx.injectModules(
+            context.loadedModules,
+            getModules(modules),
+            {
+                it.load(processor, context, modules)
+                val tmpContext = context.subCtx()
+                tmpContext.module = it
+                it.nodes.forEach { nd ->
+                    processor.process(nd.copy(), tmpContext, ValType.NO_VALUE)?.let { pn ->
+                        processed += pn
+                    }
+                }
+            },
+            {
+                context.module = pctx.module
+                it.exports.forEach { nd -> processed += NRProgn.process(nd.copy(), processor, context, ValType.NO_VALUE) }
             }
-        }
+        )
+        //
         processor.stageManager.runAll()
         //
         console.println("Обработка успешна завершена!")

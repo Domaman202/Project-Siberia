@@ -19,6 +19,7 @@ import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.Platforms
 import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processor.utils.module
+import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.processors.INodeProcessor
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.unparsers.INodeUnparser
@@ -101,50 +102,18 @@ open class Module(val name: String) {
      */
     val exports: MutableList<NodeNodesList> = ArrayList()
 
-    init {
-        initParsers()
-        initUnparsers()
-        initProcessors()
-        initCompilers()
-    }
-
-    /**
-     * Инициализация парсеров.
-     */
-    open fun initParsers() =
-        Unit
-
-    /**
-     * Инициализация де-парсеров.
-     */
-    open fun initUnparsers() =
-        Unit
-
-    /**
-     * Инициализация обработчиков.
-     */
-    open fun initProcessors() =
-        Unit
-
-    /**
-     * Инициализация компиляторов.
-     *
-     * @see ru.DmN.siberia.compiler.utils.ModuleCompilers
-     */
-    open fun initCompilers() =
-        Unit
-
     /**
      * Инициализация модуля.
      *
      * Определяет ноды, экспортируемые ноды модуля.
      */
-    fun init() {
+    open fun init(platform: Platforms) {
         if (!init) {
             init = true
             sources.forEach {
                 val parser = Parser(getModuleFile(it))
-                val pctx = ParsingContext.base().apply { this.module = this@Module }
+                val pctx = ParsingContext.base().apply { this.module = this@Module; this.platform = platform }
+                val uses = uses.toMutableList()
                 nodes.add(
                     NPUseCtx.parse(uses, parser, pctx) { context ->
                         NodeUse(
@@ -163,8 +132,9 @@ open class Module(val name: String) {
      *
      * @param parser Парсер.
      * @param ctx Контекст парсинга.
+     * @param uses Используемые модули. (Можно добавить свои модули)
      */
-    open fun load(parser: Parser, ctx: ParsingContext) {
+    open fun load(parser: Parser, ctx: ParsingContext, uses: MutableList<String>) {
         if (!ctx.loadedModules.contains(this)) {
             ctx.loadedModules.add(0, this)
         }
@@ -206,11 +176,13 @@ open class Module(val name: String) {
      * @param processor Обработчик.
      * @param ctx Контекст обработки.
      */
-    open fun load(processor: Processor, ctx: ProcessingContext, mode: ValType): Boolean =
+    open fun load(processor: Processor, ctx: ProcessingContext, uses: MutableList<String>): Boolean {
         if (!ctx.loadedModules.contains(this)) {
             ctx.loadedModules.add(0, this)
-            true
-        } else false
+            return true
+        }
+        return false
+    }
 
     /**
      * Загружает модуль в контекст компиляции.
@@ -218,11 +190,10 @@ open class Module(val name: String) {
      * @param compiler Компилятор.
      * @param ctx Контекст компиляции.
      */
-    open fun load(compiler: Compiler, ctx: CompilationContext): Variable? {
+    open fun load(compiler: Compiler, ctx: CompilationContext) {
         if (!ctx.loadedModules.contains(this)) {
             ctx.loadedModules.add(0, this)
         }
-        return null
     }
 
     /**

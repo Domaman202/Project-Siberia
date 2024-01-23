@@ -12,6 +12,7 @@ import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parsers.NPProgn
 import ru.DmN.siberia.parsers.NPUseCtx
 import ru.DmN.siberia.parsers.SimpleNP
+import ru.DmN.siberia.processor.utils.Platforms
 import ru.DmN.siberia.utils.Module
 
 object NPModule : SimpleNP(NodeTypes.MODULE) {
@@ -30,13 +31,13 @@ object NPModule : SimpleNP(NodeTypes.MODULE) {
                     (data["author"] as String?)?.let { module.author = it }
                     (data["deps"] as List<String>?)?.let {
                         module.deps += it
-                        NPUseCtx.loadModules(it, parser, ctx)
+                        NPUseCtx.loadModules(it.toMutableList(), parser, ctx)
                     }
                     (data["res"] as List<String>?)?.let { module.resources += it }
                     (data["src"] as List<String>?)?.let { module.sources += it }
                     (data["uses"] as List<String>?)?.let { module.uses += it }
                     (data["version"] as String?)?.let { module.version = it }
-                    module.init()
+                    module.init(Platforms.UNIVERSAL)
                 }
             }
         }

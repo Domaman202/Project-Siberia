@@ -21,7 +21,7 @@ import ru.DmN.siberia.unparsers.NUUseCtx
 import ru.DmN.siberia.utils.Module
 
 object Siberia : Module("siberia") {
-    override fun initParsers() {
+    private fun initParsers() {
         // e
         add(Regex("export"),  NPExport)
         // p
@@ -31,7 +31,7 @@ object Siberia : Module("siberia") {
         add(Regex("use-ctx"), NPUseCtx)
     }
 
-    override fun initUnparsers() {
+    private fun initUnparsers() {
         // e
         add(EXPORT,  NUDefault)
         // p
@@ -44,7 +44,7 @@ object Siberia : Module("siberia") {
         add(USE_CTX_,NUUseCtx)
     }
 
-    override fun initProcessors() {
+    private fun initProcessors() {
         // e
         add(EXPORT,  NRExport)
         // p
@@ -55,7 +55,7 @@ object Siberia : Module("siberia") {
         add(USE_CTX, NRUseCtx)
     }
 
-    override fun initCompilers() {
+    private fun initCompilers() {
         // p
         add(UNIVERSAL, PROGN_,  NCDefault)
         // u
@@ -63,7 +63,14 @@ object Siberia : Module("siberia") {
         add(UNIVERSAL, USE_CTX_,NCUseCtx)
     }
 
-    override fun load(parser: Parser, ctx: ParsingContext) {
+    override fun load(parser: Parser, ctx: ParsingContext, uses: MutableList<String>) {
         parser.parseNode = { baseParseNode(it) }
+    }
+
+    init {
+        initParsers()
+        initUnparsers()
+        initProcessors()
+        initCompilers()
     }
 }

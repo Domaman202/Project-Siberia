@@ -6,30 +6,13 @@ import ru.DmN.siberia.processor.utils.Platforms
 import ru.DmN.siberia.utils.Module
 
 /**
- * Реализуйте для выполнения инициализации компиляторов определённой платформы для вашего модуля.
+ * Под-модуль реализующий функционал для определённой платформы.
  *
- * @param module Модуль.
+ * @param name Имя модуля.
  * @param platform Платформа.
  */
-abstract class ModuleCompilers(private val module: Module, private val platform: Platforms) {
-    private var init = false
-
-    /**
-     * Инициализирует компиляторы.
-     *
-     * @see Module.initCompilers
-     */
-    @Synchronized
-    fun init() {
-        if (!init) {
-            init = true
-            onInitialize()
-        }
-    }
-
-    protected abstract fun onInitialize()
-
+abstract class ModuleCompilers(name: String, private val platform: Platforms) : Module(name) {
     fun add(type: INodeType, compiler: INodeCompiler<*>) {
-        module.add(platform, type, compiler)
+        add(platform, type, compiler)
     }
 }

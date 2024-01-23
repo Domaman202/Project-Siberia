@@ -6,9 +6,6 @@ import ru.DmN.siberia.utils.Module
 object StdModule : Module("pht/module") { // todo: unparsers
     init {
         init = true
-    }
-
-    override fun initParsers() {
         add(Regex("module"), NPModule)
     }
 }

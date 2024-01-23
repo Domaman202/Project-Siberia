@@ -11,7 +11,7 @@ open class NodeUse(
     /**
      * Модули для использования.
      */
-    val names: List<String>,
+    val names: MutableList<String>,
     nodes: MutableList<Node>
 ) : NodeNodesList(info, nodes) {
 

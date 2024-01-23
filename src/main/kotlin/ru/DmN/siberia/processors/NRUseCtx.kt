@@ -23,7 +23,7 @@ object NRUseCtx : INodeProcessor<NodeUse> {
                 context.loadedModules,
                 getModules(node.names),
                 {
-                    it.load(processor, context, ValType.NO_VALUE)
+                    it.load(processor, context, node.names)
                     val tmpContext = context.subCtx()
                     tmpContext.module = it
                     it.nodes.forEach { nd ->
@@ -49,7 +49,7 @@ object NRUseCtx : INodeProcessor<NodeUse> {
      */
     fun injectModules(node: NodeUse, processor: Processor, ctx: ProcessingContext, processed: MutableList<Node>): List<Module> =
         getModules(node.names).onEach { it ->
-            if (it.load(processor, ctx, ValType.NO_VALUE)) {
+            if (it.load(processor, ctx, node.names)) {
                 ctx.module = it
                 it.nodes.forEach { it1 ->
                     processor.process(it1.copy(), ctx, ValType.NO_VALUE)?.let {
@@ -67,6 +67,6 @@ object NRUseCtx : INodeProcessor<NodeUse> {
      * @param init Инициализация загруженных модулей.
      * @return Результат выполнения блока.
      */
-    private inline fun injectModules(modules: MutableList<Module>, uses: List<Module>, load: (Module) -> Unit, init: (Module) -> Unit) =
+    inline fun injectModules(modules: MutableList<Module>, uses: List<Module>, load: (Module) -> Unit, init: (Module) -> Unit) =
         uses.filter { !modules.contains(it) }.onEach(load).forEach(init)
 }
