@@ -37,5 +37,10 @@ data class MethodModifiers(
     /**
      * Метод синхронизуемый?
      */
-    var sync: Boolean = false
+    var sync: Boolean = false,
+
+    /**
+     * Метод встраиваемый?
+     */
+    var inline: Boolean = false
 )

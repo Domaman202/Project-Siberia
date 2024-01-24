@@ -1,6 +1,7 @@
 package ru.DmN.siberia.utils
 
 import com.sun.org.apache.xpath.internal.operations.Mod
+import ru.DmN.siberia.ast.Node
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
@@ -54,6 +55,11 @@ abstract class VirtualMethod {
      * Расширяемый тип, если таковой имеется, в противном случае null.
      */
     abstract val extension: VirtualType?
+
+    /**
+     * Тело метода, если метод является встраиваемым, в противном случае null.
+     */
+    abstract val inline: Node?
 
     /**
      * Generic's (Name / Type)
@@ -140,7 +146,7 @@ abstract class VirtualMethod {
             val argsc = ArrayList<VirtualType>()
             val argsn = ArrayList<String>()
             val argsg = ArrayList<String?>()
-            method.parameters.forEachIndexed { i, it ->
+            method.parameters.forEach {
                 argsc += VirtualType.ofKlass(it.type)
                 argsn += it.name
                 argsg += if (it.parameterizedType is TypeVariable<*>) (it.parameterizedType as TypeVariable<*>).name else null
@@ -160,6 +166,7 @@ abstract class VirtualMethod {
                     final = Modifier.isFinal(method.modifiers)
                 ),
                 null,
+                null,
                 declaringClass.generics // todo:
             )
         }
@@ -171,7 +178,7 @@ abstract class VirtualMethod {
             val argsc = ArrayList<VirtualType>()
             val argsn = ArrayList<String>()
             val argsg = ArrayList<String?>()
-            method.parameters.forEachIndexed { i, it ->
+            method.parameters.forEach {
                 argsc += VirtualType.ofKlass(it.type)
                 argsn += it.name
                 argsg += if (it.parameterizedType is TypeVariable<*>) (it.parameterizedType as TypeVariable<*>).name else null
@@ -191,6 +198,7 @@ abstract class VirtualMethod {
                     final = Modifier.isFinal(method.modifiers)
                 ),
                 null,
+                null,
                 declaringClass.generics // todo:
             )
         }
@@ -209,6 +217,7 @@ abstract class VirtualMethod {
         override val argsg: List<String?>,
         override var modifiers: MethodModifiers,
         override var extension: VirtualType?,
+        override var inline: Node?,
         override var generics: Map<String, VirtualType>
     ) : VirtualMethod()
 }
