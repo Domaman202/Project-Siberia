@@ -133,6 +133,7 @@ object BuildCommands {
         console.println("Де-парсинг...")
         try {
             val pair = processModule(console)
+            File("dump").mkdir()
             FileOutputStream("dump/unparse.pht").use { out ->
                 val unparser = Unparser(1024 * 1024)
                 val uctx = UnparsingContext.base()
