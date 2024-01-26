@@ -65,6 +65,16 @@ object NPUseCtx : INodeParser {
         names.map(::getOrLoadModule)
 
     /**
+     * Получает список модулей по их имени.
+     * Парсит модули при необходимости.
+     *
+     * @param names Имена модулей.
+     * @return Список модулей.
+     */
+    fun getModules(names: Sequence<String>): Sequence<Module> =
+        names.map(::getOrLoadModule)
+
+    /**
      * Загружает незагруженные модули.
      * Выполняет код блока, после выгружает модули.
      *

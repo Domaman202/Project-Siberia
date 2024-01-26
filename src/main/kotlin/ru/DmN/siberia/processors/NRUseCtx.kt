@@ -27,7 +27,7 @@ object NRUseCtx : INodeProcessor<NodeUse> {
         val context = ctx.subCtx()
         injectModules(
             context.loadedModules,
-            getModules(names),
+            getModules(names.asSequence()),
             {
                 it.load(processor, context, names)
                 val tmpContext = context.subCtx()
@@ -71,6 +71,6 @@ object NRUseCtx : INodeProcessor<NodeUse> {
      * @param init Инициализация загруженных модулей.
      * @return Результат выполнения блока.
      */
-    inline fun injectModules(modules: MutableList<Module>, uses: List<Module>, load: (Module) -> Unit, init: (Module) -> Unit) =
-        uses.filter { !modules.contains(it) }.onEach(load).forEach(init)
+    inline fun injectModules(modules: MutableList<Module>, uses: Sequence<Module>, noinline load: (Module) -> Unit, init: (Module) -> Unit) =
+        uses.asSequence().filter { !modules.contains(it) }.onEach(load).forEach(init)
 }
