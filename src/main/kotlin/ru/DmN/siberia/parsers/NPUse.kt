@@ -22,6 +22,6 @@ object NPUse : INodeParser {
 
     fun parse(names: MutableList<String>, token: Token, parser: Parser, ctx: ParsingContext): NodeUse {
         NPUseCtx.loadModules(names, parser, ctx)
-        return NodeUse(INodeInfo.of(NodeTypes.USE, ctx, token), names, ArrayList())
+        return NodeUse(INodeInfo.of(NodeTypes.USE, ctx, token), ArrayList(), names)
     }
 }

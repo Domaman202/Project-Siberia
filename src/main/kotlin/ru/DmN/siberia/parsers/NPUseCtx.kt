@@ -22,7 +22,7 @@ object NPUseCtx : INodeParser {
         }
         parser.tokens.push(tk)
         return parse(names, parser, ctx) { context ->
-            NPProgn.parse(parser, context) { NodeUse(INodeInfo.of(NodeTypes.USE_CTX, ctx, token), names, it) }
+            NPProgn.parse(parser, context) { NodeUse(INodeInfo.of(NodeTypes.USE_CTX, ctx, token), it, names) }
         }
     }
 

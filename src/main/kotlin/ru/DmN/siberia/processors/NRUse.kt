@@ -19,6 +19,6 @@ object NRUse : INodeProcessor<NodeUse> {
                 exports += NRProgn.process(it.copy(), processor, ctx, ValType.NO_VALUE)
             }
         }
-        return NodeProcessedUse(node.info.withType(NodeTypes.USE_), node.names, ArrayList(), exports, processed)
+        return NodeProcessedUse(node.info.withType(NodeTypes.USE_), ArrayList(), node.names, exports, processed)
     }
 }

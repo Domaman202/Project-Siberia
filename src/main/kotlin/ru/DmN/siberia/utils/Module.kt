@@ -118,8 +118,8 @@ open class Module(val name: String) {
                     NPUseCtx.parse(uses, parser, pctx) { context ->
                         NodeUse(
                             NodeInfoImpl(NodeTypes.USE_CTX, null, null),
-                            uses,
                             mutableListOf(parser.parseNode(context)!!),
+                            uses
                         )
                     },
                 )

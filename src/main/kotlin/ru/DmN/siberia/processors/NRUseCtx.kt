@@ -20,7 +20,7 @@ object NRUseCtx : INodeProcessor<NodeUse> {
         processor.stageManager.pushTask(ProcessingStage.MODULE_POST_INIT) {
             processNodesList(node, processor, injectModules(node.names, processed, exports, processor, ctx), mode)
         }
-        return NodeProcessedUse(node.info.withType(NodeTypes.USE_CTX_), node.names, node.nodes, exports, processed)
+        return NodeProcessedUse(node.info.withType(NodeTypes.USE_CTX_), node.nodes, node.names, exports, processed)
     }
 
     fun <T : Node> injectModules(names: MutableList<String>, processed: MutableList<Node>, exports: MutableList<T>, processor: Processor, ctx: ProcessingContext): ProcessingContext {

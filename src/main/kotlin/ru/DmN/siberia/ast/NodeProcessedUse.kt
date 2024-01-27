@@ -8,8 +8,8 @@ import ru.DmN.siberia.utils.indent
  */
 class NodeProcessedUse(
     info: INodeInfo,
-    names: MutableList<String>,
     nodes: MutableList<Node>,
+    names: MutableList<String>,
     /**
      * Обработанные ноды экспорта.
      */
@@ -18,9 +18,9 @@ class NodeProcessedUse(
      * Обработанные ноды используемых нод.
      */
     val processed: MutableList<Node>
-) : NodeUse(info, names, nodes) {
+) : NodeUse(info, nodes, names) {
     override fun copy(): NodeUse =
-        NodeProcessedUse(info, names, copyNodes(), exports.map { it.copy() }.toMutableList(), processed.map { it.copy() }.toMutableList())
+        NodeProcessedUse(info, copyNodes(), names, exports.map { it.copy() }.toMutableList(), processed.map { it.copy() }.toMutableList())
 
     override fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder {
         return builder.apply {

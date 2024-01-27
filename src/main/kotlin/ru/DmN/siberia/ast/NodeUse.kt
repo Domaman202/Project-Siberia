@@ -8,15 +8,15 @@ import ru.DmN.siberia.utils.indent
  */
 open class NodeUse(
     info: INodeInfo,
+    nodes: MutableList<Node>,
     /**
      * Модули для использования.
      */
-    val names: MutableList<String>,
-    nodes: MutableList<Node>
+    val names: MutableList<String>
 ) : NodeNodesList(info, nodes) {
 
     override fun copy(): NodeUse =
-        NodeUse(info, names, copyNodes())
+        NodeUse(info, copyNodes(), names)
 
     override fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder = builder.apply {
         indent(indent).append('[').append(info.type)
