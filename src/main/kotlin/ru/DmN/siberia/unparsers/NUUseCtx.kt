@@ -11,9 +11,7 @@ object NUUseCtx : INodeUnparser<NodeUse> {
         loadModules(node.names, unparser, ctx)
         unparser.out.apply {
             append('(').append(node.operation)
-            node.names.forEachIndexed { i, it ->
-                append(' ').append(it)
-            }
+            node.names.forEach{ append(' ').append(it) }
             NUDefault.unparseNodes(node, unparser, ctx, indent)
             append(')')
         }

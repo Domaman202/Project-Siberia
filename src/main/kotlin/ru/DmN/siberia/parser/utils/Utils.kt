@@ -69,5 +69,4 @@ var ParsingContext.parsersPool
  */
 var ParsingContext.file
     set(value) { this.contexts[ContextKeys.FILE] = value }
-//    get() = this.contexts[ContextKeys.FILE] as String
-    get() = "TODO" // todo:
+    get() = this.contexts[ContextKeys.FILE] as String?

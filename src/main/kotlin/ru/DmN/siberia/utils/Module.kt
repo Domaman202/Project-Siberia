@@ -13,6 +13,7 @@ import ru.DmN.siberia.node.INodeType
 import ru.DmN.siberia.node.NodeInfoImpl
 import ru.DmN.siberia.node.NodeTypes
 import ru.DmN.siberia.parser.ctx.ParsingContext
+import ru.DmN.siberia.parser.utils.file
 import ru.DmN.siberia.parsers.INodeParser
 import ru.DmN.siberia.parsers.NPUseCtx
 import ru.DmN.siberia.processor.ctx.ProcessingContext
@@ -112,7 +113,11 @@ open class Module(val name: String) {
             init = true
             sources.forEach {
                 val parser = Parser(getModuleFile(it))
-                val pctx = ParsingContext.base().apply { this.module = this@Module; this.platform = platform }
+                val pctx = ParsingContext.base().apply {
+                    this.module = this@Module
+                    this.file = "$name/$it"
+                    this.platform = platform
+                }
                 val uses = uses.toMutableList()
                 nodes.add(
                     NPUseCtx.parse(uses, parser, pctx) { context ->
