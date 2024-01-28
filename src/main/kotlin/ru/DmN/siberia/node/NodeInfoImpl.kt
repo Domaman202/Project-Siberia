@@ -7,9 +7,19 @@ class NodeInfoImpl(override val type: INodeType, override val file: String?, ove
     override fun withType(type: INodeType): INodeInfo =
         NodeInfoImpl(type, file, line)
 
+    override fun print() {
+        println("""
+            [
+            | type: $type
+            | file: $file
+            | line: $line
+            ]
+        """.trimIndent())
+    }
+
     override fun equals(other: Any?): Boolean =
         this === other || (other is NodeInfoImpl && other.type == type && other.file == file && other.line == line)
 
     override fun hashCode(): Int =
-        (type.operation.hashCode() * 31 + (file?.hashCode() ?: 0)) * 31 + (line?.hashCode() ?: 0)
+        (type.operation.hashCode() * 31 + (file?.hashCode() ?: 0))  * 31 + (line?.hashCode() ?: 0)
 }

@@ -28,6 +28,11 @@ interface INodeInfo {
      */
     fun withType(type: INodeType): INodeInfo
 
+    /**
+     * Выводит всю информацию.
+     */
+    fun print()
+
     companion object {
         /**
          * Создаёт информацию о ноде, указывает имя файла и номер строки на котором получена нода.
