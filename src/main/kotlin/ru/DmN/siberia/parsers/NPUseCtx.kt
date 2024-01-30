@@ -39,7 +39,7 @@ object NPUseCtx : INodeParser {
         val context = ctx.subCtx()
         return injectModules(
             context.loadedModules,
-            getModules(names),
+            names,
             { it.load(parser, context, names) },
             { it.clear(parser, context) },
             { parse(context) }
@@ -84,10 +84,19 @@ object NPUseCtx : INodeParser {
      * @param block Блок.
      * @return Результат выполнения блока.
      */
-    private inline fun <T> injectModules(modules: MutableList<Module>, uses: List<Module>, load: (Module) -> Unit, clean: (Module) -> Unit, block: () -> T): T {
-        val new = uses.filter { !modules.contains(it) }.onEach(load)
+    private inline fun <T> injectModules(modules: MutableList<Module>, uses: List<String>, load: (Module) -> Unit, clean: (Module) -> Unit, block: () -> T): T {
+        val loaded = ArrayList<Module>(uses.size)
+        var i = 0
+        while (i < uses.size) {
+            val name = uses[i++]
+            if (modules.any { it.name == name })
+                continue
+            val module = getOrLoadModule(name)
+            load(module)
+            loaded += module
+        }
         val result = block()
-        new.forEach(clean)
+        loaded.forEach(clean)
         return result
     }
 
