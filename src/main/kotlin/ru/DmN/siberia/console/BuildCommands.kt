@@ -43,17 +43,16 @@ object BuildCommands {
         BuildCommands::moduleSelect
     )
 
-    val MODULE_PRINT = Command(
-        "module-print",
-        "mp",
+    val MODULE_INFO = Command(
+        "module-info",
+        "mi",
         "Модуль",
         "Информация о модуле",
         "Выводит информацию о модуле.",
         emptyList(),
         BuildCommands::moduleCtxAvailable,
-        BuildCommands::modulePrint
+        BuildCommands::moduleInfo
     )
-
 
     val PLATFORM_SELECT = Command(
         "platform",
@@ -72,6 +71,26 @@ object BuildCommands {
         ),
         BuildCommands::moduleCtxAvailable,
         BuildCommands::platformSelect
+    )
+
+
+    val MODULE_PRINT = Command(
+        "module-print",
+        "mp",
+        "Модуль",
+        "Печать AST модуля",
+        "Печатает AST деревья каждого исходного файла модуля.",
+        listOf(
+            Argument(
+                "mode",
+                "Режим",
+                ArgumentType.STRING,
+                "Режим печати.",
+                "Введите режим печати (short/long)"
+            )
+        ),
+        BuildCommands::moduleCtxAvailable,
+        BuildCommands::modulePrint
     )
 
     val MODULE_UNPARSE = Command(
@@ -95,6 +114,8 @@ object BuildCommands {
         BuildCommands::moduleCtxAvailable,
         BuildCommands::moduleCompile
     )
+
+    val ALL_COMMANDS = listOf(MODULE_SELECT, MODULE_INFO, PLATFORM_SELECT, MODULE_PRINT, MODULE_UNPARSE, MODULE_COMPILE)
 
     @JvmStatic
     fun moduleCompile(console: Console, vararg args: Any?) {
@@ -132,12 +153,12 @@ object BuildCommands {
     fun moduleUnparse(console: Console, vararg args: Any?) {
         console.println("Де-парсинг...")
         try {
-            val pair = processModule(console)
+            val nodes = processModule(console).second
             File("dump").mkdir()
             FileOutputStream("dump/unparse.pht").use { out ->
                 val unparser = Unparser(1024 * 1024)
                 val uctx = UnparsingContext.base()
-                pair.second.forEach { unparser.unparse(it, uctx, 0) }
+                nodes.forEach { unparser.unparse(it, uctx, 0) }
                 out.write(unparser.out.toString().toByteArray())
             }
             console.println("Де-парсинг окончен успешно!")
@@ -149,6 +170,26 @@ object BuildCommands {
 
     @JvmStatic
     fun modulePrint(console: Console, vararg args: Any?) {
+        val mode = args[0] == "short"
+        //
+        console.println("Печать...")
+        try {
+            File("dump").mkdir()
+            val nodes = processModule(console).second
+            FileOutputStream("dump/print.pht").use { out ->
+                val sb = StringBuilder()
+                nodes.forEach { it.print(sb, 0, mode) }
+                out.write(sb.toString().toByteArray())
+            }
+            console.println("Печать окончена успешно!")
+        } catch (t: Throwable) {
+            console.println("Печать окончена с ошибками:")
+            t.printStackTrace(console.print)
+        }
+    }
+
+    @JvmStatic
+    fun moduleInfo(console: Console, vararg args: Any?) {
         console.module.run {
             console.clear()
             console.println("[T]")

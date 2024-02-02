@@ -35,6 +35,8 @@ object BaseCommands {
         BaseCommands::cmdBuilder
     )
 
+    val ALL_COMMANDS = listOf(HELP, CMD_BUILDER)
+
     @JvmStatic
     fun cmdBuilder(console: Console, vararg args: Any?) {
         val out = StringBuilder()
