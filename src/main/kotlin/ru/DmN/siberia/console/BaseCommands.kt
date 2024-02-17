@@ -97,6 +97,10 @@ object BaseCommands {
     }
 
     @JvmStatic
+    fun interactiveAvailable(console: Console) =
+        console.interactive
+
+    @JvmStatic
     fun alviseAvailable(console: Console): Boolean =
         true
 

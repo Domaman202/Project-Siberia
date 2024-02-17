@@ -4,9 +4,11 @@ import ru.DmN.siberia.console.utils.ArgumentType
 
 open class BaseConsole : Console() {
     fun run(args: Array<String>) {
-        if (args.isEmpty())
+        if (args.isEmpty()) {
+            interactive = true
             run()
-        else {
+        } else {
+            interactive = false
             var i = 0
             while (i < args.size) {
                 val input = args[i++]

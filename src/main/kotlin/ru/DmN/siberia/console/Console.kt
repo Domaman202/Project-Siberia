@@ -15,6 +15,12 @@ import kotlin.io.readln as kreadln
  */
 open class Console : Runnable, IContextCollection<Console> {
     /**
+     * Консоль взаимодействует с пользователем или выполняет команды автономно?
+     */
+    var interactive: Boolean = false
+        protected set
+
+    /**
      * Список команд.
      */
     val commands: MutableList<Command> = ArrayList()
