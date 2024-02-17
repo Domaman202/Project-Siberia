@@ -26,7 +26,7 @@ open class Console : Runnable, IContextCollection<Console> {
 
     open fun clear() {
         print.print("\n\n\n\n\n\n\n\n\n\n\n\n")
-        Runtime.getRuntime().exec("clear")
+//        Runtime.getRuntime().exec("clear")
     }
 
     open fun println(msg: Any?): Unit =
