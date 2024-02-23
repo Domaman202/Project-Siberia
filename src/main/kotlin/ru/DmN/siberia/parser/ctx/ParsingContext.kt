@@ -46,8 +46,8 @@ class ParsingContext (
         /**
          * Создаёт контекст для парсинга заголовка модуля (module.pht).
          */
-        fun module() =
-            of(StdModule).apply { this.platform = UNIVERSAL }
+        fun module(platform: Platforms) =
+            of(StdModule).apply { this.platform = platform }
 
         /**
          * Создаёт базовый контекст с набором модулей.
