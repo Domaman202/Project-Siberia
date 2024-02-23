@@ -8,17 +8,18 @@ import ru.DmN.siberia.processor.utils.Platforms
 import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.utils.Module
+import ru.DmN.siberia.utils.ModulesProvider
 
-fun getOrLoadModule(name: String): Module =
-    Module[name].let {
+fun ModulesProvider.getOrLoadModule(name: String): Module =
+    this[name].let {
         if (it?.init != true)
-            Parser(Module.getModuleFile(name)).parseNode(ParsingContext.of(StdModule).apply { platform = Platforms.UNIVERSAL })
-        (it ?: Module.getOrThrow(name))
+            Parser(Module.getModuleFile(name), this).parseNode(ParsingContext.of(StdModule).apply { platform = Platforms.UNIVERSAL })
+        (it ?: this.getOrThrow(name))
     }
 
-fun loadModule(name: String, unparser: Unparser, ctx: UnparsingContext) {
-    val module = Module[name]
+fun ModulesProvider.loadModule(name: String, unparser: Unparser, ctx: UnparsingContext) {
+    val module = this[name]
     if (module?.init != true)
-        Parser(Module.getModuleFile(name)).parseNode(ParsingContext.of(StdModule).apply { platform = Platforms.UNIVERSAL })
-    (module ?: Module.getOrThrow(name)).load(unparser, ctx)
+        Parser(Module.getModuleFile(name), this).parseNode(ParsingContext.of(StdModule).apply { platform = Platforms.UNIVERSAL })
+    (module ?: this.getOrThrow(name)).load(unparser, ctx)
 }

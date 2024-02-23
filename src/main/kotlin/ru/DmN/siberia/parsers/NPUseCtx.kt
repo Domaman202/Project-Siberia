@@ -11,6 +11,7 @@ import ru.DmN.siberia.node.INodeInfo
 import ru.DmN.siberia.node.NodeTypes
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.utils.Module
+import ru.DmN.siberia.utils.ModulesProvider
 
 object NPUseCtx : INodeParser {
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node {
@@ -21,7 +22,7 @@ object NPUseCtx : INodeParser {
             tk = parser.nextToken()!!
         }
         parser.tokens.push(tk)
-        return parse(names, parser, ctx) { context ->
+        return parser.mp.parse(names, parser, ctx) { context ->
             NPProgn.parse(parser, context) { NodeUse(INodeInfo.of(NodeTypes.USE_CTX, ctx, token), it, names) }
         }
     }
@@ -35,7 +36,7 @@ object NPUseCtx : INodeParser {
      * @param parse Метод создающий ноду.
      * @return Созданная нода.
      */
-    fun parse(names: MutableList<String>, parser: Parser, ctx: ParsingContext, parse: (context: ParsingContext) -> Node): Node {
+    fun ModulesProvider.parse(names: MutableList<String>, parser: Parser, ctx: ParsingContext, parse: (context: ParsingContext) -> Node): Node {
         val context = ctx.subCtx()
         return injectModules(
             context.loadedModules,
@@ -51,7 +52,7 @@ object NPUseCtx : INodeParser {
      *
      * @param names Имена модулей.
      */
-    fun loadModules(names: MutableList<String>, parser: Parser, ctx: ParsingContext) =
+    fun ModulesProvider.loadModules(names: MutableList<String>, parser: Parser, ctx: ParsingContext) =
         getModules(names).forEach { it.load(parser, ctx, names) }
 
     /**
@@ -61,7 +62,7 @@ object NPUseCtx : INodeParser {
      * @param names Имена модулей.
      * @return Список модулей.
      */
-    fun getModules(names: List<String>): List<Module> =
+    fun ModulesProvider.getModules(names: List<String>): List<Module> =
         names.map(::getOrLoadModule)
 
     /**
@@ -71,7 +72,7 @@ object NPUseCtx : INodeParser {
      * @param names Имена модулей.
      * @return Список модулей.
      */
-    fun getModules(names: Sequence<String>): Sequence<Module> =
+    fun ModulesProvider.getModules(names: Sequence<String>): Sequence<Module> =
         names.map(::getOrLoadModule)
 
     /**
@@ -84,7 +85,7 @@ object NPUseCtx : INodeParser {
      * @param block Блок.
      * @return Результат выполнения блока.
      */
-    private inline fun <T> injectModules(modules: MutableList<Module>, uses: List<String>, load: (Module) -> Unit, clean: (Module) -> Unit, block: () -> T): T {
+    private inline fun <T> ModulesProvider.injectModules(modules: MutableList<Module>, uses: List<String>, load: (Module) -> Unit, clean: (Module) -> Unit, block: () -> T): T {
         val loaded = ArrayList<Module>(uses.size)
         var i = 0
         while (i < uses.size) {

@@ -3,11 +3,21 @@ package ru.DmN.siberia
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.unparsers.INodeUnparser
+import ru.DmN.siberia.utils.ModulesProvider
 
 /**
  * Де-парсер
  */
-class Unparser(capacity: Int) {
+class Unparser(
+    /**
+     * Поставщик модулей.
+     */
+    val mp: ModulesProvider,
+    /**
+     * Первичный размер буфера.
+     */
+    capacity: Int
+) {
     /**
      * Выход
      */

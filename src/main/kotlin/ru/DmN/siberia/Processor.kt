@@ -1,12 +1,12 @@
 package ru.DmN.siberia
 
 import ru.DmN.siberia.ast.Node
-import ru.DmN.siberia.ctx.IContextCollection
 import ru.DmN.siberia.ctx.IContextKey
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.ProcessingStage
 import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processors.INodeProcessor
+import ru.DmN.siberia.utils.ModulesProvider
 import ru.DmN.siberia.utils.StupidStageManager
 import ru.DmN.siberia.utils.TypesProvider
 import ru.DmN.siberia.utils.VirtualType
@@ -16,7 +16,11 @@ import ru.DmN.siberia.utils.VirtualType
  */
 class Processor(
     /**
-     * Провайдер типов.
+     * Поставщик модулей.
+     */
+    val mp: ModulesProvider,
+    /**
+     * Поставщик типов.
      */
     val tp: TypesProvider
 ) {

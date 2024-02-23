@@ -7,6 +7,7 @@ import ru.DmN.siberia.compilers.INodeCompiler
 import ru.DmN.siberia.ctx.IContextKey
 import ru.DmN.siberia.processor.utils.Platforms
 import ru.DmN.siberia.processor.utils.platform
+import ru.DmN.siberia.utils.ModulesProvider
 import ru.DmN.siberia.utils.StupidStageManager
 import ru.DmN.siberia.utils.TypesProvider
 import ru.DmN.siberia.utils.Variable
@@ -16,7 +17,11 @@ import ru.DmN.siberia.utils.Variable
  */
 class Compiler(
     /**
-     * Провайдер типов.
+     * Поставщик модулей.
+     */
+    val mp: ModulesProvider,
+    /**
+     * Поставщик типов.
      */
     val tp: TypesProvider
 ) {

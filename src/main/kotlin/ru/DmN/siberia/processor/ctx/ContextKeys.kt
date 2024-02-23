@@ -14,5 +14,15 @@ enum class ContextKeys : IContextKey {
     /**
      * Текущая целевая платформа.
      */
-    PLATFORM
+    PLATFORM,
+
+    /**
+     * Текущий поставщик модулей.
+     */
+    MODULE_PROVIDER,
+
+    /**
+     * Текущий поставщик типов.
+     */
+    TYPES_PROVIDER
 }

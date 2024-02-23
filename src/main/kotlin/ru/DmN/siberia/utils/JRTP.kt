@@ -1,6 +1,5 @@
-package ru.DmN.siberia.processor.utils
+package ru.DmN.siberia.utils
 
-import ru.DmN.siberia.utils.*
 import ru.DmN.siberia.utils.VirtualType.VirtualTypeImpl
 import java.lang.reflect.Modifier
 import java.util.*

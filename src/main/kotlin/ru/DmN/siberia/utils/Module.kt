@@ -16,6 +16,7 @@ import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parser.utils.file
 import ru.DmN.siberia.parsers.INodeParser
 import ru.DmN.siberia.parsers.NPUseCtx
+import ru.DmN.siberia.parsers.NPUseCtx.parse
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.Platforms
 import ru.DmN.siberia.processor.utils.ValType
@@ -106,13 +107,14 @@ open class Module(val name: String) {
     /**
      * Инициализация модуля.
      *
-     * Определяет ноды, экспортируемые ноды модуля.
+     * @param platform Платформа в которой будет работать модуль.
+     * @param mp Поставщик модулей.
      */
-    open fun init(platform: Platforms) {
+    open fun init(platform: Platforms, mp: ModulesProvider) {
         if (!init) {
             init = true
             sources.forEach {
-                val parser = Parser(getModuleFile(it))
+                val parser = Parser(getModuleFile(it), mp)
                 val pctx = ParsingContext.base().apply {
                     this.module = this@Module
                     this.file = "$name/$it"
@@ -120,7 +122,7 @@ open class Module(val name: String) {
                 }
                 val uses = uses.toMutableList()
                 nodes.add(
-                    NPUseCtx.parse(uses, parser, pctx) { context ->
+                    parser.mp.parse(uses, parser, pctx) { context ->
                         NodeUse(
                             NodeInfoImpl(NodeTypes.USE_CTX, null, null),
                             mutableListOf(parser.parseNode(context)!!),
@@ -207,7 +209,7 @@ open class Module(val name: String) {
      * @param file Файл.
      * @return Данные этого файла (в виде строки).
      */
-    fun getModuleFile(file: String): String {
+    open fun getModuleFile(file: String): String {
         val stream = Module::class.java.getResourceAsStream("/$name/$file")
         if (stream == null) {
             val f = File("$name/$file")
@@ -263,44 +265,6 @@ open class Module(val name: String) {
         "Module[$name]"
 
     companion object {
-        private val MODULES: MutableList<Module> = ArrayList()
-
-        /**
-         * Получает модуль, в случае его отсутствия либо выполняет метод для его добавления.
-         *
-         * @param name Имя модуля.
-         * @param put Метод для добавления модуля.
-         * @return Модуль.
-         */
-        fun getOrPut(name: String, put: () -> Module): Module =
-            get(name) ?: put().apply { MODULES.add(this) }
-
-        /**
-         * Получает модуль, в случае его отсутствия кидает исключение.
-         *
-         * @param name Имя модуля.
-         * @return Модуль.
-         */
-        fun getOrThrow(name: String) =
-            get(name) ?: throw RuntimeException("Module '$name' not founded!")
-
-        /**
-         * Получает модуль, в случае его отсутствия возвращает null.
-         *
-         * @param name Имя модуля.
-         * @return Модуль - в случае наличия, в случае отсутствия - null.
-         */
-        operator fun get(name: String): Module? {
-            for (i in 0 until MODULES.size) {
-                val module = MODULES[i]
-                if (module.name == name) {
-                    return module
-                }
-            }
-
-            return null
-        }
-
         /**
          * Читает данные из заголовка модуля.
          *

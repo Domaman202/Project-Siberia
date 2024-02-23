@@ -1,9 +1,13 @@
 package ru.DmN.siberia.parser.ctx
 
+import ru.DmN.pht.std.module.StdModule
 import ru.DmN.siberia.Siberia
 import ru.DmN.siberia.parser.utils.parsersPool
 import ru.DmN.siberia.ctx.IContextCollection
 import ru.DmN.siberia.ctx.IContextKey
+import ru.DmN.siberia.processor.utils.Platforms
+import ru.DmN.siberia.processor.utils.Platforms.UNIVERSAL
+import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.utils.Module
 import ru.DmN.siberia.utils.SubMap
 import ru.DmN.siberia.utils.SubList
@@ -38,6 +42,12 @@ class ParsingContext (
          */
         fun base() =
             ParsingContext(mutableListOf(Siberia)).apply { this.parsersPool = Stack() }
+
+        /**
+         * Создаёт контекст для парсинга заголовка модуля (module.pht).
+         */
+        fun module() =
+            of(StdModule).apply { this.platform = UNIVERSAL }
 
         /**
          * Создаёт базовый контекст с набором модулей.

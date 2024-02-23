@@ -17,8 +17,10 @@ import ru.DmN.siberia.processor.utils.*
 import ru.DmN.siberia.processors.NRProgn
 import ru.DmN.siberia.processors.NRUse
 import ru.DmN.siberia.processors.NRUseCtx
+import ru.DmN.siberia.processors.NRUseCtx.injectModules
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.utils.Module
+import ru.DmN.siberia.utils.ModulesProvider
 import ru.DmN.siberia.utils.TypesProvider
 import java.io.File
 import java.io.FileOutputStream
@@ -119,12 +121,15 @@ object BuildCommands {
 
     @JvmStatic
     fun moduleCompile(console: Console, vararg args: Any?) {
+        val mp = console.mp
+        val tp = console.tp
+        //
         console.println("Компиляция...")
         try {
-            val pair = processModule(console)
-            val compiler = Compiler(pair.first)
+            val nodes = processModule(console)
+            val compiler = Compiler(mp, tp)
             val cctx = CompilationContext.base()
-            pair.second.forEach { compiler.compile(it, cctx) }
+            nodes.forEach { compiler.compile(it, cctx) }
             compiler.stageManager.runAll()
             File("dump").mkdir()
             compiler.finalizers.forEach { it("dump") }
@@ -144,19 +149,24 @@ object BuildCommands {
             console.println("Платформа '$name' не найдена!")
             return
         }
+        //
         console.platform = platform
+        console.tp = TypesProvider.of(platform)
+        console.mp = ModulesProvider.of(platform)
         //
         console.println("Выбрана платформа '$name'.")
     }
 
     @JvmStatic
     fun moduleUnparse(console: Console, vararg args: Any?) {
+        val mp = console.mp
+        //
         console.println("Де-парсинг...")
         try {
-            val nodes = processModule(console).second
+            val nodes = processModule(console)
             File("dump").mkdir()
             FileOutputStream("dump/unparse.pht").use { out ->
-                val unparser = Unparser(1024 * 1024)
+                val unparser = Unparser(mp, 1024 * 1024)
                 val uctx = UnparsingContext.base()
                 nodes.forEach { unparser.unparse(it, uctx, 0) }
                 out.write(unparser.out.toString().toByteArray())
@@ -175,7 +185,7 @@ object BuildCommands {
         console.println("Печать...")
         try {
             File("dump").mkdir()
-            val nodes = processModule(console).second
+            val nodes = processModule(console)
             FileOutputStream("dump/print.pht").use { out ->
                 val sb = StringBuilder()
                 nodes.forEach { it.print(sb, 0, mode) }
@@ -209,11 +219,14 @@ object BuildCommands {
     fun moduleSelect(console: Console, vararg args: Any?) {
         val name = args[0] as String
         //
+        val mp = console.mp
+        val platform = console.platform
+        //
         if (validateModule(console, name))
             return
-        val module = getOrLoadModule(name)
+        val module = mp.getOrLoadModule(name)
         console.module = module
-        module.init(Platforms.UNIVERSAL)
+        module.init(platform, mp)
         console.println("Выбран модуль '${module.name}'.")
     }
 
@@ -222,18 +235,21 @@ object BuildCommands {
         console.isModule
 
     @JvmStatic
-    private fun processModule(console: Console): Pair<TypesProvider, List<Node>> {
+    private fun processModule(console: Console): List<Node> {
+        val mp = console.mp
+        val tp = console.tp
         val module = console.module
+        val platform = console.platform
+        //
         console.println("Обработка...")
         //
-        val tp = TypesProvider.java()
         val processed = ArrayList<Node>()
-        val processor = Processor(tp)
-        NRUseCtx.injectModules(mutableListOf(module.name), processed, processed, processor, ProcessingContext.base().with(console.platform).apply { this.module = module })
+        val processor = Processor(mp, tp)
+        mp.injectModules(mutableListOf(module.name), processed, processed, processor, ProcessingContext.base().with(platform).apply { this.module = module })
         processor.stageManager.runAll()
         //
         console.println("Обработка успешна завершена!")
-        return Pair(tp, processed)
+        return processed
     }
 
     @JvmStatic

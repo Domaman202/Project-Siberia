@@ -1,6 +1,8 @@
 package ru.DmN.siberia.utils
 
-import ru.DmN.siberia.processor.utils.JRTP
+import ru.DmN.siberia.processor.utils.Platforms
+import ru.DmN.siberia.processor.utils.Platforms.JVM
+import ru.DmN.siberia.processor.utils.Platforms.UNIVERSAL
 
 /**
  * Провайдер типов.
@@ -20,7 +22,7 @@ abstract class TypesProvider {
     /**
      * Ищет тип по имени, иначе возвращает null.
      */
-    open fun typeOfOrNull(name: String) =
+    open fun typeOfOrNull(name: String): VirtualType? =
         try { typeOf(name) } catch (_: ClassNotFoundException) { null }
 
     /**
@@ -32,9 +34,17 @@ abstract class TypesProvider {
 
     companion object {
         fun void() =
-            VoidTypesProvider
+            VoidTypesProvider()
 
         fun java() =
             JRTP()
+
+        fun of(platform: Platforms) =
+            when (platform) {
+                JVM -> java()
+                UNIVERSAL -> void()
+            }
     }
+
+    class VoidTypesProvider : TypesProvider()
 }

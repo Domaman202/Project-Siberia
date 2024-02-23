@@ -23,7 +23,7 @@ object NCUse : INodeCompiler<NodeProcessedUse> {
      * Загружает модули в глобальный контекст.
      */
     private fun injectModules(node: NodeProcessedUse, compiler: Compiler, ctx: CompilationContext) {
-        node.names.forEach{ Module.getOrThrow(it).load(compiler, ctx) }
+        node.names.forEach{ compiler.mp.getOrThrow(it).load(compiler, ctx) }
         node.processed.forEach { compiler.compile(it, ctx) }
     }
 }

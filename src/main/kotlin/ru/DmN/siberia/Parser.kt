@@ -6,6 +6,7 @@ import ru.DmN.siberia.lexer.Token.DefaultType.CLOSE_BRACKET
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parser.utils.baseParseNode
 import ru.DmN.siberia.parsers.INodeParser
+import ru.DmN.siberia.utils.ModulesProvider
 import ru.DmN.siberia.utils.getRegex
 import java.util.*
 
@@ -20,14 +21,18 @@ class Parser(
     /**
      * Функция парсинга нод.
      */
-    var parseNode: Parser.(ctx: ParsingContext) -> Node?
+    var parseNode: Parser.(ctx: ParsingContext) -> Node?,
+    /**
+     * Поставщик модулей.
+     */
+    val mp: ModulesProvider
 ) {
     /**
      * Буфер токенов.
      */
     val tokens = Stack<Token>()
 
-    constructor(code: String) : this(Lexer(code), { baseParseNode(it) })
+    constructor(code: String, mp: ModulesProvider) : this(Lexer(code), { baseParseNode(it) }, mp)
 
     /**
      * Парсит ноду.

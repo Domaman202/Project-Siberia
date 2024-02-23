@@ -10,6 +10,7 @@ import ru.DmN.siberia.parsers.NPUseCtx.getModules
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.*
 import ru.DmN.siberia.utils.Module
+import ru.DmN.siberia.utils.ModulesProvider
 
 object NRUseCtx : INodeProcessor<NodeUse> {
     override fun process(node: NodeUse, processor: Processor, ctx: ProcessingContext, mode: ValType): Node {
@@ -18,12 +19,12 @@ object NRUseCtx : INodeProcessor<NodeUse> {
         val exports = ArrayList<NodeNodesList>()
         val processed = ArrayList<Node>()
         processor.stageManager.pushTask(ProcessingStage.MODULE_POST_INIT) {
-            processNodesList(node, processor, injectModules(node.names, processed, exports, processor, ctx), mode)
+            processNodesList(node, processor, processor.mp.injectModules(node.names, processed, exports, processor, ctx), mode)
         }
         return NodeProcessedUse(node.info.withType(NodeTypes.USE_CTX_), node.nodes, node.names, exports, processed)
     }
 
-    fun <T : Node> injectModules(names: MutableList<String>, processed: MutableList<Node>, exports: MutableList<T>, processor: Processor, ctx: ProcessingContext): ProcessingContext {
+    fun <T : Node> ModulesProvider.injectModules(names: MutableList<String>, processed: MutableList<Node>, exports: MutableList<T>, processor: Processor, ctx: ProcessingContext): ProcessingContext {
         val context = ctx.subCtx()
         injectModules(
             context.loadedModules,
@@ -51,7 +52,7 @@ object NRUseCtx : INodeProcessor<NodeUse> {
      *
      * @param processed Список в который будут помещены обработанные ноды из модулей.
      */
-    fun injectModules(node: NodeUse, processor: Processor, ctx: ProcessingContext, processed: MutableList<Node>): List<Module> =
+    fun ModulesProvider.injectModules(node: NodeUse, processor: Processor, ctx: ProcessingContext, processed: MutableList<Node>): List<Module> =
         getModules(node.names).onEach { it ->
             if (it.load(processor, ctx, node.names)) {
                 ctx.module = it
