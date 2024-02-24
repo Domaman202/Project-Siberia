@@ -29,9 +29,16 @@ interface INodeInfo {
     fun withType(type: INodeType): INodeInfo
 
     /**
+     * Выводит всю информацию с сообщением.
+     * @param message Сообщение
+     */
+    fun print(message: String): String =
+        "$message\n${print()}"
+
+    /**
      * Выводит всю информацию.
      */
-    fun print()
+    fun print(): String
 
     companion object {
         /**

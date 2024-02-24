@@ -1,8 +1,9 @@
 package ru.DmN.siberia.unparsers
 
-import ru.DmN.pht.module.utils.loadModule
+import ru.DmN.pht.module.utils.getOrLoadModule
 import ru.DmN.siberia.Unparser
 import ru.DmN.siberia.ast.NodeUse
+import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.utils.ModulesProvider
 import ru.DmN.siberia.utils.operation
@@ -24,6 +25,6 @@ object NUUseCtx : INodeUnparser<NodeUse> {
      * @param names Имена модулей.
      */
     fun ModulesProvider.loadModules(names: List<String>, unparser: Unparser, ctx: UnparsingContext) {
-        names.forEach { loadModule(it, unparser, ctx) }
+        names.forEach { getOrLoadModule(it, ctx.platform).load(unparser, ctx) }
     }
 }

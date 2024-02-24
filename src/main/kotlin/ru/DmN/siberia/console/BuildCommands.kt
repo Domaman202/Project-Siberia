@@ -11,12 +11,8 @@ import ru.DmN.siberia.console.ctx.module
 import ru.DmN.siberia.console.utils.Argument
 import ru.DmN.siberia.console.utils.ArgumentType
 import ru.DmN.siberia.console.utils.Command
-import ru.DmN.siberia.parsers.NPUseCtx.getModules
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.*
-import ru.DmN.siberia.processors.NRProgn
-import ru.DmN.siberia.processors.NRUse
-import ru.DmN.siberia.processors.NRUseCtx
 import ru.DmN.siberia.processors.NRUseCtx.injectModules
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.utils.Module
@@ -160,6 +156,7 @@ object BuildCommands {
     @JvmStatic
     fun moduleUnparse(console: Console, vararg args: Any?) {
         val mp = console.mp
+        val platform = console.platform
         //
         console.println("Де-парсинг...")
         try {
@@ -167,7 +164,7 @@ object BuildCommands {
             File("dump").mkdir()
             FileOutputStream("dump/unparse.pht").use { out ->
                 val unparser = Unparser(mp, 1024 * 1024)
-                val uctx = UnparsingContext.base()
+                val uctx = UnparsingContext.base().apply { this.platform = platform }
                 nodes.forEach { unparser.unparse(it, uctx, 0) }
                 out.write(unparser.out.toString().toByteArray())
             }
@@ -224,7 +221,7 @@ object BuildCommands {
         //
         if (validateModule(console, name))
             return
-        val module = mp.getOrLoadModule(name)
+        val module = mp.getOrLoadModule(name, platform)
         console.module = module
         module.init(platform, mp)
         console.println("Выбран модуль '${module.name}'.")

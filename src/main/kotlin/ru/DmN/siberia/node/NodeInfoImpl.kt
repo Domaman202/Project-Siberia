@@ -7,15 +7,14 @@ class NodeInfoImpl(override val type: INodeType, override val file: String?, ove
     override fun withType(type: INodeType): INodeInfo =
         NodeInfoImpl(type, file, line)
 
-    override fun print() {
-        println("""
+    override fun print(): String =
+        """
             [
             | type: $type
             | file: $file
             | line: $line
             ]
-        """.trimIndent())
-    }
+        """.trimIndent()
 
     override fun equals(other: Any?): Boolean =
         this === other || (other is NodeInfoImpl && other.type == type && other.file == file && other.line == line)

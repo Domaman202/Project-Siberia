@@ -10,6 +10,8 @@ import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.node.INodeInfo
 import ru.DmN.siberia.node.NodeTypes
 import ru.DmN.siberia.parser.ctx.ParsingContext
+import ru.DmN.siberia.processor.utils.Platforms
+import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.utils.Module
 import ru.DmN.siberia.utils.ModulesProvider
 
@@ -39,6 +41,7 @@ object NPUseCtx : INodeParser {
     fun ModulesProvider.parse(names: MutableList<String>, parser: Parser, ctx: ParsingContext, parse: (context: ParsingContext) -> Node): Node {
         val context = ctx.subCtx()
         return injectModules(
+            context.platform,
             context.loadedModules,
             names,
             { it.load(parser, context, names) },
@@ -53,7 +56,7 @@ object NPUseCtx : INodeParser {
      * @param names Имена модулей.
      */
     fun ModulesProvider.loadModules(names: MutableList<String>, parser: Parser, ctx: ParsingContext) =
-        getModules(names).forEach { it.load(parser, ctx, names) }
+        getModules(names, ctx.platform).forEach { it.load(parser, ctx, names) }
 
     /**
      * Получает список модулей по их имени.
@@ -62,8 +65,8 @@ object NPUseCtx : INodeParser {
      * @param names Имена модулей.
      * @return Список модулей.
      */
-    fun ModulesProvider.getModules(names: List<String>): List<Module> =
-        names.map(::getOrLoadModule)
+    fun ModulesProvider.getModules(names: List<String>, platform: Platforms): List<Module> =
+        names.map { getOrLoadModule(it, platform)}
 
     /**
      * Получает список модулей по их имени.
@@ -72,8 +75,8 @@ object NPUseCtx : INodeParser {
      * @param names Имена модулей.
      * @return Список модулей.
      */
-    fun ModulesProvider.getModules(names: Sequence<String>): Sequence<Module> =
-        names.map(::getOrLoadModule)
+    fun ModulesProvider.getModules(names: Sequence<String>, platform: Platforms): Sequence<Module> =
+        names.map { getOrLoadModule(it, platform) }
 
     /**
      * Загружает незагруженные модули.
@@ -85,14 +88,14 @@ object NPUseCtx : INodeParser {
      * @param block Блок.
      * @return Результат выполнения блока.
      */
-    private inline fun <T> ModulesProvider.injectModules(modules: MutableList<Module>, uses: List<String>, load: (Module) -> Unit, clean: (Module) -> Unit, block: () -> T): T {
+    private inline fun <T> ModulesProvider.injectModules(platform: Platforms, modules: MutableList<Module>, uses: List<String>, load: (Module) -> Unit, clean: (Module) -> Unit, block: () -> T): T {
         val loaded = ArrayList<Module>(uses.size)
         var i = 0
         while (i < uses.size) {
             val name = uses[i++]
             if (modules.any { it.name == name })
                 continue
-            val module = getOrLoadModule(name)
+            val module = getOrLoadModule(name, platform)
             load(module)
             loaded += module
         }

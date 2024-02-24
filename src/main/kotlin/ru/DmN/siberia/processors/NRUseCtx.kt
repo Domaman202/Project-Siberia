@@ -28,7 +28,7 @@ object NRUseCtx : INodeProcessor<NodeUse> {
         val context = ctx.subCtx()
         injectModules(
             context.loadedModules,
-            getModules(names.asSequence()),
+            getModules(names.asSequence(), ctx.platform),
             {
                 it.load(processor, context, names)
                 val tmpContext = context.subCtx()
@@ -53,7 +53,7 @@ object NRUseCtx : INodeProcessor<NodeUse> {
      * @param processed Список в который будут помещены обработанные ноды из модулей.
      */
     fun ModulesProvider.injectModules(node: NodeUse, processor: Processor, ctx: ProcessingContext, processed: MutableList<Node>): List<Module> =
-        getModules(node.names).onEach { it ->
+        getModules(node.names, ctx.platform).onEach { it ->
             if (it.load(processor, ctx, node.names)) {
                 ctx.module = it
                 it.nodes.forEach { it1 ->
