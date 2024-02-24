@@ -7,14 +7,15 @@ class NodeInfoImpl(override val type: INodeType, override val file: String?, ove
     override fun withType(type: INodeType): INodeInfo =
         NodeInfoImpl(type, file, line)
 
-    override fun print(message: String): String =
-        """
-            [
-            | message: $message
-            | file:    $file
-            | line:    $line
-            ]
-        """.trimIndent()
+    override fun print(message: String): String {
+        val sb = StringBuilder().append("[\n| message:")
+        if (message.contains('\n')) {
+            val i = message.lastIndexOf('\n')
+            sb.append("\n|- ").append(message.substring(0, i)).append(message.substring(i).replace("\n", "\n|- ")).append('\n')
+        } else sb.append(' ').append(message).append('\n')
+        sb.append("| file: ").append(file).append("\n| line: ").append(line).append("\n]")
+        return sb.toString()
+    }
 
     override fun print(): String =
         """
