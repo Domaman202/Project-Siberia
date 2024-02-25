@@ -37,7 +37,7 @@ abstract class VirtualField {
         other is VirtualField && other.hashCode() == hashCode()
 
     override fun hashCode(): Int =
-        name.hashCode() + type.hashCode() + (declaringClass?.hashCode() ?: 0)
+        name.hashCode() + type.hashCode() + declaringClass.hashCode()
 
     companion object {
         /**

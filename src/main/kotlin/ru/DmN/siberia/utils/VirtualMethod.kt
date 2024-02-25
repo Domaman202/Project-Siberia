@@ -90,8 +90,8 @@ abstract class VirtualMethod {
                 null
             else {
                 val sb = StringBuilder()
-                if (!modifiers.static && declaringClass != null) {
-                    val list = generics.entries.drop(declaringClass!!.generics.size)
+                if (!modifiers.static) {
+                    val list = generics.entries.drop(declaringClass.generics.size)
                     if (list.isNotEmpty()) {
                         sb.append('<')
                         list.forEach {
@@ -109,7 +109,7 @@ abstract class VirtualMethod {
         other is VirtualMethod && other.hashCode() == hashCode()
 
     override fun hashCode(): Int =
-        (name.hashCode() * 31 + desc.hashCode()) * 31 + (declaringClass?.hashCode() ?: 0)
+        (name.hashCode() * 31 + desc.hashCode()) * 31 + declaringClass.hashCode()
 
     companion object {
         /**
