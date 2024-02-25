@@ -47,6 +47,13 @@ abstract class VirtualType {
      */
     abstract val isFinal: Boolean
 
+
+    /**
+     * Тип фантомный?
+     */
+    open val isPhantom
+        get() = false
+
     /**
      * Generic's (Name / Type)
      */
@@ -208,6 +215,7 @@ abstract class VirtualType {
         override var isInterface: Boolean = false,
         override var isAbstract: Boolean = false,
         override var isFinal: Boolean = false,
+        override val isPhantom: Boolean = false,
         //
         override var generics: MutableMap<String, VirtualType> = HashMap()
     ) : VirtualType()

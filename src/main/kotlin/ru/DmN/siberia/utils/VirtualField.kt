@@ -1,6 +1,5 @@
 package ru.DmN.siberia.utils
 
-import com.sun.org.apache.xpath.internal.operations.Mod
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
@@ -11,7 +10,7 @@ abstract class VirtualField {
     /**
      * Класс, которому принадлежит поле.
      */
-    abstract val declaringClass: VirtualType?
+    abstract val declaringClass: VirtualType
 
     /**
      * Имя.
@@ -69,7 +68,7 @@ abstract class VirtualField {
      * Простая реализация виртуального поля.
      */
     class VirtualFieldImpl(
-        override var declaringClass: VirtualType?,
+        override var declaringClass: VirtualType,
         override var name: String,
         override var type: VirtualType,
         override var modifiers: FieldModifiers

@@ -1,6 +1,5 @@
 package ru.DmN.siberia.utils
 
-import com.sun.org.apache.xpath.internal.operations.Mod
 import ru.DmN.siberia.ast.Node
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
@@ -8,13 +7,13 @@ import java.lang.reflect.Modifier
 import java.lang.reflect.TypeVariable
 
 /**
- * Абстрантный виртуальный метод.
+ * Абстрактный виртуальный метод.
  */
 abstract class VirtualMethod {
     /**
      * Класс, которому принадлежит поле.
      */
-    abstract val declaringClass: VirtualType?
+    abstract val declaringClass: VirtualType
 
     /**
      * Имя.
@@ -208,7 +207,7 @@ abstract class VirtualMethod {
      * Простая реализация виртуального метода.
      */
     class VirtualMethodImpl(
-        override var declaringClass: VirtualType?,
+        override var declaringClass: VirtualType,
         override var name: String,
         override var rettype: VirtualType,
         override val retgen: String?,
