@@ -1,9 +1,5 @@
 package ru.DmN.siberia.utils
 
-import ru.DmN.siberia.processor.utils.Platforms
-import ru.DmN.siberia.processor.utils.Platforms.JVM
-import ru.DmN.siberia.processor.utils.Platforms.UNIVERSAL
-
 abstract class ModulesProvider {
     /**
      * Список модулей.
@@ -40,10 +36,7 @@ abstract class ModulesProvider {
     }
 
     companion object {
-        fun java() =
+        fun of(platforms: IPlatform) =
             JRMP()
-
-        fun of(platform: Platforms) =
-            java()
     }
 }

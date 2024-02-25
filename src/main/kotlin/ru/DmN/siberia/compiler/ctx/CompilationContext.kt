@@ -1,12 +1,11 @@
 package ru.DmN.siberia.compiler.ctx
 
 import ru.DmN.siberia.Siberia
-import ru.DmN.siberia.compiler.utils.withJCV
 import ru.DmN.siberia.ctx.IContextCollection
 import ru.DmN.siberia.ctx.IContextKey
-import ru.DmN.siberia.processor.utils.Platforms
-import ru.DmN.siberia.processor.utils.with
-import ru.DmN.siberia.utils.*
+import ru.DmN.siberia.utils.Module
+import ru.DmN.siberia.utils.SubList
+import ru.DmN.siberia.utils.SubMap
 
 /**
  * Контекст компиляции.
@@ -35,7 +34,7 @@ class CompilationContext(
          * Создаёт базовый контекст.
          */
         fun base(): CompilationContext =
-            CompilationContext(mutableListOf(Siberia)).with(Platforms.JVM).withJCV(getJavaClassVersion())
+            CompilationContext(mutableListOf(Siberia))
 
         /**
          * Создаёт базовый контекст с набором модулей.

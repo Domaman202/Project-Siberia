@@ -5,12 +5,8 @@ import ru.DmN.siberia.Siberia
 import ru.DmN.siberia.parser.utils.parsersPool
 import ru.DmN.siberia.ctx.IContextCollection
 import ru.DmN.siberia.ctx.IContextKey
-import ru.DmN.siberia.processor.utils.Platforms
-import ru.DmN.siberia.processor.utils.Platforms.UNIVERSAL
 import ru.DmN.siberia.processor.utils.platform
-import ru.DmN.siberia.utils.Module
-import ru.DmN.siberia.utils.SubMap
-import ru.DmN.siberia.utils.SubList
+import ru.DmN.siberia.utils.*
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -46,7 +42,7 @@ class ParsingContext (
         /**
          * Создаёт контекст для парсинга заголовка модуля (module.pht).
          */
-        fun module(platform: Platforms) =
+        fun module(platform: IPlatform) =
             of(StdModule).apply { this.platform = platform }
 
         /**

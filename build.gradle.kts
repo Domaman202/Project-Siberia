@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "ru.DmN.siberia"
-version = "1.13.5"
+version = "1.14.0"
 
 repositories {
     mavenCentral()

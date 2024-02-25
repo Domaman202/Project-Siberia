@@ -8,11 +8,8 @@ import ru.DmN.siberia.node.INodeInfo
 import ru.DmN.siberia.node.NodeTypes
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.ctx.IContextCollection
-import ru.DmN.siberia.processor.ctx.ContextKeys
 import ru.DmN.siberia.processor.ctx.ContextKeys.*
-import ru.DmN.siberia.utils.Module
-import ru.DmN.siberia.utils.ModulesProvider
-import ru.DmN.siberia.utils.TypesProvider
+import ru.DmN.siberia.utils.*
 
 fun processNodesList(node: INodesList, processor: Processor, ctx: ProcessingContext, mode: ValType) {
     if (node.nodes.isNotEmpty()) {
@@ -48,7 +45,7 @@ fun <T : IContextCollection<T>> T.with(ctx: Module) =
  *
  * С текущей платформой.
  */
-fun <T : IContextCollection<T>> T.with(ctx: Platforms) =
+fun <T : IContextCollection<T>> T.with(ctx: IPlatform) =
     this.with(PLATFORM, ctx)
 
 /**
@@ -70,7 +67,7 @@ var IContextCollection<*>.moduleOrNull
  */
 var IContextCollection<*>.platform
     set(value) { this.contexts[PLATFORM] = value }
-    get() = this.contexts[PLATFORM] as Platforms
+    get() = this.contexts[PLATFORM] as IPlatform
 
 /**
  * Поставщик модулей.

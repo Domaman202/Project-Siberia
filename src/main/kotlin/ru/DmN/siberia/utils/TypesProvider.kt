@@ -1,9 +1,5 @@
 package ru.DmN.siberia.utils
 
-import ru.DmN.siberia.processor.utils.Platforms
-import ru.DmN.siberia.processor.utils.Platforms.JVM
-import ru.DmN.siberia.processor.utils.Platforms.UNIVERSAL
-
 /**
  * Провайдер типов.
  */
@@ -33,17 +29,14 @@ abstract class TypesProvider {
     }
 
     companion object {
-        fun void() =
-            VoidTypesProvider()
+        private val PROVIDERS: MutableMap<IPlatform, TypesProvider> = HashMap()
 
-        fun java() =
-            JRTP()
+        fun add(platform: IPlatform, provider: TypesProvider) {
+            PROVIDERS[platform] = provider
+        }
 
-        fun of(platform: Platforms) =
-            when (platform) {
-                JVM -> java()
-                UNIVERSAL -> void()
-            }
+        fun of(platform: IPlatform) =
+            PROVIDERS[platform] ?: throw RuntimeException("Поставщик типов для платформы '$platform' не найден!")
     }
 
     class VoidTypesProvider : TypesProvider()

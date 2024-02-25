@@ -15,6 +15,7 @@ import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.*
 import ru.DmN.siberia.processors.NRUseCtx.injectModules
 import ru.DmN.siberia.unparser.UnparsingContext
+import ru.DmN.siberia.utils.IPlatform
 import ru.DmN.siberia.utils.Module
 import ru.DmN.siberia.utils.ModulesProvider
 import ru.DmN.siberia.utils.TypesProvider
@@ -119,13 +120,14 @@ object BuildCommands {
     fun moduleCompile(console: Console, vararg args: Any?) {
         val mp = console.mp
         val tp = console.tp
+        val platform = console.platform
         //
         console.println("Компиляция...")
         try {
             val nodes = processModule(console)
             val compiler = Compiler(mp, tp)
-            val cctx = CompilationContext.base()
-            nodes.forEach { compiler.compile(it, cctx) }
+            val ctx = CompilationContext.base().apply { this.platform = platform }
+            nodes.forEach { compiler.compile(it, ctx) }
             compiler.stageManager.runAll()
             File("dump").mkdir()
             compiler.finalizers.forEach { it("dump") }
@@ -140,7 +142,7 @@ object BuildCommands {
     fun platformSelect(console: Console, vararg args: Any?) {
         val name = (args[0] as String).toUpperCase()
         //
-        val platform = Platforms.entries.find { it.name == name }
+        val platform = IPlatform.PLATFORMS.find { it.name == name }
         if (platform == null) {
             console.println("Платформа '$name' не найдена!")
             return

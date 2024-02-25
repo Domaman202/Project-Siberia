@@ -10,7 +10,6 @@ import ru.DmN.siberia.parsers.NPExport
 import ru.DmN.siberia.parsers.NPProgn
 import ru.DmN.siberia.parsers.NPUse
 import ru.DmN.siberia.parsers.NPUseCtx
-import ru.DmN.siberia.processor.utils.Platforms.UNIVERSAL
 import ru.DmN.siberia.processors.NRExport
 import ru.DmN.siberia.processors.NRProgn
 import ru.DmN.siberia.processors.NRUse
@@ -18,6 +17,7 @@ import ru.DmN.siberia.processors.NRUseCtx
 import ru.DmN.siberia.unparsers.NUDefault
 import ru.DmN.siberia.unparsers.NUUse
 import ru.DmN.siberia.unparsers.NUUseCtx
+import ru.DmN.siberia.utils.IPlatform.UNIVERSAL
 import ru.DmN.siberia.utils.Module
 
 object Siberia : Module("siberia") {

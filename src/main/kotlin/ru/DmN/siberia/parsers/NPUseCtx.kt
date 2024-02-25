@@ -1,17 +1,15 @@
 package ru.DmN.siberia.parsers
 
 import ru.DmN.pht.module.utils.getOrLoadModule
-import ru.DmN.pht.std.module.StdModule
 import ru.DmN.siberia.Parser
-import ru.DmN.siberia.Siberia
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.node.INodeInfo
 import ru.DmN.siberia.node.NodeTypes
 import ru.DmN.siberia.parser.ctx.ParsingContext
-import ru.DmN.siberia.processor.utils.Platforms
 import ru.DmN.siberia.processor.utils.platform
+import ru.DmN.siberia.utils.IPlatform
 import ru.DmN.siberia.utils.Module
 import ru.DmN.siberia.utils.ModulesProvider
 
@@ -65,7 +63,7 @@ object NPUseCtx : INodeParser {
      * @param names Имена модулей.
      * @return Список модулей.
      */
-    fun ModulesProvider.getModules(names: List<String>, platform: Platforms): List<Module> =
+    fun ModulesProvider.getModules(names: List<String>, platform: IPlatform): List<Module> =
         names.map { getOrLoadModule(it, platform)}
 
     /**
@@ -75,7 +73,7 @@ object NPUseCtx : INodeParser {
      * @param names Имена модулей.
      * @return Список модулей.
      */
-    fun ModulesProvider.getModules(names: Sequence<String>, platform: Platforms): Sequence<Module> =
+    fun ModulesProvider.getModules(names: Sequence<String>, platform: IPlatform): Sequence<Module> =
         names.map { getOrLoadModule(it, platform) }
 
     /**
@@ -88,7 +86,7 @@ object NPUseCtx : INodeParser {
      * @param block Блок.
      * @return Результат выполнения блока.
      */
-    private inline fun <T> ModulesProvider.injectModules(platform: Platforms, modules: MutableList<Module>, uses: List<String>, load: (Module) -> Unit, clean: (Module) -> Unit, block: () -> T): T {
+    private inline fun <T> ModulesProvider.injectModules(platform: IPlatform, modules: MutableList<Module>, uses: List<String>, load: (Module) -> Unit, clean: (Module) -> Unit, block: () -> T): T {
         val loaded = ArrayList<Module>(uses.size)
         var i = 0
         while (i < uses.size) {

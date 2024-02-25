@@ -15,11 +15,8 @@ import ru.DmN.siberia.node.NodeTypes
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parser.utils.file
 import ru.DmN.siberia.parsers.INodeParser
-import ru.DmN.siberia.parsers.NPUseCtx
 import ru.DmN.siberia.parsers.NPUseCtx.parse
 import ru.DmN.siberia.processor.ctx.ProcessingContext
-import ru.DmN.siberia.processor.utils.Platforms
-import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processor.utils.module
 import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.processors.INodeProcessor
@@ -28,6 +25,7 @@ import ru.DmN.siberia.unparsers.INodeUnparser
 import java.io.File
 import java.io.FileNotFoundException
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Модуль.
@@ -88,7 +86,7 @@ open class Module(val name: String) {
     /**
      * Компиляторы.
      */
-    val compilers: MutableMap<Platforms, MutableMap<INodeType, INodeCompiler<*>>> = EnumMap(Platforms::class.java)
+    val compilers: MutableMap<IPlatform, MutableMap<INodeType, INodeCompiler<*>>> = HashMap()
 
     /**
      * Ноды.
@@ -110,7 +108,7 @@ open class Module(val name: String) {
      * @param platform Платформа в которой будет работать модуль.
      * @param mp Поставщик модулей.
      */
-    open fun init(platform: Platforms, mp: ModulesProvider) {
+    open fun init(platform: IPlatform, mp: ModulesProvider) {
         if (!init) {
             init = true
             sources.forEach {
@@ -257,7 +255,7 @@ open class Module(val name: String) {
      * @param type Тип нод.
      * @param compiler Компилятор.
      */
-    fun add(platform: Platforms, type: INodeType, compiler: INodeCompiler<*>) {
+    fun add(platform: IPlatform, type: INodeType, compiler: INodeCompiler<*>) {
         compilers.getOrPut(platform) { HashMap() }[type] = compiler
     }
 

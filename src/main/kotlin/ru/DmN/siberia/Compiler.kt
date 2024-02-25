@@ -5,12 +5,8 @@ import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.compiler.utils.CompilingStage
 import ru.DmN.siberia.compilers.INodeCompiler
 import ru.DmN.siberia.ctx.IContextKey
-import ru.DmN.siberia.processor.utils.Platforms
 import ru.DmN.siberia.processor.utils.platform
-import ru.DmN.siberia.utils.ModulesProvider
-import ru.DmN.siberia.utils.StupidStageManager
-import ru.DmN.siberia.utils.TypesProvider
-import ru.DmN.siberia.utils.Variable
+import ru.DmN.siberia.utils.*
 
 /**
  * Компилятор.
@@ -64,8 +60,8 @@ class Compiler(
         val platform = ctx.platform
         val type = node.info.type
         ctx.loadedModules.forEach { it -> it.compilers[ctx.platform]?.get(type)?.let { return it as INodeCompiler<Node> } }
-        if (platform != Platforms.UNIVERSAL)
-            ctx.loadedModules.forEach { it -> it.compilers[Platforms.UNIVERSAL]?.get(type)?.let { return it as INodeCompiler<Node> } }
+        if (platform != IPlatform.UNIVERSAL)
+            ctx.loadedModules.forEach { it -> it.compilers[IPlatform.UNIVERSAL]?.get(type)?.let { return it as INodeCompiler<Node> } }
         throw RuntimeException("Compiler for \"$type\" not founded!")
     }
 }
