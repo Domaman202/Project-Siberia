@@ -1,5 +1,6 @@
 package ru.DmN.siberia.utils
 
+import ru.DmN.siberia.utils.vtype.VirtualType
 import kotlin.math.absoluteValue
 
 /**

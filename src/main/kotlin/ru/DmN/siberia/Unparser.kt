@@ -3,7 +3,7 @@ package ru.DmN.siberia
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.unparsers.INodeUnparser
-import ru.DmN.siberia.utils.ModulesProvider
+import ru.DmN.pht.module.utils.ModulesProvider
 
 /**
  * Де-парсер

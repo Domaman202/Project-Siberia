@@ -1,12 +1,15 @@
 package ru.DmN.siberia
 
+import ru.DmN.pht.module.utils.ModulesProvider
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.compiler.utils.CompilingStage
 import ru.DmN.siberia.compilers.INodeCompiler
-import ru.DmN.siberia.ctx.IContextKey
+import ru.DmN.siberia.utils.ctx.IContextKey
 import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.utils.*
+import ru.DmN.siberia.utils.stage.StupidStageManager
+import ru.DmN.siberia.utils.vtype.TypesProvider
 
 /**
  * Компилятор.

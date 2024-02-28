@@ -1,9 +1,9 @@
 package ru.DmN.siberia.compiler.ctx
 
 import ru.DmN.siberia.Siberia
-import ru.DmN.siberia.ctx.IContextCollection
-import ru.DmN.siberia.ctx.IContextKey
-import ru.DmN.siberia.utils.Module
+import ru.DmN.siberia.utils.ctx.IContextCollection
+import ru.DmN.siberia.utils.ctx.IContextKey
+import ru.DmN.pht.module.utils.Module
 import ru.DmN.siberia.utils.SubList
 import ru.DmN.siberia.utils.SubMap
 

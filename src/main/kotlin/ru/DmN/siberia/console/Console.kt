@@ -2,8 +2,8 @@ package ru.DmN.siberia.console
 
 import ru.DmN.siberia.console.utils.ArgumentType
 import ru.DmN.siberia.console.utils.Command
-import ru.DmN.siberia.ctx.IContextCollection
-import ru.DmN.siberia.ctx.IContextKey
+import ru.DmN.siberia.utils.ctx.IContextCollection
+import ru.DmN.siberia.utils.ctx.IContextKey
 import java.io.PrintStream
 import kotlin.io.readln
 import kotlin.io.readln as kreadln

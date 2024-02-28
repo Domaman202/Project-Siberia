@@ -1,6 +1,5 @@
 package ru.DmN.siberia.utils
 
-import org.objectweb.asm.Opcodes
 import ru.DmN.siberia.Parser
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.lexer.*
@@ -23,32 +22,6 @@ fun InputStream.readBytes(): ByteArray {
     val bytes = ByteArray(available())
     DataInputStream(this).readFully(bytes)
     return bytes
-}
-
-/**
- * Возвращает текущую версию классов.
- */
-fun getJavaClassVersion(): Int {
-    val version = getJavaVersion()
-    if (version > 7)
-        return Opcodes.V1_8 + version - 8
-    throw RuntimeException("Unsupported platform!")
-}
-
-/**
- * Возвращает текущую версию java.
- */
-fun getJavaVersion(): Int {
-    var version = System.getProperty("java.version")
-    if (version.startsWith("1.")) {
-        version = version.substring(2, 3)
-    } else {
-        val dot = version.indexOf(".")
-        if (dot != -1) {
-            version = version.substring(0, dot)
-        }
-    }
-    return version.toInt()
 }
 
 fun <T> Map<Regex, T>.getRegex(key: String): T? =

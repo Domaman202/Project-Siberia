@@ -1,4 +1,4 @@
-package ru.DmN.siberia.utils
+package ru.DmN.siberia.utils.vtype
 
 import ru.DmN.siberia.ast.Node
 import java.lang.reflect.Constructor

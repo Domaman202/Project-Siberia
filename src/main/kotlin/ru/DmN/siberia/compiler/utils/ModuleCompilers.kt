@@ -1,9 +1,9 @@
 package ru.DmN.siberia.compiler.utils
 
 import ru.DmN.siberia.compilers.INodeCompiler
-import ru.DmN.siberia.node.INodeType
+import ru.DmN.siberia.utils.node.INodeType
 import ru.DmN.siberia.utils.IPlatform
-import ru.DmN.siberia.utils.Module
+import ru.DmN.pht.module.utils.Module
 
 /**
  * Под-модуль реализующий функционал для определённой платформы.

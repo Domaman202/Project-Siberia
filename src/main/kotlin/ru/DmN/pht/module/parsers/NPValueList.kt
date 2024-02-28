@@ -7,7 +7,7 @@ import ru.DmN.siberia.Parser
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.lexer.Token.DefaultType.*
-import ru.DmN.siberia.node.INodeInfo
+import ru.DmN.siberia.utils.node.INodeInfo
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parser.utils.parseValue
 import ru.DmN.siberia.parsers.INodeParser

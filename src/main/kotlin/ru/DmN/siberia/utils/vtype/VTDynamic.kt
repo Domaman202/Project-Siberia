@@ -1,4 +1,4 @@
-package ru.DmN.siberia.utils
+package ru.DmN.siberia.utils.vtype
 
 object VTDynamic : VirtualType() {
     override val name: String

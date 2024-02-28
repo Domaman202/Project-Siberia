@@ -1,4 +1,4 @@
-package ru.DmN.siberia.utils
+package ru.DmN.siberia.utils.stage
 
 /**
  * Менеджер стадий.

@@ -1,4 +1,4 @@
-package ru.DmN.siberia.utils
+package ru.DmN.siberia.utils.vtype
 
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier

@@ -1,10 +1,11 @@
 package ru.DmN.siberia.parser.ctx
 
+import ru.DmN.pht.module.utils.Module
 import ru.DmN.pht.std.module.StdModule
 import ru.DmN.siberia.Siberia
 import ru.DmN.siberia.parser.utils.parsersPool
-import ru.DmN.siberia.ctx.IContextCollection
-import ru.DmN.siberia.ctx.IContextKey
+import ru.DmN.siberia.utils.ctx.IContextCollection
+import ru.DmN.siberia.utils.ctx.IContextKey
 import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.utils.*
 import java.util.*

@@ -1,4 +1,4 @@
-package ru.DmN.siberia.utils
+package ru.DmN.pht.module.utils
 
 import ru.DmN.pht.std.module.StdModule
 import ru.DmN.siberia.Siberia

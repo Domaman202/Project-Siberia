@@ -1,5 +1,7 @@
 package ru.DmN.siberia.utils
 
+import ru.DmN.siberia.utils.vtype.VirtualType
+
 class VariableWithGenerics(
     name: String,
     type: VirtualType?,

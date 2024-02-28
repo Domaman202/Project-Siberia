@@ -6,7 +6,7 @@ import ru.DmN.siberia.lexer.Token.DefaultType.CLOSE_BRACKET
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parser.utils.baseParseNode
 import ru.DmN.siberia.parsers.INodeParser
-import ru.DmN.siberia.utils.ModulesProvider
+import ru.DmN.pht.module.utils.ModulesProvider
 import ru.DmN.siberia.utils.getRegex
 import java.util.*
 

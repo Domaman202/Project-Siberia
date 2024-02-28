@@ -1,7 +1,7 @@
-package ru.DmN.siberia.node
+package ru.DmN.siberia.utils.node
 
-import ru.DmN.siberia.node.NodeTypes.Type.PARSED
-import ru.DmN.siberia.node.NodeTypes.Type.PROCESSED
+import ru.DmN.siberia.utils.node.NodeTypes.Type.PARSED
+import ru.DmN.siberia.utils.node.NodeTypes.Type.PROCESSED
 
 enum class NodeTypes : INodeType {
     // e

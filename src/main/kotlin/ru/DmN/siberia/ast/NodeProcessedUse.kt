@@ -1,6 +1,6 @@
 package ru.DmN.siberia.ast
 
-import ru.DmN.siberia.node.INodeInfo
+import ru.DmN.siberia.utils.node.INodeInfo
 import ru.DmN.siberia.utils.indent
 
 /**

@@ -16,9 +16,9 @@ import ru.DmN.siberia.processor.utils.*
 import ru.DmN.siberia.processors.NRUseCtx.injectModules
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.utils.IPlatform
-import ru.DmN.siberia.utils.Module
-import ru.DmN.siberia.utils.ModulesProvider
-import ru.DmN.siberia.utils.TypesProvider
+import ru.DmN.pht.module.utils.Module
+import ru.DmN.pht.module.utils.ModulesProvider
+import ru.DmN.siberia.utils.vtype.TypesProvider
 import java.io.File
 import java.io.FileOutputStream
 

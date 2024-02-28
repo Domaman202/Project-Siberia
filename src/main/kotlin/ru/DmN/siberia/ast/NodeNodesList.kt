@@ -1,12 +1,12 @@
 package ru.DmN.siberia.ast
 
-import ru.DmN.siberia.node.INodeInfo
+import ru.DmN.siberia.utils.node.INodeInfo
 import ru.DmN.siberia.utils.indent
 
 /**
  * Нода с под-нодами.
  */
-open class NodeNodesList(info: INodeInfo, override val nodes: MutableList<Node> = mutableListOf()) : Node(info), INodesList {
+open class NodeNodesList(info: INodeInfo, override val nodes: MutableList<Node> = mutableListOf()) : BaseNode(info), INodesList {
     override fun copy(): NodeNodesList =
         NodeNodesList(info, copyNodes())
 

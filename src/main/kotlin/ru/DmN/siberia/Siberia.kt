@@ -3,7 +3,7 @@ package ru.DmN.siberia
 import ru.DmN.siberia.compilers.NCDefault
 import ru.DmN.siberia.compilers.NCUse
 import ru.DmN.siberia.compilers.NCUseCtx
-import ru.DmN.siberia.node.NodeTypes.*
+import ru.DmN.siberia.utils.node.NodeTypes.*
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parser.utils.baseParseNode
 import ru.DmN.siberia.parsers.NPExport
@@ -18,7 +18,7 @@ import ru.DmN.siberia.unparsers.NUDefault
 import ru.DmN.siberia.unparsers.NUUse
 import ru.DmN.siberia.unparsers.NUUseCtx
 import ru.DmN.siberia.utils.IPlatform.UNIVERSAL
-import ru.DmN.siberia.utils.Module
+import ru.DmN.pht.module.utils.Module
 
 object Siberia : Module("siberia") {
     private fun initParsers() {

@@ -1,4 +1,4 @@
-package ru.DmN.siberia.node
+package ru.DmN.siberia.utils.node
 
 /**
  * Тип ноды.

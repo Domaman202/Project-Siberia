@@ -1,6 +1,6 @@
 package ru.DmN.siberia.parser.ctx
 
-import ru.DmN.siberia.ctx.IContextKey
+import ru.DmN.siberia.utils.ctx.IContextKey
 
 /**
  * Стандартные ключи контекста для парсера.

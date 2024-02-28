@@ -1,4 +1,6 @@
-package ru.DmN.siberia.utils
+package ru.DmN.siberia.utils.stage
+
+import ru.DmN.siberia.utils.DefaultEnumMap
 
 /**
  * Stupid Stage Manager

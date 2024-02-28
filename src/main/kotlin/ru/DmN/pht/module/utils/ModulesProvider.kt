@@ -1,4 +1,6 @@
-package ru.DmN.siberia.utils
+package ru.DmN.pht.module.utils
+
+import ru.DmN.siberia.utils.IPlatform
 
 abstract class ModulesProvider {
     /**

@@ -1,15 +1,14 @@
 package ru.DmN.siberia
 
 import ru.DmN.siberia.ast.Node
-import ru.DmN.siberia.ctx.IContextKey
+import ru.DmN.siberia.utils.ctx.IContextKey
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.ProcessingStage
-import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processors.INodeProcessor
-import ru.DmN.siberia.utils.ModulesProvider
-import ru.DmN.siberia.utils.StupidStageManager
-import ru.DmN.siberia.utils.TypesProvider
-import ru.DmN.siberia.utils.VirtualType
+import ru.DmN.pht.module.utils.ModulesProvider
+import ru.DmN.siberia.utils.stage.StupidStageManager
+import ru.DmN.siberia.utils.vtype.TypesProvider
+import ru.DmN.siberia.utils.vtype.VirtualType
 
 /**
  * Обработчик.
@@ -43,9 +42,9 @@ class Processor(
     /**
      * Обрабатывает ноду.
      */
-    fun process(node: Node, ctx: ProcessingContext, mode: ValType): Node? =
+    fun process(node: Node, ctx: ProcessingContext, valMode: Boolean): Node? =
         if (node.info.type.processable)
-            get(node, ctx).process(node, this, ctx, mode)
+            get(node, ctx).process(node, this, ctx, valMode)
         else node
 
     /**

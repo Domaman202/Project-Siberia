@@ -1,4 +1,4 @@
-package ru.DmN.siberia.node
+package ru.DmN.siberia.utils.node
 
 import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.parser.ctx.ParsingContext

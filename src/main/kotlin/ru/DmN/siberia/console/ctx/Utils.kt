@@ -1,8 +1,8 @@
 package ru.DmN.siberia.console.ctx
 
 import ru.DmN.siberia.console.Console
-import ru.DmN.siberia.ctx.IContextCollection
-import ru.DmN.siberia.utils.Module
+import ru.DmN.siberia.utils.ctx.IContextCollection
+import ru.DmN.pht.module.utils.Module
 
 val IContextCollection<Console>.isModule
     get() = contexts[ContextKeys.MODULE] != null

@@ -1,4 +1,6 @@
-package ru.DmN.siberia.utils
+package ru.DmN.siberia.utils.vtype
+
+import ru.DmN.siberia.utils.IPlatform
 
 /**
  * Провайдер типов.

@@ -4,10 +4,9 @@ import ru.DmN.siberia.Processor
 import ru.DmN.siberia.ast.INodesList
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeNodesList
-import ru.DmN.siberia.node.NodeTypes
 import ru.DmN.siberia.processor.ctx.ProcessingContext
-import ru.DmN.siberia.processor.utils.ValType
-import ru.DmN.siberia.utils.VirtualType
+import ru.DmN.siberia.utils.node.NodeTypes
+import ru.DmN.siberia.utils.vtype.VirtualType
 
 /**
  * Обработчик нод с под-нодами.
@@ -18,7 +17,7 @@ object NRProgn : INodeProcessor<Node> {
         return processor.calc(node.nodes.last(), ctx)
     }
 
-    override fun process(node: Node, processor: Processor, ctx: ProcessingContext, mode: ValType): NodeNodesList {
+    override fun process(node: Node, processor: Processor, ctx: ProcessingContext, valMode: Boolean): NodeNodesList {
         node as INodesList
         return NodeNodesList(
             node.info.withType(NodeTypes.PROGN_),
@@ -29,10 +28,10 @@ object NRProgn : INodeProcessor<Node> {
                     node.nodes
                         .dropLast(1) // todo: drop last for sequence
                         .asSequence()
-                        .map { processor.process(it, ctx, ValType.NO_VALUE) }
+                        .map { processor.process(it, ctx, false) }
                         .filterNotNull()
                         .toMutableList()
-                processor.process(node.nodes.last(), ctx, ValType.VALUE)?.let { list += it }
+                processor.process(node.nodes.last(), ctx, true)?.let { list += it }
                 list
             }
         )

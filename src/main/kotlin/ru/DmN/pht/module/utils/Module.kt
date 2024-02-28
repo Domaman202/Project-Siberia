@@ -1,4 +1,4 @@
-package ru.DmN.siberia.utils
+package ru.DmN.pht.module.utils
 
 import ru.DmN.siberia.Compiler
 import ru.DmN.siberia.Parser
@@ -9,9 +9,9 @@ import ru.DmN.siberia.ast.NodeNodesList
 import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.compilers.INodeCompiler
-import ru.DmN.siberia.node.INodeType
-import ru.DmN.siberia.node.NodeInfoImpl
-import ru.DmN.siberia.node.NodeTypes
+import ru.DmN.siberia.utils.node.INodeType
+import ru.DmN.siberia.utils.node.NodeInfoImpl
+import ru.DmN.siberia.utils.node.NodeTypes
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parser.utils.file
 import ru.DmN.siberia.parsers.INodeParser
@@ -22,6 +22,8 @@ import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.processors.INodeProcessor
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.unparsers.INodeUnparser
+import ru.DmN.siberia.utils.IPlatform
+import ru.DmN.siberia.utils.readBytes
 import java.io.File
 import java.io.FileNotFoundException
 import java.util.*

@@ -1,5 +1,8 @@
-package ru.DmN.siberia.utils
+package ru.DmN.siberia.utils.vtype
 
+import ru.DmN.siberia.utils.Klass
+import ru.DmN.siberia.utils.isPrimitive
+import ru.DmN.siberia.utils.klassOf
 import java.lang.reflect.Modifier
 import java.util.*
 

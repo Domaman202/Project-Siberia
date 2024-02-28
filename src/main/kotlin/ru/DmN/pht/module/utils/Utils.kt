@@ -5,8 +5,6 @@ import ru.DmN.siberia.Parser
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.utils.IPlatform
-import ru.DmN.siberia.utils.Module
-import ru.DmN.siberia.utils.ModulesProvider
 
 fun ModulesProvider.getOrLoadModule(name: String, platform: IPlatform): Module =
     this[name].let {

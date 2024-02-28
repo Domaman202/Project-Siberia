@@ -1,6 +1,6 @@
 package ru.DmN.siberia.parsers
 
-import ru.DmN.siberia.node.NodeTypes
+import ru.DmN.siberia.utils.node.NodeTypes
 
 /**
  * Парсер нод с под-нодами.

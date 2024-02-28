@@ -1,7 +1,0 @@
-(module
-    (name "test/module/parse")
-    (version "1.0.0")
-    (author "DomamaN202")
-    (deps ["siberia"])
-    (uses ["siberia" "test/module/parse"])
-    (files []))
