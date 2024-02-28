@@ -1,8 +1,8 @@
 package ru.DmN.siberia.ast
 
-import ru.DmN.siberia.utils.node.INodeInfo
-import ru.DmN.siberia.utils.meta.IMetadataKey
 import ru.DmN.siberia.utils.indent
+import ru.DmN.siberia.utils.meta.IMetadataKey
+import ru.DmN.siberia.utils.node.INodeInfo
 
 /**
  * Абстракция AST ноды
@@ -26,6 +26,12 @@ abstract class Node {
      * Чтобы удалить метаданные в параметр value передайте null.
      */
     open fun setMetadata(key: IMetadataKey, value: Any?): Unit =
+        throw UnsupportedOperationException()
+
+    /**
+     * Вызывает всех слушателей обновления метаданных ноды.
+     */
+    open fun visitMetadata(key: IMetadataKey, value: Any?): Unit =
         throw UnsupportedOperationException()
 
     /**

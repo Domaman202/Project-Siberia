@@ -5,10 +5,14 @@ class MetadataContainer {
     private val visitors: MutableList<IMetadataVisitor> = ArrayList()
 
     operator fun set(key: IMetadataKey, value: Any?) {
-        visitors.forEach { it.onUpdate(key, value) }
+        visit(key, value)
         if (value == null)
             metadata.remove(key)
         else metadata[key] = value
+    }
+
+    fun visit(key: IMetadataKey, value: Any?) {
+        visitors.forEach { it.onUpdate(key, value) }
     }
 
     operator fun get(key: IMetadataKey): Any? =
