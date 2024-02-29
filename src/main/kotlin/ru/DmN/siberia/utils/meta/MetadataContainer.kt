@@ -1,8 +1,11 @@
 package ru.DmN.siberia.utils.meta
 
-class MetadataContainer {
-    private val metadata: MutableMap<IMetadataKey, Any?> = HashMap()
+class MetadataContainer(
+    private val metadata: MutableMap<IMetadataKey, Any?> = HashMap(),
     private val visitors: MutableList<IMetadataVisitor> = ArrayList()
+) {
+    fun copy() =
+        MetadataContainer(metadata)
 
     operator fun set(key: IMetadataKey, value: Any?) {
         visit(key, value)

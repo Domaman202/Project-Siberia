@@ -6,6 +6,13 @@ import ru.DmN.siberia.lexer.*
 import java.io.DataInputStream
 import java.io.InputStream
 
+inline fun <T, R> List<T>.mapMutable(transform: (T) -> R): MutableList<R> {
+    val list = ArrayList<R>(this.size)
+    for (it in this)
+        list.add(transform(it))
+    return list
+}
+
 fun Map<String, Any?>.copy(): MutableMap<String, Any?> {
     val map = HashMap<String, Any?>()
     this.forEach { map[it.key] = it.value }

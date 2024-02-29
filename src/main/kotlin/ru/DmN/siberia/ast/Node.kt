@@ -5,19 +5,19 @@ import ru.DmN.siberia.utils.meta.IMetadataKey
 import ru.DmN.siberia.utils.node.INodeInfo
 
 /**
- * Абстракция AST ноды
+ * Абстракция AST ноды.
  */
-abstract class Node {
+interface Node {
     /**
      * Информация о ноде.
      */
-    abstract val info: INodeInfo
+    val info: INodeInfo
 
     /**
      * Копирует ноду.
      * Перегрузите это если в вашей ноде есть что изменять.
      */
-    open fun copy(): Node =
+    fun copy(): Node =
         this
 
     /**
@@ -25,22 +25,22 @@ abstract class Node {
      *
      * Чтобы удалить метаданные в параметр value передайте null.
      */
-    open fun setMetadata(key: IMetadataKey, value: Any?): Unit =
-        throw UnsupportedOperationException()
+    fun setMetadata(key: IMetadataKey, value: Any?): Unit =
+        Unit
 
     /**
      * Вызывает всех слушателей обновления метаданных ноды.
      */
-    open fun visitMetadata(key: IMetadataKey, value: Any?): Unit =
-        throw UnsupportedOperationException()
+    fun visitMetadata(key: IMetadataKey, value: Any?): Unit =
+        Unit
 
     /**
      * Получает метаданные моды.
      *
      * В случае отсутствия метаданных возвращает null.
      */
-    open fun getMetadata(key: IMetadataKey): Any? =
-        throw UnsupportedOperationException()
+    fun getMetadata(key: IMetadataKey): Any? =
+        null
 
     /**
      * Печатает ноду.
@@ -48,7 +48,7 @@ abstract class Node {
      * @param indent отступ.
      * @param short Режим краткого вывода.
      */
-    open fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder =
+    fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder =
         builder.indent(indent).append('[').append(info.type).append(']')
 
     /**
@@ -58,10 +58,4 @@ abstract class Node {
      */
     fun print(short: Boolean = true): String =
         print(StringBuilder(), 0, short).toString()
-
-    override fun equals(other: Any?): Boolean =
-        other === this || (other is Node && other.info == info)
-
-    override fun hashCode(): Int =
-        info.hashCode()
 }

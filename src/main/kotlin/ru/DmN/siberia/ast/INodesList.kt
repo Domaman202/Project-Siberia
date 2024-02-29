@@ -3,7 +3,7 @@ package ru.DmN.siberia.ast
 /**
  * Интерфейс описывающий ноду, имеющую под-ноды.
  */
-interface INodesList {
+interface INodesList : Node {
     /**
      * Под-ноды.
      */

@@ -1,7 +1,8 @@
 package ru.DmN.siberia.ast
 
-import ru.DmN.siberia.utils.node.INodeInfo
 import ru.DmN.siberia.utils.indent
+import ru.DmN.siberia.utils.mapMutable
+import ru.DmN.siberia.utils.node.INodeInfo
 
 /**
  * Нода с под-нодами.
@@ -14,7 +15,7 @@ open class NodeNodesList(info: INodeInfo, override val nodes: MutableList<Node> 
      * Копирует под-ноды
      */
     fun copyNodes(): MutableList<Node> =
-        nodes.map { it.copy() }.toMutableList()
+        nodes.mapMutable { it.copy() }
 
     override fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder =
         printNodes(builder.indent(indent).append('[').append(info.type), indent, short).append(']')
