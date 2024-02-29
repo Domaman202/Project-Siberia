@@ -1,5 +1,6 @@
 package ru.DmN.siberia.ast
 
+import ru.DmN.siberia.utils.indent
 import ru.DmN.siberia.utils.meta.IMetadataKey
 import ru.DmN.siberia.utils.meta.MetadataContainer
 import ru.DmN.siberia.utils.node.INodeInfo
@@ -27,6 +28,28 @@ open class BaseMetaNode(info: INodeInfo, open val metadata: Lazy<MetadataContain
         if (metadata.isInitialized())
             BaseMetaNode(info, lazyOf(metadata.value.copy()))
         else BaseMetaNode(info)
+
+    override fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder = builder.apply {
+        indent(indent).append('[').append(info.type)
+        if (!short)
+            printMetadata(this, indent)
+        append(']')
+    }
+
+    fun printMetadata(builder: StringBuilder, indent: Int): StringBuilder = builder.apply {
+        if (metadata.isInitialized()) {
+            append('\n').indent(indent + 1).append("(meta:")
+            metadata.value.metadata.let {
+                if (it.isNotEmpty()) {
+                    it.forEach { (k, v) ->
+                        append('\n').indent(indent + 2).append('[').append(k).append("] ").append(v)
+                    }
+                    append('\n').indent(indent + 1)
+                }
+            }
+            append(')')
+        }
+    }
 
     override fun equals(other: Any?): Boolean =
         other is BaseMetaNode && other.metadata == metadata
