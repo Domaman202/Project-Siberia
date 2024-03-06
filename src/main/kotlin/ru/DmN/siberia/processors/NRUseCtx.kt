@@ -2,12 +2,12 @@ package ru.DmN.siberia.processors
 
 import ru.DmN.pht.module.utils.Module
 import ru.DmN.pht.module.utils.ModulesProvider
-import ru.DmN.siberia.Processor
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeNodesList
 import ru.DmN.siberia.ast.NodeProcessedUse
 import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.parsers.NPUseCtx.getModules
+import ru.DmN.siberia.processor.Processor
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.ProcessingStage.MODULE_POST_INIT
 import ru.DmN.siberia.processor.utils.module
@@ -77,5 +77,5 @@ object NRUseCtx : INodeProcessor<NodeUse> {
      * @return Результат выполнения блока.
      */
     inline fun injectModules(modules: MutableList<Module>, uses: Sequence<Module>, noinline load: (Module) -> Unit, init: (Module) -> Unit) =
-        uses.asSequence().filter { !modules.contains(it) }.onEach(load).forEach(init) // todo: asSequence?
+        uses.filter { !modules.contains(it) }.onEach(load).forEach(init)
 }

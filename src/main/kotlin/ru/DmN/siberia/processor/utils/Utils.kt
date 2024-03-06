@@ -2,7 +2,7 @@ package ru.DmN.siberia.processor.utils
 
 import ru.DmN.pht.module.utils.Module
 import ru.DmN.pht.module.utils.ModulesProvider
-import ru.DmN.siberia.Processor
+import ru.DmN.siberia.processor.Processor
 import ru.DmN.siberia.ast.INodesList
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeNodesList

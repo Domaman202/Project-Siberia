@@ -1,23 +1,23 @@
 package ru.DmN.siberia.console
 
+import ru.DmN.pht.module.utils.Module
+import ru.DmN.pht.module.utils.ModulesProvider
 import ru.DmN.pht.module.utils.getOrLoadModule
-import ru.DmN.siberia.Compiler
-import ru.DmN.siberia.Processor
-import ru.DmN.siberia.Unparser
 import ru.DmN.siberia.ast.Node
+import ru.DmN.siberia.compiler.CompilerImpl
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.console.ctx.isModule
 import ru.DmN.siberia.console.ctx.module
 import ru.DmN.siberia.console.utils.Argument
 import ru.DmN.siberia.console.utils.ArgumentType
 import ru.DmN.siberia.console.utils.Command
+import ru.DmN.siberia.processor.ProcessorImpl
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.*
 import ru.DmN.siberia.processors.NRUseCtx.injectModules
+import ru.DmN.siberia.unparser.UnparserImpl
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.utils.IPlatform
-import ru.DmN.pht.module.utils.Module
-import ru.DmN.pht.module.utils.ModulesProvider
 import ru.DmN.siberia.utils.vtype.TypesProvider
 import java.io.File
 import java.io.FileOutputStream
@@ -125,7 +125,7 @@ object BuildCommands {
         console.println("Компиляция...")
         try {
             val nodes = processModule(console)
-            val compiler = Compiler(mp, tp)
+            val compiler = CompilerImpl(mp, tp)
             val ctx = CompilationContext.base().apply { this.platform = platform }
             nodes.forEach { compiler.compile(it, ctx) }
             compiler.stageManager.runAll()
@@ -140,7 +140,7 @@ object BuildCommands {
 
     @JvmStatic
     fun platformSelect(console: Console, vararg args: Any?) {
-        val name = (args[0] as String).toUpperCase()
+        val name = (args[0] as String).uppercase()
         //
         val platform = IPlatform.PLATFORMS.find { it.name == name }
         if (platform == null) {
@@ -165,7 +165,7 @@ object BuildCommands {
             val nodes = processModule(console)
             File("dump").mkdir()
             FileOutputStream("dump/unparse.pht").use { out ->
-                val unparser = Unparser(mp, 1024 * 1024)
+                val unparser = UnparserImpl(mp, 1024 * 1024)
                 val uctx = UnparsingContext.base().apply { this.platform = platform }
                 nodes.forEach { unparser.unparse(it, uctx, 0) }
                 out.write(unparser.out.toString().toByteArray())
@@ -243,7 +243,7 @@ object BuildCommands {
         console.println("Обработка...")
         //
         val processed = ArrayList<Node>()
-        val processor = Processor(mp, tp)
+        val processor = ProcessorImpl(mp, tp)
         mp.injectModules(mutableListOf(module.name), processed, processed, processor, ProcessingContext.base().with(platform).apply { this.module = module })
         processor.stageManager.runAll()
         //

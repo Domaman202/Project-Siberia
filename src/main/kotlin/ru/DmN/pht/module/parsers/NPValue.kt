@@ -2,7 +2,7 @@ package ru.DmN.pht.std.module.parsers
 
 import ru.DmN.pht.module.node.NodeTypes
 import ru.DmN.pht.std.module.ast.NodeValue
-import ru.DmN.siberia.Parser
+import ru.DmN.siberia.parser.Parser
 import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.lexer.Token.DefaultType.INTEGER
 import ru.DmN.siberia.lexer.Token.DefaultType.STRING

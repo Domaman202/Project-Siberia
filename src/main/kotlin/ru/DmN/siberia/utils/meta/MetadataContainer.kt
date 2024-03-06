@@ -1,7 +1,9 @@
 package ru.DmN.siberia.utils.meta
 
+import java.util.*
+
 class MetadataContainer(
-    val metadata: MutableMap<IMetadataKey, Any?> = HashMap(),
+    val metadata: MutableMap<IMetadataKey, Any?> = TreeMap(),
     val visitors: MutableList<IMetadataVisitor> = ArrayList()
 ) {
     fun copy() =

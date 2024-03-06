@@ -1,11 +1,12 @@
 package ru.DmN.siberia
 
+import ru.DmN.pht.module.utils.Module
 import ru.DmN.siberia.compilers.NCDefault
 import ru.DmN.siberia.compilers.NCUse
 import ru.DmN.siberia.compilers.NCUseCtx
-import ru.DmN.siberia.utils.node.NodeTypes.*
+import ru.DmN.siberia.parser.Parser
+import ru.DmN.siberia.parser.ParserImpl
 import ru.DmN.siberia.parser.ctx.ParsingContext
-import ru.DmN.siberia.parser.utils.baseParseNode
 import ru.DmN.siberia.parsers.NPExport
 import ru.DmN.siberia.parsers.NPProgn
 import ru.DmN.siberia.parsers.NPUse
@@ -18,7 +19,7 @@ import ru.DmN.siberia.unparsers.NUDefault
 import ru.DmN.siberia.unparsers.NUUse
 import ru.DmN.siberia.unparsers.NUUseCtx
 import ru.DmN.siberia.utils.IPlatform.UNIVERSAL
-import ru.DmN.pht.module.utils.Module
+import ru.DmN.siberia.utils.node.NodeTypes.*
 
 object Siberia : Module("siberia") {
     private fun initParsers() {
@@ -63,9 +64,16 @@ object Siberia : Module("siberia") {
         add(UNIVERSAL, USE_CTX_,NCUseCtx)
     }
 
-    override fun load(parser: Parser, ctx: ParsingContext, uses: MutableList<String>) {
-        parser.parseNode = { baseParseNode(it) }
+    override fun load(parser: Parser, ctx: ParsingContext, uses: MutableList<String>): Boolean {
+        if (!ctx.loadedModules.contains(this)) {
+            super.load(parser, ctx, uses)
+            return true
+        }
+        return false
     }
+
+    override fun changeParser(parser: Parser, ctx: ParsingContext): Parser =
+        ParserImpl(parser)
 
     init {
         initParsers()

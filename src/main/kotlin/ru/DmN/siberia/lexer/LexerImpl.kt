@@ -1,25 +1,18 @@
-package ru.DmN.siberia
+package ru.DmN.siberia.lexer
 
-import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.lexer.Token.DefaultType.*
 import ru.DmN.siberia.utils.isPrimitive
 
 /**
- * Лексический анализатор
+ * Стандартная реализация лексического анализатора.
  */
-class Lexer(val input: String) : Iterator<Token?> {
+class LexerImpl(val input: String) : Lexer() {
     var ptr: Int = 0
     var line: Int = 0
     var symbols: Int = 0
 
-    /**
-     * Проверка на наличие следующего токена.
-     */
     override fun hasNext(): Boolean = ptr != input.length
 
-    /**
-     * Выдаёт следующий токен если таковой есть, в противном случае null.
-     */
     override fun next(): Token? {
         if (ptr >= input.length)
             return null

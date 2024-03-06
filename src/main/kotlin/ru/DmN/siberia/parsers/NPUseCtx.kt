@@ -1,17 +1,17 @@
 package ru.DmN.siberia.parsers
 
+import ru.DmN.pht.module.utils.Module
+import ru.DmN.pht.module.utils.ModulesProvider
 import ru.DmN.pht.module.utils.getOrLoadModule
-import ru.DmN.siberia.Parser
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.lexer.Token
-import ru.DmN.siberia.utils.node.INodeInfo
-import ru.DmN.siberia.utils.node.NodeTypes
+import ru.DmN.siberia.parser.Parser
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.utils.IPlatform
-import ru.DmN.pht.module.utils.Module
-import ru.DmN.pht.module.utils.ModulesProvider
+import ru.DmN.siberia.utils.node.INodeInfo
+import ru.DmN.siberia.utils.node.NodeTypes
 
 object NPUseCtx : INodeParser {
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node {
@@ -21,10 +21,8 @@ object NPUseCtx : INodeParser {
             names.add(tk.text!!)
             tk = parser.nextToken()!!
         }
-        parser.tokens.push(tk)
-        return parser.mp.parse(names, parser, ctx) { context ->
-            NPProgn.parse(parser, context) { NodeUse(INodeInfo.of(NodeTypes.USE_CTX, ctx, token), it, names) }
-        }
+        parser.pushToken(tk)
+        return parser.mp.parse(names, parser, ctx) { p, c -> NPProgn.parse(p, c) { NodeUse(INodeInfo.of(NodeTypes.USE_CTX, ctx, token), it, names) } }
     }
 
     /**
@@ -36,15 +34,16 @@ object NPUseCtx : INodeParser {
      * @param parse Метод создающий ноду.
      * @return Созданная нода.
      */
-    fun ModulesProvider.parse(names: MutableList<String>, parser: Parser, ctx: ParsingContext, parse: (context: ParsingContext) -> Node): Node {
+    fun ModulesProvider.parse(names: MutableList<String>, parser: Parser, ctx: ParsingContext, parse: (parser: Parser, ctx: ParsingContext) -> Node): Node {
         val context = ctx.subCtx()
         return injectModules(
             context.platform,
             context.loadedModules,
             names,
             { it.load(parser, context, names) },
-            { it.clear(parser, context) },
-            { parse(context) }
+            { it.changeParser(parser, ctx) },
+            parser,
+            { parse(it, context) }
         )
     }
 
@@ -82,24 +81,31 @@ object NPUseCtx : INodeParser {
      *
      * @param modules Список загруженных модулей.
      * @param uses Список необходимых модулей.
-     * @param clean Очистка модулей.
+     * @param load Загрузка модуля.
      * @param block Блок.
      * @return Результат выполнения блока.
      */
-    private inline fun <T> ModulesProvider.injectModules(platform: IPlatform, modules: MutableList<Module>, uses: List<String>, load: (Module) -> Unit, clean: (Module) -> Unit, block: () -> T): T {
-        val loaded = ArrayList<Module>(uses.size)
+    private inline fun <T, R> ModulesProvider.injectModules(
+        platform: IPlatform,
+        modules: MutableList<Module>,
+        uses: List<String>,
+        load: (Module) -> Boolean,
+        change: (Module) -> T?,
+        value: T,
+        block: (T) -> R
+    ): R {
+        var changer: Module? = null
         var i = 0
         while (i < uses.size) {
             val name = uses[i++]
             if (modules.any { it.name == name })
                 continue
             val module = getOrLoadModule(name, platform)
-            load(module)
-            loaded += module
+            if (load(module)) {
+                changer = module
+            }
         }
-        val result = block()
-        loaded.forEach(clean)
-        return result
+        return block(changer?.let(change) ?: value)
     }
 
     /*

@@ -1,7 +1,7 @@
 package ru.DmN.siberia.parsers
 
 import ru.DmN.siberia.lexer.Token
-import ru.DmN.siberia.Parser
+import ru.DmN.siberia.parser.Parser
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.ast.Node
 

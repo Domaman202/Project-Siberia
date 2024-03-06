@@ -1,7 +1,7 @@
 package ru.DmN.siberia.unparsers
 
 import ru.DmN.pht.module.utils.getOrLoadModule
-import ru.DmN.siberia.Unparser
+import ru.DmN.siberia.unparser.Unparser
 import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.unparser.UnparsingContext
