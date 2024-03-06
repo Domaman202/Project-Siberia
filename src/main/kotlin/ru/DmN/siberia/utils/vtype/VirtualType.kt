@@ -216,7 +216,7 @@ abstract class VirtualType {
         override var isInterface: Boolean = false,
         override var isAbstract: Boolean = false,
         override var isFinal: Boolean = false,
-        override val isFile: Boolean = false,
+        override var isFile: Boolean = false,
         //
         override var generics: MutableMap<String, VirtualType> = HashMap()
     ) : VirtualType()
