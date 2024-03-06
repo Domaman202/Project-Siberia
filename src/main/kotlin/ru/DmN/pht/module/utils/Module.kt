@@ -170,16 +170,6 @@ open class Module(val name: String) {
     }
 
     /**
-     * Создание нового де-парсера для смены.
-     *
-     * @param parser Де-парсер.
-     * @param ctx Контекст де-парсинга.
-     * @return Новый де-парсер, null - если модуль не может изменять де-парсер.
-     */
-    open fun changeUnparser(parser: Unparser, ctx: UnparsingContext): Unparser? =
-        null
-
-    /**
      * Загружает модуль в контекст обработки.
      *
      * @param processor Обработчик.
@@ -192,17 +182,6 @@ open class Module(val name: String) {
         }
         return false
     }
-
-    /**
-     * Создание нового обработчика для смены.
-     *
-     * @param processor Обработчик.
-     * @param ctx Контекст обработки.
-     * @return Новый обработчика, null - если модуль не может изменять обработчика.
-     */
-    open fun changeProcessor(processor: Processor, ctx: ProcessingContext): Processor? =
-        null
-
     /**
      * Загружает модуль в контекст компиляции.
      *
@@ -214,16 +193,6 @@ open class Module(val name: String) {
             ctx.loadedModules.add(0, this)
         }
     }
-
-    /**
-     * Создание нового компилятора для смены.
-     *
-     * @param compiler Компилятор.
-     * @param ctx Контекст компиляции.
-     * @return Новый компилятор, null - если модуль не может изменять компилятора.
-     */
-    open fun changeCompiler(compiler: Compiler, ctx: CompilationContext): Compiler? =
-        null
 
     /**
      * Читает определённый файл текущего модуля.
