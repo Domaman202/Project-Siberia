@@ -50,12 +50,10 @@ abstract class VirtualType {
      */
     abstract val isFinal: Boolean
 
-
     /**
-     * Тип фантомный?
+     * Тип описывает функционал файла или может быть представлен в виде файла?
      */
-    open val isPhantom
-        get() = false
+    abstract val isFile: Boolean
 
     /**
      * Generic's (Name / Type)
@@ -218,7 +216,7 @@ abstract class VirtualType {
         override var isInterface: Boolean = false,
         override var isAbstract: Boolean = false,
         override var isFinal: Boolean = false,
-        override val isPhantom: Boolean = false,
+        override val isFile: Boolean = false,
         //
         override var generics: MutableMap<String, VirtualType> = HashMap()
     ) : VirtualType()

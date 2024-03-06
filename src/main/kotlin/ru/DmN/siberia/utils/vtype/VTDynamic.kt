@@ -17,6 +17,8 @@ object VTDynamic : VirtualType() {
         get() = false
     override val isFinal: Boolean
         get() = false
+    override val isFile: Boolean
+        get() = false
     override val generics: Map<String, VirtualType>
         get() = emptyMap()
 

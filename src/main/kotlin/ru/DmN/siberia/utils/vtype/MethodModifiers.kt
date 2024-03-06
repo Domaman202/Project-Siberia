@@ -42,5 +42,10 @@ data class MethodModifiers(
     /**
      * Метод встраиваемый?
      */
-    var inline: Boolean = false
+    var inline: Boolean = false,
+
+    /**
+     * Метод описывает функционал файла или может быть представлен в виде файла?
+     */
+    var file: Boolean = false
 )
