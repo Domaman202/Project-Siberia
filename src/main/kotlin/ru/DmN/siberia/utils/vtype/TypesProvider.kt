@@ -15,13 +15,13 @@ abstract class TypesProvider {
      * Ищет тип по имени, иначе выкидывает исключение.
      */
     open fun typeOf(name: String): VirtualType =
-        types[name.hashCode()] ?: throw RuntimeException("Type '$name not founded!'")
+        typeOfOrNull(name) ?: throw ClassNotFoundException("Type '$name not founded!'")
 
     /**
      * Ищет тип по имени, иначе возвращает null.
      */
     open fun typeOfOrNull(name: String): VirtualType? =
-        try { typeOf(name) } catch (_: ClassNotFoundException) { null }
+        types[name.hashCode()]
 
     /**
      * Добавляет тип в список типов.
