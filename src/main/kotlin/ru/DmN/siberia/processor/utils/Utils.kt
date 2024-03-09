@@ -2,16 +2,16 @@ package ru.DmN.siberia.processor.utils
 
 import ru.DmN.pht.module.utils.Module
 import ru.DmN.pht.module.utils.ModulesProvider
-import ru.DmN.siberia.processor.Processor
 import ru.DmN.siberia.ast.INodesList
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeNodesList
+import ru.DmN.siberia.processor.Processor
+import ru.DmN.siberia.processor.ctx.ContextKeys.*
+import ru.DmN.siberia.processor.ctx.ProcessingContext
+import ru.DmN.siberia.utils.IPlatform
+import ru.DmN.siberia.utils.ctx.IContextCollection
 import ru.DmN.siberia.utils.node.INodeInfo
 import ru.DmN.siberia.utils.node.NodeTypes
-import ru.DmN.siberia.processor.ctx.ProcessingContext
-import ru.DmN.siberia.utils.ctx.IContextCollection
-import ru.DmN.siberia.processor.ctx.ContextKeys.*
-import ru.DmN.siberia.utils.*
 import ru.DmN.siberia.utils.vtype.TypesProvider
 
 fun processNodesList(node: INodesList, processor: Processor, ctx: ProcessingContext, valMode: Boolean) {
@@ -50,6 +50,12 @@ fun <T : IContextCollection<T>> T.with(ctx: Module) =
  */
 fun <T : IContextCollection<T>> T.with(ctx: IPlatform) =
     this.with(PLATFORM, ctx)
+
+/**
+ * Наличие платформы в контексте.
+ */
+val IContextCollection<*>.isPlatform: Boolean
+    get() = contexts.containsKey(PLATFORM)
 
 /**
  * Текущий модуль.

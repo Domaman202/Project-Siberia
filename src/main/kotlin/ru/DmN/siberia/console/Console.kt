@@ -83,7 +83,6 @@ open class Console : Runnable, IContextCollection<Console> {
             for (i in args.indices) {
                 val argument = cmd.arguments[i]
                 args[i] = when (argument.type) {
-                    ArgumentType.AVAILABLE_COMMAND -> selectCommand(argument.consoleText, true)
                     ArgumentType.COMMAND -> selectCommand(argument.consoleText, false)
                     ArgumentType.STRING -> readString(argument.consoleText)
                     ArgumentType.INT -> readInt(argument.consoleText)

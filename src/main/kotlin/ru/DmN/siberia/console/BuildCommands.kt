@@ -23,36 +23,6 @@ import java.io.File
 import java.io.FileOutputStream
 
 object BuildCommands {
-    val MODULE_SELECT = Command(
-        "module",
-        "m",
-        "Модуль",
-        "Выбрать модуль",
-        "Выбирает модуль для дальнейшей работы.",
-        listOf(
-            Argument(
-                "name",
-                "Имя",
-                ArgumentType.STRING,
-                "Имя модуля.",
-                "Введите имя модуля"
-            )
-        ),
-        BaseCommands::alviseAvailable,
-        BuildCommands::moduleSelect
-    )
-
-    val MODULE_INFO = Command(
-        "module-info",
-        "mi",
-        "Модуль",
-        "Информация о модуле",
-        "Выводит информацию о модуле.",
-        emptyList(),
-        BuildCommands::moduleCtxAvailable,
-        BuildCommands::moduleInfo
-    )
-
     val PLATFORM_SELECT = Command(
         "platform",
         "p",
@@ -68,8 +38,38 @@ object BuildCommands {
                 "Введите название платформы"
             )
         ),
-        BuildCommands::moduleCtxAvailable,
+        BaseCommands::alviseAvailable,
         BuildCommands::platformSelect
+    )
+
+    val MODULE_SELECT = Command(
+        "module",
+        "m",
+        "Модуль",
+        "Выбрать модуль",
+        "Выбирает модуль для дальнейшей работы.",
+        listOf(
+            Argument(
+                "name",
+                "Имя",
+                ArgumentType.STRING,
+                "Имя модуля.",
+                "Введите имя модуля"
+            )
+        ),
+        BuildCommands::platformCtxAvailable,
+        BuildCommands::moduleSelect
+    )
+
+    val MODULE_INFO = Command(
+        "module-info",
+        "mi",
+        "Модуль",
+        "Информация о модуле",
+        "Выводит информацию о модуле.",
+        emptyList(),
+        BuildCommands::moduleCtxAvailable,
+        BuildCommands::moduleInfo
     )
 
 
@@ -114,7 +114,7 @@ object BuildCommands {
         BuildCommands::moduleCompile
     )
 
-    val ALL_COMMANDS = listOf(MODULE_SELECT, MODULE_INFO, PLATFORM_SELECT, MODULE_PRINT, MODULE_UNPARSE, MODULE_COMPILE)
+    val ALL_COMMANDS = listOf(PLATFORM_SELECT, MODULE_SELECT, MODULE_INFO, MODULE_PRINT, MODULE_UNPARSE, MODULE_COMPILE)
 
     @JvmStatic
     fun moduleCompile(console: Console, vararg args: Any?) {
@@ -136,23 +136,6 @@ object BuildCommands {
             console.println("Компиляция окончена с ошибками:")
             t.printStackTrace(console.print)
         }
-    }
-
-    @JvmStatic
-    fun platformSelect(console: Console, vararg args: Any?) {
-        val name = (args[0] as String).uppercase()
-        //
-        val platform = IPlatform.PLATFORMS.find { it.name == name }
-        if (platform == null) {
-            console.println("Платформа '$name' не найдена!")
-            return
-        }
-        //
-        console.platform = platform
-        console.tp = TypesProvider.of(platform)
-        console.mp = ModulesProvider.of(platform)
-        //
-        console.println("Выбрана платформа '$name'.")
     }
 
     @JvmStatic
@@ -230,8 +213,29 @@ object BuildCommands {
     }
 
     @JvmStatic
+    fun platformSelect(console: Console, vararg args: Any?) {
+        val name = (args[0] as String).uppercase()
+        //
+        val platform = IPlatform.PLATFORMS.find { it.name == name }
+        if (platform == null) {
+            console.println("Платформа '$name' не найдена!")
+            return
+        }
+        //
+        console.platform = platform
+        console.tp = TypesProvider.of(platform)
+        console.mp = ModulesProvider.of(platform)
+        //
+        console.println("Выбрана платформа '$name'.")
+    }
+
+    @JvmStatic
     fun moduleCtxAvailable(console: Console): Boolean =
         console.isModule
+
+    @JvmStatic
+    fun platformCtxAvailable(console: Console): Boolean =
+        console.isPlatform
 
     @JvmStatic
     private fun processModule(console: Console): List<Node> {
