@@ -56,41 +56,6 @@ abstract class VirtualType {
     abstract val isFile: Boolean
 
     /**
-     * Generic's (Name / Type)
-     */
-    abstract val generics: Map<String, VirtualType>
-
-    /**
-     * Имя без пакета.
-     */
-    open val simpleName: String
-        get() = name.substring(name.lastIndexOf('.') + 1)
-
-    /**
-     * Имя класса.
-     */
-    open val className: String
-        get() = name.replace('.', '/')
-
-    /**
-     * Родительский класс, в случае класса, иначе null.
-     */
-    open val superclass: VirtualType?
-        get() = if (isInterface) null else parents.find { !it.isInterface }
-
-    /**
-     * Реализуемые интерфейсы.
-     */
-    open val interfaces: List<VirtualType>
-        get() = if (isInterface) parents else parents.drop(1)
-
-    /**
-     * Тип массива из элементов данного типа.
-     */
-    open val arrayType: VirtualType
-        get() = VirtualTypeImpl("[${desc.replace('/', '.')}", componentType = this)
-
-    /**
      * Тип является примитивом?
      */
     open val isPrimitive
@@ -101,41 +66,6 @@ abstract class VirtualType {
      */
     open val isArray
         get() = componentType != null
-
-    /**
-     * Дескриптор.
-     */
-    open val desc: String
-        get() =
-            if (this.isArray)
-                "[${componentType!!.desc}"
-            else when (name) {
-                "void" -> "V"
-                "boolean" -> "Z"
-                "byte" -> "B"
-                "short" -> "S"
-                "char" -> "C"
-                "int" -> "I"
-                "long" -> "J"
-                "float" -> "F"
-                "double" -> "D"
-                else -> "L$className;"
-            }
-
-    /**
-     * Сигнатура.
-     */
-
-    open val signature: String?
-        get() =
-            if (generics.isEmpty())
-                null
-            else {
-                val sb = StringBuilder().append('<')
-                generics.forEach { (k, v) -> sb.append(k).append(':').append(v.desc) }
-                sb.append('>').append(superclass!!.desc).toString()
-            }
-
 
     /**
      * Тип можно получить из целевого?
@@ -187,7 +117,7 @@ abstract class VirtualType {
          * Создаёт тип.
          */
         private fun createOfKlass(klass: Klass): VirtualType =
-            VirtualTypeImpl(klass.name).apply {
+            Impl(klass.name).apply {
                 TYPES[klass.name] = this
                 klass.superclass?.let { parents.add(ofKlass(it.name)) }
                 Arrays.stream(klass.interfaces).map { ofKlass(it.name) }.forEach(parents::add)
@@ -204,7 +134,7 @@ abstract class VirtualType {
     /**
      * Простая реализация виртуального типа.
      */
-    class VirtualTypeImpl(
+    class Impl(
         override var name: String,
         //
         override var parents: MutableList<VirtualType> = ArrayList(),
@@ -217,7 +147,5 @@ abstract class VirtualType {
         override var isAbstract: Boolean = false,
         override var isFinal: Boolean = false,
         override var isFile: Boolean = false,
-        //
-        override var generics: MutableMap<String, VirtualType> = HashMap()
     ) : VirtualType()
 }

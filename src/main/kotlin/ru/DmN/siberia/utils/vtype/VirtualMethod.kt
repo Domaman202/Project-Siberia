@@ -60,56 +60,11 @@ abstract class VirtualMethod {
      */
     abstract val inline: Node?
 
-    /**
-     * Generic's (Name / Type)
-     */
-    abstract val generics: Map<String, VirtualType>
-
-    /**
-     * Дескриптор аргументов.
-     */
-    val argsDesc: String
-        get() {
-            val str = StringBuilder()
-            argsc.forEach { str.append(it.desc) }
-            return str.toString()
-        }
-
-    /**
-     * Дескриптор метода.
-     */
-    val desc: String
-        get() = "($argsDesc)${if (name.startsWith("<")) "V" else rettype.desc}"
-
-    /**
-     * Сигнатура метода.
-     */
-    val signature: String?
-        get() =
-            if (generics.isEmpty())
-                null
-            else {
-                val sb = StringBuilder()
-                if (!modifiers.static) {
-                    val list = generics.entries.drop(declaringClass.generics.size)
-                    if (list.isNotEmpty()) {
-                        sb.append('<')
-                        list.forEach {
-                            sb.append(it.key).append(':').append(it.value.desc)
-                        }
-                        sb.append('>')
-                    }
-                }
-                sb.append('(')
-                argsg.forEach { sb.append('T').append(it).append(';') }
-                sb.append(')').append(retgen?.let { "T${retgen};" } ?: rettype.desc).toString()
-            }
-
     override fun equals(other: Any?): Boolean =
         other is VirtualMethod && other.hashCode() == hashCode()
 
     override fun hashCode(): Int =
-        (name.hashCode() * 31 + desc.hashCode()) * 31 + declaringClass.hashCode()
+        (name.hashCode() * 31 + argsc.hashCode()) * 31 + declaringClass.hashCode()
 
     companion object {
         /**
@@ -150,7 +105,7 @@ abstract class VirtualMethod {
                 argsn += it.name
                 argsg += if (it.parameterizedType is TypeVariable<*>) (it.parameterizedType as TypeVariable<*>).name else null
             }
-            return VirtualMethodImpl(
+            return Impl(
                 declaringClass,
                 "<init>",
                 VirtualType.VOID,
@@ -165,8 +120,7 @@ abstract class VirtualMethod {
                     final = Modifier.isFinal(method.modifiers)
                 ),
                 null,
-                null,
-                declaringClass.generics // todo:
+                null
             )
         }
 
@@ -182,7 +136,7 @@ abstract class VirtualMethod {
                 argsn += it.name
                 argsg += if (it.parameterizedType is TypeVariable<*>) (it.parameterizedType as TypeVariable<*>).name else null
             }
-            return VirtualMethodImpl(
+            return Impl(
                 declaringClass,
                 method.name,
                 VirtualType.ofKlass(method.returnType),
@@ -197,8 +151,7 @@ abstract class VirtualMethod {
                     final = Modifier.isFinal(method.modifiers)
                 ),
                 null,
-                null,
-                declaringClass.generics // todo:
+                null
             )
         }
     }
@@ -206,17 +159,20 @@ abstract class VirtualMethod {
     /**
      * Простая реализация виртуального метода.
      */
-    class VirtualMethodImpl(
+    class Impl(
         override var declaringClass: VirtualType,
+        //
         override var name: String,
+        //
         override var rettype: VirtualType,
         override val retgen: String?,
+        //
         override var argsc: List<VirtualType>,
         override var argsn: List<String>,
         override val argsg: List<String?>,
+        //
         override var modifiers: MethodModifiers,
         override var extension: VirtualType?,
         override var inline: Node?,
-        override var generics: Map<String, VirtualType>
     ) : VirtualMethod()
 }

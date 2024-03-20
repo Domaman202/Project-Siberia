@@ -27,12 +27,6 @@ abstract class VirtualField {
      */
     abstract val modifiers: FieldModifiers
 
-    /**
-     * Дескриптор поля.
-     */
-    val desc
-        get() = type.desc
-
     override fun equals(other: Any?): Boolean =
         other is VirtualField && other.hashCode() == hashCode()
 
