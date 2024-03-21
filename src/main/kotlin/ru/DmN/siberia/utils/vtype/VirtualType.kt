@@ -31,7 +31,7 @@ abstract class VirtualType {
     abstract val methods: List<VirtualMethod>
 
     /**
-     * Тип элементов массива, если это массив, в противном случае null.
+     * Тип исходного элемента, в случае если тип не произвольный возвращает null.
      */
     abstract val componentType: VirtualType?
 
@@ -60,13 +60,6 @@ abstract class VirtualType {
      */
     open val isPrimitive
         get() = name.isPrimitive()
-
-    /**
-     * Тип является массивом?
-     */
-    open val isArray
-        get() = componentType != null
-
     /**
      * Тип можно получить из целевого?
      */

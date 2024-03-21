@@ -33,16 +33,25 @@ class LexerImpl(val input: String) : Lexer() {
                 val sb = StringBuilder()
                 while (ptr < input.length) {
                     var c = input[ptr]
-                    if (c.isLetter() || c.isDigit() || c == '.' || c == '/' || c == '$') {
-                        inc()
-                        sb.append(c)
-                    } else if (c == '<') {
-                        while (c != '>') {
-                            c = input[inc()]
+                    when (c) {
+                        '!', '@', '#', '$', '^', '&', '*', '[', '.', '/' -> {
+                            inc()
                             sb.append(c)
                         }
-                        return Token(line, CLASS_WITH_GEN, sb.toString())
-                    } else break
+                        '<' -> {
+                            while (c != '>') {
+                                c = input[inc()]
+                                sb.append(c)
+                            }
+                            return Token(line, CLASS_WITH_GEN, sb.toString())
+                        }
+                        else -> {
+                            if (c.isLetter() || c.isDigit()) {
+                                inc()
+                                sb.append(c)
+                            } else break
+                        }
+                    }
                 }
                 return Token(line, if (sb.isPrimitive()) PRIMITIVE else CLASS, sb.toString())
             }
