@@ -38,6 +38,7 @@ object BaseCommands {
         BaseCommands::cmdBuilder
     )
 
+    @JvmStatic
     val ALL_COMMANDS = listOf(HELP, CMD_BUILDER)
 
     @JvmStatic

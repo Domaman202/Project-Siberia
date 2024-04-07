@@ -121,6 +121,7 @@ object BuildCommands {
         BuildCommands::moduleCompile
     )
 
+    @JvmStatic
     val ALL_COMMANDS = listOf(PLATFORM_SELECT, MODULE_SELECT, MODULE_INFO, MODULE_PRINT, MODULE_UNPARSE, MODULE_COMPILE)
 
     @JvmStatic
