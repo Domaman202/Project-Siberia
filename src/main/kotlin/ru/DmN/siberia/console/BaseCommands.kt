@@ -1,3 +1,4 @@
+@file:Suppress("UNUSED_PARAMETER")
 package ru.DmN.siberia.console
 
 import ru.DmN.siberia.console.utils.Argument
@@ -5,6 +6,7 @@ import ru.DmN.siberia.console.utils.ArgumentType
 import ru.DmN.siberia.console.utils.Command
 
 object BaseCommands {
+    @JvmStatic
     val HELP = Command(
         "help",
         "h",
@@ -24,6 +26,7 @@ object BaseCommands {
         BaseCommands::help
     )
 
+    @JvmStatic
     val CMD_BUILDER = Command(
         null,
         null,
@@ -31,7 +34,7 @@ object BaseCommands {
         "Сборщик опций консоли",
         "Собирает быструю команду для запуска нужных действий в консоли.",
         emptyList(),
-        BaseCommands::alviseAvailable,
+        BaseCommands::interactiveAvailable,
         BaseCommands::cmdBuilder
     )
 
@@ -42,6 +45,7 @@ object BaseCommands {
         val out = StringBuilder()
         while (true) {
             console.clear()
+            console.println(out)
             console.println("Команды:")
             var category: String? = null
             console.commands.forEachIndexed { i, it ->

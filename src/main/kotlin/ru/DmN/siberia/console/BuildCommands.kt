@@ -1,3 +1,4 @@
+@file:Suppress("UNUSED_PARAMETER")
 package ru.DmN.siberia.console
 
 import ru.DmN.pht.module.utils.Module
@@ -23,6 +24,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 object BuildCommands {
+    @JvmStatic
     val PLATFORM_SELECT = Command(
         "platform",
         "p",
@@ -42,6 +44,7 @@ object BuildCommands {
         BuildCommands::platformSelect
     )
 
+    @JvmStatic
     val MODULE_SELECT = Command(
         "module",
         "m",
@@ -61,6 +64,7 @@ object BuildCommands {
         BuildCommands::moduleSelect
     )
 
+    @JvmStatic
     val MODULE_INFO = Command(
         "module-info",
         "mi",
@@ -73,6 +77,7 @@ object BuildCommands {
     )
 
 
+    @JvmStatic
     val MODULE_PRINT = Command(
         "module-print",
         "mp",
@@ -92,6 +97,7 @@ object BuildCommands {
         BuildCommands::modulePrint
     )
 
+    @JvmStatic
     val MODULE_UNPARSE = Command(
         "module-unparse",
         "mu",
@@ -103,6 +109,7 @@ object BuildCommands {
         BuildCommands::moduleUnparse
     )
 
+    @JvmStatic
     val MODULE_COMPILE = Command(
         "module-compile",
         "mc",
