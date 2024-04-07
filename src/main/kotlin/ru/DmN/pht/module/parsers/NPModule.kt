@@ -16,6 +16,7 @@ import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.utils.node.INodeInfo
 
 object NPModule : SimpleNP(MODULE) {
+    @Suppress("UNCHECKED_CAST")
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node {
         val context = ctx.subCtx()
         context.loadedModules.add(0, Helper)

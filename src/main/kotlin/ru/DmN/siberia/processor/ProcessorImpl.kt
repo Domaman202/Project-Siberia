@@ -26,6 +26,7 @@ class ProcessorImpl(override val mp: ModulesProvider, override val tp: TypesProv
             get(node, ctx).process(node, this, ctx, valMode)
         else node
 
+    @Suppress("UNCHECKED_CAST")
     override fun get(node: Node, ctx: ProcessingContext): INodeProcessor<Node> {
         val type = node.info.type
         ctx.loadedModules.forEach { it -> it.processors[type]?.let { return it as INodeProcessor<Node> } }

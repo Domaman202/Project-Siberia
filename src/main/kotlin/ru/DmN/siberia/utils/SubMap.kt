@@ -3,6 +3,7 @@ package ru.DmN.siberia.utils
 class SubMap<K, V>(val parent: Map<K, V>, val map: MutableMap<K, V> = HashMap()) : MutableMap<K, V> {
     override val size: Int
         get() = map.size + parent.size
+    @Suppress("UNCHECKED_CAST")
     override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
         get() = (map.entries + parent.entries).toMutableSet() as MutableSet<MutableMap.MutableEntry<K, V>>
     override val keys: MutableSet<K>

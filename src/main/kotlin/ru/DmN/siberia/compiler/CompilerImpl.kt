@@ -32,6 +32,7 @@ open class CompilerImpl(override val mp: ModulesProvider, override val tp: Types
             get(ctx, node).compileVal(node, this, ctx)
         else throw UnsupportedOperationException()
 
+    @Suppress("UNCHECKED_CAST")
     override fun get(ctx: CompilationContext, node: Node): INodeCompiler<Node> {
         val platform = ctx.platform
         val type = node.info.type

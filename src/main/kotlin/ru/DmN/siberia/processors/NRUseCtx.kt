@@ -28,6 +28,7 @@ object NRUseCtx : INodeProcessor<NodeUse> {
         return NodeProcessedUse(node.info.withType(USE_CTX_), node.nodes, node.names, exports, processed)
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : Node> ModulesProvider.injectModules(names: MutableList<String>, processed: MutableList<Node>, exports: MutableList<T>, processor: Processor, ctx: ProcessingContext): ProcessingContext {
         val context = ctx.subCtx()
         injectModules(

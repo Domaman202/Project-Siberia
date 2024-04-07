@@ -19,6 +19,7 @@ class UnparserImpl(
     override fun unparse(node: Node, ctx: UnparsingContext, indent: Int) =
         get(ctx, node).unparse(node, this, ctx, indent)
 
+    @Suppress("UNCHECKED_CAST")
     override fun get(ctx: UnparsingContext, node: Node): INodeUnparser<Node> {
         val type = node.info.type
         ctx.loadedModules.forEach { it -> it.unparsers[type]?.let { return it as INodeUnparser<Node> } }
