@@ -1,9 +1,11 @@
 package ru.DmN.siberia.console.utils
 
+import ru.DmN.siberia.console.Console
+
 /**
- * Команда
+ * Команда.
  */
-data class Command(
+abstract class Command(
     /**
      * Имя команды в виде опции.
      *
@@ -44,15 +46,26 @@ data class Command(
      *
      * (<file> / <command>)
      */
-    val arguments: List<Argument>,
+    val arguments: List<Argument>
+) {
 
     /**
      * Проверяет доступность команды.
      */
-    val available: CommandCheck,
+    abstract fun available(console: Console): Boolean
+
+    /**
+     * Проверяет доступность команды для сборщика команд.
+     */
+    abstract fun builderAvailable(flags: Map<Any?, Any?>): Boolean
 
     /**
      * Действие, которое будет выполняться при запуске команды.
      */
-    val action: CommandAction
-)
+    abstract fun action(console: Console, vararg args: Any?)
+
+    /**
+     * Добавление команды в сборщике команд.
+     */
+    open fun builderAppend(arguments: List<Any?>, flags: MutableMap<Any?, Any?>): Unit = Unit
+}

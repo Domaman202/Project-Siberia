@@ -71,8 +71,15 @@ open class Console : Runnable, IContextCollection<Console> {
         return kreadln()
     }
 
-    open fun readInt(text: String): Int =
-        readString(text).toInt()
+    open fun readInt(text: String): Int {
+        while (true) {
+            readString(text).let {
+                if (Regex("-?\\d+").matches(it)) {
+                    return it.toInt()
+                }
+            }
+        }
+    }
 
     override fun run() {
         commands.sortBy { it.category }

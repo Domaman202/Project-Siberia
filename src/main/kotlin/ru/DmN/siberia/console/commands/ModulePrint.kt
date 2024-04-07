@@ -1,0 +1,52 @@
+package ru.DmN.siberia.console.commands
+
+import ru.DmN.siberia.console.BuildCommands.processModule
+import ru.DmN.siberia.console.Console
+import ru.DmN.siberia.console.ctx.isModule
+import ru.DmN.siberia.console.utils.Argument
+import ru.DmN.siberia.console.utils.ArgumentType
+import ru.DmN.siberia.console.utils.Command
+import java.io.File
+import java.io.FileOutputStream
+
+object ModulePrint : Command(
+    "module-print",
+    "mp",
+    "Модуль",
+    "Печать AST модуля",
+    "Печатает AST деревья каждого исходного файла модуля.",
+    listOf(
+        Argument(
+            "mode",
+            "Режим",
+            ArgumentType.STRING,
+            "Режим печати.",
+            "Введите режим печати (short/long)"
+        )
+    )
+) {
+    override fun available(console: Console): Boolean =
+        console.isModule
+
+    override fun builderAvailable(flags: Map<Any?, Any?>): Boolean =
+        flags["module"] != null
+
+    override fun action(console: Console, vararg args: Any?) {
+        val mode = args[0] == "short"
+        //
+        console.println("Печать...")
+        try {
+            File("dump").mkdir()
+            val nodes = processModule(console)
+            FileOutputStream("dump/print.pht").use { out ->
+                val sb = StringBuilder()
+                nodes.forEach { it.print(sb, 0, mode) }
+                out.write(sb.toString().toByteArray())
+            }
+            console.println("Печать окончена успешно!")
+        } catch (t: Throwable) {
+            console.println("Печать окончена с ошибками:")
+            t.printStackTrace(console.print)
+        }
+    }
+}
