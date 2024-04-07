@@ -109,6 +109,7 @@ object BaseCommands {
     fun alviseAvailable(console: Console): Boolean =
         true
 
+    @JvmStatic
     private fun appendArguments(sb: StringBuilder, command: Command) {
         for (argument in command.arguments) {
             sb.append(" <").append(argument.option).append('>')
