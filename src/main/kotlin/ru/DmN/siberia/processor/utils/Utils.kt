@@ -65,13 +65,6 @@ var IContextCollection<*>.module
     get() = contexts[MODULE] as Module
 
 /**
- * Текущий модуль (если существует).
- */
-var IContextCollection<*>.moduleOrNull
-    set(value) { contexts[MODULE] = value }
-    get() = contexts[MODULE] as Module?
-
-/**
  * Платформа.
  */
 var IContextCollection<*>.platform

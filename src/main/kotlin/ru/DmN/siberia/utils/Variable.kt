@@ -14,7 +14,7 @@ open class Variable(
     /**
      * Тип.
      */
-    var type: VirtualType?,
+    var type: VirtualType,
     /**
      * Id переменной.
      *
@@ -26,12 +26,6 @@ open class Variable(
      */
     var tmp: Boolean
 ) {
-    /**
-     * Возвращает тип, в случае если он не определён возвращает тип объекта.
-     */
-    fun type(): VirtualType =
-        type ?: VirtualType.ofKlass("java.lang.Object")
-
     override fun equals(other: Any?): Boolean =
         other is Variable && other.hashCode() == hashCode()
 
@@ -42,7 +36,7 @@ open class Variable(
         /**
          * Создаёт tmp переменную из хеша и типа (опционально)
          */
-        fun tmp(hash: Any, type: VirtualType?) =
+        fun tmp(hash: Any, type: VirtualType) =
             Variable(tmp(hash), type, -1, true)
 
         /**
