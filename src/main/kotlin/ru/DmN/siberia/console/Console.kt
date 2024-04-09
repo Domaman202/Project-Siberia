@@ -74,7 +74,7 @@ open class Console : Runnable, IContextCollection<Console> {
     open fun readInt(text: String): Int {
         while (true) {
             readString(text).let {
-                if (Regex("-?\\d+").matches(it)) {
+                if (it.isNotEmpty() && Regex("-?\\d+").matches(it)) {
                     return it.toInt()
                 }
             }
