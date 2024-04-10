@@ -3,6 +3,9 @@ package ru.DmN.siberia.utils.node
 import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parser.utils.file
+import java.io.InputStream
+import java.util.function.Function
+import java.util.function.Supplier
 
 /**
  * Информация о ноде
@@ -12,16 +15,7 @@ interface INodeInfo {
      * Тип ноды.
      */
     val type: INodeType
-
-    /**
-     * Файл из которого получена нода.
-     */
-    val file: String?
-
-    /**
-     * Строка на которой была получена нода.
-     */
-    val line: Int?
+    val ti: ITokenInfo?
 
     /**
      * Возвращает информацию с изменённым типом.
@@ -30,15 +24,17 @@ interface INodeInfo {
 
     /**
      * Выводит всю информацию с сообщением.
-     * @param message Сообщение
+     * @param message Сообщение.
+     * @param provider Поставщик файлов, укажите если хотите получить пометку в исходном коде.
      */
-    fun print(message: String): String =
-        "$message\n${print()}"
+    fun print(message: String, provider: Function<String, InputStream>?): String =
+        "$message\n${print(provider)}"
 
     /**
      * Выводит всю информацию.
+     * @param provider Поставщик файлов, укажите если хотите получить пометку в исходном коде.
      */
-    fun print(): String
+    fun print(provider: Function<String, InputStream>?): String
 
     companion object {
         /**
@@ -49,7 +45,7 @@ interface INodeInfo {
          * @param token Токен ноды.
          */
         fun of(type: INodeType, ctx: ParsingContext, token: Token) =
-            NodeInfoImpl(type, ctx.file, token.line)
+            token.text!!.length.let { l -> NodeInfoImpl(type, ctx.file?.let { f -> TokenInfo(f, token.line, token.ptr - l, l) }) }
 
         /**
          * Создаёт информацию о ноде.
@@ -57,6 +53,6 @@ interface INodeInfo {
          * @param type Тип ноды.
          */
         fun of(type: INodeType) =
-            NodeInfoImpl(type, null, null)
+            NodeInfoImpl(type, null)
     }
 }

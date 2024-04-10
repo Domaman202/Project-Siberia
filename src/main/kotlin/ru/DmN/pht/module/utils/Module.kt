@@ -21,9 +21,9 @@ import ru.DmN.siberia.unparser.Unparser
 import ru.DmN.siberia.unparser.UnparsingContext
 import ru.DmN.siberia.unparsers.INodeUnparser
 import ru.DmN.siberia.utils.IPlatform
+import ru.DmN.siberia.utils.node.INodeInfo
 import ru.DmN.siberia.utils.node.INodeType
-import ru.DmN.siberia.utils.node.NodeInfoImpl
-import ru.DmN.siberia.utils.node.NodeTypes
+import ru.DmN.siberia.utils.node.NodeTypes.USE_CTX
 import ru.DmN.siberia.utils.readBytes
 import java.io.File
 import java.io.FileNotFoundException
@@ -123,7 +123,7 @@ open class Module(val name: String) {
                 nodes.add(
                     parser.mp.parse(uses, parser, pctx) { parser1, context ->
                         NodeUse(
-                            NodeInfoImpl(NodeTypes.USE_CTX, null, null),
+                            INodeInfo.of(USE_CTX),
                             mutableListOf(parser1.parseNode(context)!!),
                             uses
                         )

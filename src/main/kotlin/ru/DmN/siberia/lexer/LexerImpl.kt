@@ -25,10 +25,10 @@ class LexerImpl(val input: String) : Lexer() {
         if (ptr >= input.length)
             return null
         when (val char = input[inc()]) {
-            '(' -> return Token(line, OPEN_BRACKET, "(")
-            ')' -> return Token(line, CLOSE_BRACKET, ")")
-            '[' -> return Token(line, OPEN_CBRACKET, "[")
-            ']' -> return Token(line, CLOSE_CBRACKET, "]")
+            '(' -> return Token(line, symbols, OPEN_BRACKET, "(")
+            ')' -> return Token(line, symbols, CLOSE_BRACKET, ")")
+            '[' -> return Token(line, symbols, OPEN_CBRACKET, "[")
+            ']' -> return Token(line, symbols, CLOSE_CBRACKET, "]")
             '^' -> {
                 val sb = StringBuilder()
                 while (ptr < input.length) {
@@ -43,7 +43,7 @@ class LexerImpl(val input: String) : Lexer() {
                                 c = input[inc()]
                                 sb.append(c)
                             }
-                            return Token(line, CLASS_WITH_GEN, sb.toString())
+                            return Token(line, symbols, CLASS_WITH_GEN, sb.toString())
                         }
                         else -> {
                             if (c.isLetter() || c.isDigit()) {
@@ -53,7 +53,7 @@ class LexerImpl(val input: String) : Lexer() {
                         }
                     }
                 }
-                return Token(line, if (sb.isPrimitive()) PRIMITIVE else CLASS, sb.toString())
+                return Token(line, symbols, if (sb.isPrimitive()) PRIMITIVE else CLASS, sb.toString())
             }
 
             '#' -> {
@@ -67,11 +67,11 @@ class LexerImpl(val input: String) : Lexer() {
                         str.append(c)
                     }
                 }
-                return Token(line, NAMING, str.toString())
+                return Token(line, symbols, NAMING, str.toString())
             }
             '\'' -> {
                 inc()
-                return Token(line, CHAR, input[inc() - 1].toString())
+                return Token(line, symbols, CHAR, input[inc() - 1].toString())
             }
             '"' -> {
                 if (input[ptr] == '"' && input[ptr + 1] == '"') {
@@ -123,7 +123,7 @@ class LexerImpl(val input: String) : Lexer() {
                             }
                         )
                     }
-                    return Token(line, STRING, str.toString())
+                    return Token(line, symbols, STRING, str.toString())
                 } else {
                     // NORMAL STRING
                     val str = StringBuilder()
@@ -148,7 +148,7 @@ class LexerImpl(val input: String) : Lexer() {
                         )
                         prev = c
                     }
-                    return Token(line, STRING, str.toString())
+                    return Token(line, symbols, STRING, str.toString())
                 }
             }
 
@@ -175,7 +175,7 @@ class LexerImpl(val input: String) : Lexer() {
                             else INTEGER
                         }
                     }
-                    return Token(line, type, str.toString())
+                    return Token(line, symbols, type, str.toString())
                 }
 
                 val sb = StringBuilder()
@@ -192,6 +192,7 @@ class LexerImpl(val input: String) : Lexer() {
                 val str = sb.toString()
                 return Token(
                     line,
+                    symbols,
                     when (str) {
                         "nil" -> NIL
                         "false", "true" -> BOOLEAN

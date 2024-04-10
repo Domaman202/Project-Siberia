@@ -5,7 +5,6 @@ import ru.DmN.siberia.console.utils.Command
 import ru.DmN.siberia.utils.ctx.IContextCollection
 import ru.DmN.siberia.utils.ctx.IContextKey
 import java.io.PrintStream
-import kotlin.io.readln
 import kotlin.io.readln as kreadln
 
 /**
@@ -96,7 +95,7 @@ open class Console : Runnable, IContextCollection<Console> {
                 }
             }
             cmd.action(this, *args)
-            readln()
+            kreadln()
             clear()
         }
     }

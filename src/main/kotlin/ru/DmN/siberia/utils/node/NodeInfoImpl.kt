@@ -1,34 +1,54 @@
 package ru.DmN.siberia.utils.node
 
+import ru.DmN.siberia.utils.readBytes
+import java.io.InputStream
+import java.util.function.Function
+
 /**
  * Стандартная реализация INodeInfo.
  */
-class NodeInfoImpl(override val type: INodeType, override val file: String?, override val line: Int?) : INodeInfo {
+class NodeInfoImpl(override val type: INodeType, override val ti: ITokenInfo?) : INodeInfo {
     override fun withType(type: INodeType): INodeInfo =
-        NodeInfoImpl(type, file, line)
+        NodeInfoImpl(type, ti?.copy())
 
-    override fun print(message: String): String {
-        val sb = StringBuilder().append("[\n| message:")
-        if (message.contains('\n')) {
-            val i = message.lastIndexOf('\n')
-            sb.append("\n|- ").append(message.substring(0, i)).append(message.substring(i).replace("\n", "\n|- ")).append('\n')
-        } else sb.append(' ').append(message).append('\n')
-        sb.append("| file: ").append(file).append("\n| line: ").append(line).append("\n]")
-        return sb.toString()
-    }
+    override fun print(message: String, provider: Function<String, InputStream>?): String =
+        "$message:\n${print(provider)}"
 
-    override fun print(): String =
-        """
-            [
-            | type: $type
-            | file: $file
-            | line: $line
-            ]
-        """.trimIndent()
+    override fun print(provider: Function<String, InputStream>?): String =
+        if (provider == null)
+            ti?.run {
+                """
+                    [
+                    | type: $type
+                    | file: $file
+                    | line: ${line.inc()}
+                    | sym:  $symbol
+                    | len:  $length
+                    ]
+                """.trimIndent()
+            } ?: "[\n| type: $type\n]"
+        else ti!!.run {
+            val input = String(provider.apply(file).readBytes())
+            val sb = StringBuilder()
+            var lines = 0
+            var j = 0
+            while (j < input.length) {
+                val it = input[j]
+                if (it == '\n') {
+                    lines++
+                    if (lines > line)
+                        break
+                    else sb.clear()
+                } else sb.append(it)
+                j++
+            }
+            //
+            sb.append('\n').append(" ".repeat(symbol)).append('^').append("~".repeat(length - 1)).toString()
+        }
 
     override fun equals(other: Any?): Boolean =
-        this === other || (other is NodeInfoImpl && other.type == type && other.file == file && other.line == line)
+        this === other || (other is NodeInfoImpl && other.type == type && other.ti == ti)
 
     override fun hashCode(): Int =
-        (type.operation.hashCode() * 31 + (file?.hashCode() ?: 0))  * 31 + (line?.hashCode() ?: 0)
+        type.operation.hashCode() + (ti?.hashCode()?.let { it * 31 } ?: 0)
 }

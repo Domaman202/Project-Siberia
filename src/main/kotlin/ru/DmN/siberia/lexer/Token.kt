@@ -11,6 +11,10 @@ data class Token(
      */
     val line: Int,
     /**
+     * Первый символ токена
+     */
+    val ptr: Int,
+    /**
      * Тип токена
      */
     val type: IType,
@@ -19,14 +23,6 @@ data class Token(
      */
     val text: String? = null
 ) {
-    companion object {
-        /**
-         * Создаёт токен операции
-         */
-        fun operation(line: Int, text: String) =
-            Token(line, OPERATION, text)
-    }
-
     /**
      * Тип токена
      */
