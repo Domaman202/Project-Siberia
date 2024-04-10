@@ -1,4 +1,4 @@
-package ru.DmN.siberia.unparser
+package ru.DmN.siberia.unparser.ctx
 
 import ru.DmN.siberia.Siberia
 import ru.DmN.siberia.utils.ctx.IContextCollection
@@ -23,6 +23,9 @@ class UnparsingContext(
         UnparsingContext(loadedModules, SubMap(contexts).apply { this[key] = ctx })
 
     companion object {
+        /**
+         * Создаёт базовый контекст.
+         */
         fun base(): UnparsingContext =
             UnparsingContext(mutableListOf(Siberia))
     }

@@ -5,7 +5,6 @@ import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.parser.utils.file
 import java.io.InputStream
 import java.util.function.Function
-import java.util.function.Supplier
 
 /**
  * Информация о ноде
@@ -15,6 +14,10 @@ interface INodeInfo {
      * Тип ноды.
      */
     val type: INodeType
+
+    /**
+     * Информация о токене.
+     */
     val ti: ITokenInfo?
 
     /**
@@ -45,7 +48,7 @@ interface INodeInfo {
          * @param token Токен ноды.
          */
         fun of(type: INodeType, ctx: ParsingContext, token: Token) =
-            token.text!!.length.let { l -> NodeInfoImpl(type, ctx.file?.let { f -> TokenInfo(f, token.line, token.ptr - l, l) }) }
+            token.text!!.length.let { l -> NodeInfoImpl(type, ctx.file?.let { f -> TokenInfoImpl(f, token.line, token.ptr - l, l) }) }
 
         /**
          * Создаёт информацию о ноде.

@@ -2,8 +2,6 @@ package ru.DmN.siberia.utils.node
 
 /**
  * Тип ноды.
- *
- * Расширяет в enum-ах.
  */
 interface INodeType {
     /**
