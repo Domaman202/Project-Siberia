@@ -44,9 +44,11 @@ object ModuleUnparse : Command(
             console.println("Де-парсинг окончен успешно!")
         } catch (e: BaseException) {
             console.println("Де-парсинг окончен с ошибками:\n${e.print(BuildCommands::provider)}")
+            console.stop(1)
         } catch (t: Throwable) {
             console.println("Де-парсинг окончен с ошибками:")
             t.printStackTrace(console.print)
+            console.stop(1)
         }
     }
 }

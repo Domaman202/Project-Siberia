@@ -57,6 +57,7 @@ object ModuleSelect : Command(
             val file = File("$name/module.pht")
             if (!file.exists() || !file.isFile) {
                 console.println("Не удалось найти модуль '${name}'.")
+                console.stop(1)
                 return true
             }
         }

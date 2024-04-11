@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "ru.DmN.siberia"
-version = "1.18.7"
+version = "1.18.8"
 
 repositories {
     mavenCentral()
@@ -17,7 +17,6 @@ dependencies {
     implementation("org.ow2.asm:asm-commons:9.5")
     testImplementation(kotlin("test"))
 }
-
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8

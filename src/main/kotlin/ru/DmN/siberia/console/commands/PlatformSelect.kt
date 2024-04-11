@@ -39,6 +39,7 @@ object PlatformSelect : Command(
         val platform = IPlatform.PLATFORMS.find { it.name == name }
         if (platform == null) {
             console.println("Платформа '$name' не найдена!")
+            console.stop(1)
             return
         }
         //

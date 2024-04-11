@@ -51,6 +51,7 @@ object ModulePrint : Command(
         } catch (t: Throwable) {
             console.println("Печать окончена с ошибками:")
             t.printStackTrace(console.print)
+            console.stop(1)
         }
     }
 }

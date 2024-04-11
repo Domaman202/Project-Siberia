@@ -44,9 +44,11 @@ object ModuleCompile : Command(
             console.println("Компиляция окончена успешно!")
         } catch (e: BaseException) {
             console.println("Компиляция окончена с ошибками:\n${e.print(BuildCommands::provider)}")
+            console.stop(1)
         } catch (t: Throwable) {
             console.println("Компиляция окончена с ошибками:")
             t.printStackTrace(console.print)
+            console.stop(1)
         }
     }
 }

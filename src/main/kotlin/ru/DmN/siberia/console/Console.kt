@@ -29,20 +29,54 @@ open class Console : Runnable, IContextCollection<Console> {
      */
     override val contexts: MutableMap<IContextKey, Any?> = HashMap()
 
+    /**
+     * Остановка консоли в неинтерактивном режиме.
+     *
+     * @param code Код выхода.
+     */
+    open fun stop(code: Int) {
+        if (!interactive) {
+            Runtime.getRuntime().exit(code)
+            throw Error("Выход")
+        }
+    }
+
+    /**
+     * Очистка консоли.
+     */
     open fun clear() {
         print.print("\n\n\n\n\n\n\n\n\n\n\n\n")
 //        Runtime.getRuntime().exec("clear")
     }
 
+    /**
+     * Вывод сообщения с переносом строки.
+     *
+     * @param msg Сообщение.
+     */
     open fun println(msg: Any?): Unit =
         print.println(msg)
 
+    /**
+     * Вывод сообщения без переноса строки.
+     *
+     * @param msg Сообщение.
+     */
     open fun print(msg: Any?): Unit =
         print.print(msg)
 
+    /**
+     * Поток вывода.
+     */
     open val print: PrintStream
         get() = System.out
 
+    /**
+     * Ввод комманды.
+     *
+     * @param text Текст который будет напечатан перед вводом.
+     * @param available Показать только доступные команды.
+     */
     open fun selectCommand(text: String, available: Boolean): Command {
         println("Команды:")
         var category: String? = null
@@ -65,11 +99,21 @@ open class Console : Runnable, IContextCollection<Console> {
         }
     }
 
+    /**
+     * Ввод строки.
+     *
+     * @param text Текст который будет напечатан перед вводом.
+     */
     open fun readString(text: String): String {
         print("$text:\n> ")
         return kreadln()
     }
 
+    /**
+     * Ввод числа.
+     *
+     * @param text Текст который будет напечатан перед вводом.
+     */
     open fun readInt(text: String): Int {
         while (true) {
             readString(text).let {
