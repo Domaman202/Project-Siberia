@@ -27,11 +27,23 @@ class NodeInfoImpl(override val type: INodeType, override val ti: ITokenInfo?) :
                     ]
                 """.trimIndent()
             } ?: "[\n| type: $type\n]"
-        else ti!!.run {
-            val sb = StringBuilder()
-            //
+        else ti!!.run { printInfo(provider, file, line, symbol, length).toString() }
+
+    override fun equals(other: Any?): Boolean =
+        this === other || (other is NodeInfoImpl && other.type == type && other.ti == ti)
+
+    override fun hashCode(): Int =
+        type.operation.hashCode() + (ti?.hashCode()?.let { it * 31 } ?: 0)
+
+    companion object {
+        fun printInfo(provider: Function<String, InputStream>, file: String, line: Int, symbol: Int, length: Int): StringBuilder =
+            StringBuilder()
+                .append('[').append(file).append(", ").append(line.inc()).append(", ").append(symbol.inc()).append("]\n")
+                .append(readLine(line, provider.apply(file))).append('\n').append(" ".repeat(symbol)).append('^').append("~".repeat(length.dec()))
+
+        fun readLine(line: Int, stream: InputStream): StringBuilder {
             val buff = StringBuilder()
-            val input = String(provider.apply(file).readBytes())
+            val input = String(stream.readBytes())
             var lines = 0
             var i = 0
             while (i < input.length) {
@@ -44,14 +56,7 @@ class NodeInfoImpl(override val type: INodeType, override val ti: ITokenInfo?) :
                 } else buff.append(it)
                 i++
             }
-            //
-            sb.append('[').append(file).append(", ").append(line.inc()).append(", ").append(symbol.inc()).append("]\n")
-                .append(buff).append('\n').append(" ".repeat(symbol)).append('^').append("~".repeat(length.dec())).toString()
+            return buff
         }
-
-    override fun equals(other: Any?): Boolean =
-        this === other || (other is NodeInfoImpl && other.type == type && other.ti == ti)
-
-    override fun hashCode(): Int =
-        type.operation.hashCode() + (ti?.hashCode()?.let { it * 31 } ?: 0)
+    }
 }
