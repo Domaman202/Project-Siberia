@@ -16,6 +16,12 @@ abstract class VirtualType {
     abstract val name: String
 
     /**
+     * Чистое имя (для сравнивания типов без префиксов).
+     */
+    open val cname: String
+        get() = name
+
+    /**
      * Предки.
      */
     abstract val parents: List<VirtualType>
@@ -64,7 +70,7 @@ abstract class VirtualType {
      * Тип можно получить из целевого?
      */
     open fun isAssignableFrom(target: VirtualType): Boolean =
-        if (target.name == this.name || parents.any { it.isAssignableFrom(target) })
+        if (target.cname == this.cname || parents.any { it.isAssignableFrom(target) })
             true
         else if (isInterface)
             target == ofKlass(Any::class.java)
