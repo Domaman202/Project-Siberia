@@ -34,7 +34,7 @@ class LexerImpl(val input: String) : Lexer() {
                 while (ptr < input.length) {
                     var c = input[ptr]
                     when (c) {
-                        '!', '@', '#', '$', '^', '&', '*', '[', '.', '/' -> {
+                        '!', '@', '#', '$', '^', '&', '*', '[', '.', '/', '?' -> {
                             inc()
                             sb.append(c)
                         }

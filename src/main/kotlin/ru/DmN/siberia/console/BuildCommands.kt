@@ -38,6 +38,6 @@ object BuildCommands {
         val file = File(path)
         if (file.isFile)
             return FileInputStream(file)
-        return BuildCommands::class.java.getResourceAsStream(path)!!
+        return Thread.currentThread().contextClassLoader.getResourceAsStream(path)!!
     }
 }
