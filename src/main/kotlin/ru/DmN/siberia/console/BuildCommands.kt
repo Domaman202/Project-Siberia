@@ -7,6 +7,9 @@ import ru.DmN.siberia.processor.ProcessorImpl
 import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.*
 import ru.DmN.siberia.processors.NRUseCtx.injectModules
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 
 object BuildCommands {
     @JvmStatic
@@ -28,5 +31,13 @@ object BuildCommands {
         //
         console.println("Обработка успешна завершена!")
         return processed
+    }
+
+    @JvmStatic
+    fun provider(path: String): InputStream {
+        val file = File(path)
+        if (file.isFile)
+            return FileInputStream(file)
+        return BuildCommands::class.java.getResourceAsStream(path)!!
     }
 }

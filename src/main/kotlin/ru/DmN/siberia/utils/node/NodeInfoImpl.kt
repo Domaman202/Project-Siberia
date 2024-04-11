@@ -28,22 +28,25 @@ class NodeInfoImpl(override val type: INodeType, override val ti: ITokenInfo?) :
                 """.trimIndent()
             } ?: "[\n| type: $type\n]"
         else ti!!.run {
-            val input = String(provider.apply(file).readBytes())
             val sb = StringBuilder()
+            //
+            val buff = StringBuilder()
+            val input = String(provider.apply(file).readBytes())
             var lines = 0
-            var j = 0
-            while (j < input.length) {
-                val it = input[j]
+            var i = 0
+            while (i < input.length) {
+                val it = input[i]
                 if (it == '\n') {
                     lines++
                     if (lines > line)
                         break
-                    else sb.clear()
-                } else sb.append(it)
-                j++
+                    else buff.clear()
+                } else buff.append(it)
+                i++
             }
             //
-            sb.append('\n').append(" ".repeat(symbol)).append('^').append("~".repeat(length - 1)).toString()
+            sb.append('[').append(file).append(", ").append(line.inc()).append(", ").append(symbol.inc()).append("]\n")
+                .append(buff).append('\n').append(" ".repeat(symbol)).append('^').append("~".repeat(length.dec())).toString()
         }
 
     override fun equals(other: Any?): Boolean =

@@ -6,6 +6,7 @@ import ru.DmN.siberia.processor.ctx.ProcessingContext
 import ru.DmN.siberia.processor.utils.ProcessingStage
 import ru.DmN.siberia.processors.INodeProcessor
 import ru.DmN.siberia.utils.ctx.IContextKey
+import ru.DmN.siberia.utils.exception.processingCatcher
 import ru.DmN.siberia.utils.stage.StageManager
 import ru.DmN.siberia.utils.stage.StupidStageManager
 import ru.DmN.siberia.utils.vtype.TypesProvider
@@ -18,13 +19,15 @@ class ProcessorImpl(override val mp: ModulesProvider, override val tp: TypesProv
     override val stageManager: StageManager<ProcessingStage> = StupidStageManager.of(ProcessingStage.UNKNOWN)
     override val contexts: MutableMap<IContextKey, Any?> = HashMap()
 
-    override fun calc(node: Node, ctx: ProcessingContext): VirtualType? =
+    override fun calc(node: Node, ctx: ProcessingContext): VirtualType? = processingCatcher(node) {
         get(node, ctx).calc(node, this, ctx)
+    }
 
-    override fun process(node: Node, ctx: ProcessingContext, valMode: Boolean): Node? =
+    override fun process(node: Node, ctx: ProcessingContext, valMode: Boolean): Node? = processingCatcher(node) {
         if (node.info.type.processable)
             get(node, ctx).process(node, this, ctx, valMode)
         else node
+    }
 
     @Suppress("UNCHECKED_CAST")
     override fun get(node: Node, ctx: ProcessingContext): INodeProcessor<Node> {

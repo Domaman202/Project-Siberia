@@ -26,7 +26,9 @@ import ru.DmN.siberia.utils.node.INodeType
 import ru.DmN.siberia.utils.node.NodeTypes.USE_CTX
 import ru.DmN.siberia.utils.readBytes
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileNotFoundException
+import java.io.InputStream
 
 /**
  * Модуль.
@@ -113,7 +115,7 @@ open class Module(val name: String) {
         if (!init) {
             init = true
             sources.forEach {
-                val parser = ParserImpl(getModuleFile(it), mp)
+                val parser = ParserImpl(String(getModuleFile(it).readBytes()), mp)
                 val pctx = ParsingContext.base().apply {
                     this.module = this@Module
                     this.file = "$name/$it"
@@ -200,15 +202,15 @@ open class Module(val name: String) {
      * @param file Файл.
      * @return Данные этого файла (в виде строки).
      */
-    open fun getModuleFile(file: String): String {
+    open fun getModuleFile(file: String): InputStream {
         val stream = Module::class.java.getResourceAsStream("/$name/$file")
         if (stream == null) {
             val f = File("$name/$file")
             if (f.isFile)
-                return String(f.readBytes())
+                return FileInputStream(f)
             throw FileNotFoundException("/$name/$file")
         }
-        return String(stream.readBytes())
+        return stream
     }
 
     /**

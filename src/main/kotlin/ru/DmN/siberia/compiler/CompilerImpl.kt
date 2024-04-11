@@ -9,6 +9,7 @@ import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.utils.IPlatform
 import ru.DmN.siberia.utils.Variable
 import ru.DmN.siberia.utils.ctx.IContextKey
+import ru.DmN.siberia.utils.exception.compilationCatcher
 import ru.DmN.siberia.utils.stage.StageManager
 import ru.DmN.siberia.utils.stage.StupidStageManager
 import ru.DmN.siberia.utils.vtype.TypesProvider
@@ -21,16 +22,17 @@ open class CompilerImpl(override val mp: ModulesProvider, override val tp: Types
     override val contexts: MutableMap<IContextKey, Any?> = HashMap()
     override val finalizers: MutableList<(String) -> Unit> = ArrayList()
 
-    override fun compile(node: Node, ctx: CompilationContext) {
+    override fun compile(node: Node, ctx: CompilationContext) = compilationCatcher(node) {
         if (node.info.type.compilable) {
             get(ctx, node).compile(node, this, ctx)
         }
     }
 
-    override fun compileVal(node: Node, ctx: CompilationContext): Variable =
+    override fun compileVal(node: Node, ctx: CompilationContext): Variable = compilationCatcher(node) {
         if (node.info.type.compilable)
             get(ctx, node).compileVal(node, this, ctx)
         else throw UnsupportedOperationException()
+    }
 
     @Suppress("UNCHECKED_CAST")
     override fun get(ctx: CompilationContext, node: Node): INodeCompiler<Node> {

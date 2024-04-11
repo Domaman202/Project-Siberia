@@ -14,6 +14,7 @@ import ru.DmN.siberia.processor.utils.module
 import ru.DmN.siberia.processor.utils.nodeProgn
 import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.processor.utils.processNodesList
+import ru.DmN.siberia.utils.exception.pushTask
 import ru.DmN.siberia.utils.node.NodeTypes.USE_CTX_
 
 object NRUseCtx : INodeProcessor<NodeUse> {
@@ -22,7 +23,7 @@ object NRUseCtx : INodeProcessor<NodeUse> {
             return NRProgn.process(nodeProgn(node.info, node.nodes), processor, ctx, valMode)
         val exports = ArrayList<NodeNodesList>()
         val processed = ArrayList<Node>()
-        processor.stageManager.pushTask(MODULE_POST_INIT) {
+        processor.pushTask(MODULE_POST_INIT, node) {
             processNodesList(node, processor, processor.mp.injectModules(node.names, processed, exports, processor, ctx), valMode)
         }
         return NodeProcessedUse(node.info.withType(USE_CTX_), node.nodes, node.names, exports, processed)

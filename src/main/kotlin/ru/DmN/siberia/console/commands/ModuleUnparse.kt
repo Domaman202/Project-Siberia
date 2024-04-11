@@ -1,5 +1,6 @@
 package ru.DmN.siberia.console.commands
 
+import ru.DmN.siberia.console.BuildCommands
 import ru.DmN.siberia.console.BuildCommands.processModule
 import ru.DmN.siberia.console.Console
 import ru.DmN.siberia.console.ctx.isModule
@@ -8,6 +9,7 @@ import ru.DmN.siberia.processor.utils.mp
 import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.unparser.UnparserImpl
 import ru.DmN.siberia.unparser.ctx.UnparsingContext
+import ru.DmN.siberia.utils.exception.BaseException
 import java.io.File
 import java.io.FileOutputStream
 
@@ -40,6 +42,8 @@ object ModuleUnparse : Command(
                 out.write(unparser.out.toString().toByteArray())
             }
             console.println("Де-парсинг окончен успешно!")
+        } catch (e: BaseException) {
+            console.println("Де-парсинг окончен с ошибками:\n${e.print(BuildCommands::provider)}")
         } catch (t: Throwable) {
             console.println("Де-парсинг окончен с ошибками:")
             t.printStackTrace(console.print)

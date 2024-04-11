@@ -1,11 +1,13 @@
 package ru.DmN.siberia.console.commands
 
+import ru.DmN.siberia.console.BuildCommands
 import ru.DmN.siberia.console.BuildCommands.processModule
 import ru.DmN.siberia.console.Console
 import ru.DmN.siberia.console.ctx.isModule
 import ru.DmN.siberia.console.utils.Argument
 import ru.DmN.siberia.console.utils.ArgumentType
 import ru.DmN.siberia.console.utils.Command
+import ru.DmN.siberia.utils.exception.BaseException
 import java.io.File
 import java.io.FileOutputStream
 
@@ -44,6 +46,8 @@ object ModulePrint : Command(
                 out.write(sb.toString().toByteArray())
             }
             console.println("Печать окончена успешно!")
+        } catch (e: BaseException) {
+            console.println("Печать окончена с ошибками:\n${e.print(BuildCommands::provider)}")
         } catch (t: Throwable) {
             console.println("Печать окончена с ошибками:")
             t.printStackTrace(console.print)
