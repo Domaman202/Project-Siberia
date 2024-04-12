@@ -3,6 +3,7 @@ package ru.DmN.siberia.parser.ctx
 import ru.DmN.pht.module.utils.Module
 import ru.DmN.pht.std.module.StdModule
 import ru.DmN.siberia.Siberia
+import ru.DmN.siberia.parser.utils.file
 import ru.DmN.siberia.parser.utils.parsersPool
 import ru.DmN.siberia.utils.ctx.IContextCollection
 import ru.DmN.siberia.utils.ctx.IContextKey
@@ -42,9 +43,20 @@ class ParsingContext (
 
         /**
          * Создаёт контекст для парсинга заголовка модуля (module.pht).
+         *
+         * @param platform Целевая платформа.
          */
         fun module(platform: IPlatform) =
             of(StdModule).apply { this.platform = platform }
+
+        /**
+         * Создаёт контекст для парсинга заголовка модуля (module.pht).
+         *
+         * @param platform Целевая платформа.
+         * @param file Путь до module.pht.
+         */
+        fun module(platform: IPlatform, file: String) =
+            of(StdModule).apply { this.platform = platform; this.file = file }
 
         /**
          * Создаёт базовый контекст с набором модулей.

@@ -12,6 +12,7 @@ import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.utils.IPlatform
 import ru.DmN.siberia.utils.node.INodeInfo
 import ru.DmN.siberia.utils.node.NodeTypes
+import ru.DmN.siberia.utils.node.NodeTypes.USE_CTX
 
 object NPUseCtx : INodeParser {
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node {
@@ -22,7 +23,7 @@ object NPUseCtx : INodeParser {
             tk = parser.nextToken()!!
         }
         parser.pushToken(tk)
-        return parser.mp.parse(names, parser, ctx) { p, c -> NPProgn.parse(p, c) { NodeUse(INodeInfo.of(NodeTypes.USE_CTX, ctx, token), it, names) } }
+        return parser.mp.parse(names, parser, ctx) { p, c -> NPProgn.parse(p, c) { NodeUse(INodeInfo.of(USE_CTX, ctx, token), it, names) } }
     }
 
     /**

@@ -5,7 +5,7 @@ import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeNodesList
 import ru.DmN.siberia.processor.Processor
 import ru.DmN.siberia.processor.ctx.ProcessingContext
-import ru.DmN.siberia.utils.node.NodeTypes
+import ru.DmN.siberia.utils.node.NodeTypes.PROGN_
 import ru.DmN.siberia.utils.vtype.VirtualType
 
 /**
@@ -20,7 +20,7 @@ object NRProgn : INodeProcessor<Node> {
     override fun process(node: Node, processor: Processor, ctx: ProcessingContext, valMode: Boolean): NodeNodesList {
         node as INodesList
         return NodeNodesList(
-            node.info.withType(NodeTypes.PROGN_),
+            node.info.withType(PROGN_),
             if (node.nodes.isEmpty())
                 ArrayList()
             else {

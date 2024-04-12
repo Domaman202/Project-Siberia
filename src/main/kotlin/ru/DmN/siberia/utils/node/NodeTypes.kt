@@ -6,6 +6,9 @@ import ru.DmN.siberia.utils.node.NodeTypes.Type.PROCESSED
 enum class NodeTypes : INodeType {
     // e
     EXPORT("export", PARSED),
+    EXPORT_("export", PROCESSED),
+    // o
+    ONLY_EXPORT("only-export", false, false),
     // p
     PROGN("progn", PARSED),
     PROGN_("progn", PROCESSED),

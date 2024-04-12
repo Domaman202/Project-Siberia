@@ -7,10 +7,7 @@ import ru.DmN.siberia.compilers.NCUseCtx
 import ru.DmN.siberia.parser.Parser
 import ru.DmN.siberia.parser.ParserImpl
 import ru.DmN.siberia.parser.ctx.ParsingContext
-import ru.DmN.siberia.parsers.NPExport
-import ru.DmN.siberia.parsers.NPProgn
-import ru.DmN.siberia.parsers.NPUse
-import ru.DmN.siberia.parsers.NPUseCtx
+import ru.DmN.siberia.parsers.*
 import ru.DmN.siberia.processors.NRExport
 import ru.DmN.siberia.processors.NRProgn
 import ru.DmN.siberia.processors.NRUse
@@ -24,30 +21,36 @@ import ru.DmN.siberia.utils.node.NodeTypes.*
 object Siberia : Module("siberia") {
     private fun initParsers() {
         // e
-        add(Regex("export"),  NPExport)
+        add(Regex("export"),      NPExport)
+        // o
+        add(Regex("only-export"), NPOnlyExport)
         // p
-        add(Regex("progn"),   NPProgn)
+        add(Regex("progn"),       NPProgn)
         // u
-        add(Regex("use"),     NPUse)
-        add(Regex("use-ctx"), NPUseCtx)
+        add(Regex("use"),         NPUse)
+        add(Regex("use-ctx"),     NPUseCtx)
     }
 
     private fun initUnparsers() {
         // e
-        add(EXPORT,  NUDefault)
+        add(EXPORT,      NUDefault)
+        add(EXPORT_,     NUDefault)
+        // o
+        add(ONLY_EXPORT, NUDefault)
         // p
-        add(PROGN,   NUDefault)
-        add(PROGN_,  NUDefault)
+        add(PROGN,       NUDefault)
+        add(PROGN_,      NUDefault)
         // u
-        add(USE,     NUUse)
-        add(USE_,    NUUse)
-        add(USE_CTX, NUUseCtx)
-        add(USE_CTX_,NUUseCtx)
+        add(USE,         NUUse)
+        add(USE_,        NUUse)
+        add(USE_CTX,     NUUseCtx)
+        add(USE_CTX_,    NUUseCtx)
     }
 
     private fun initProcessors() {
         // e
         add(EXPORT,  NRExport)
+        add(EXPORT_, NRExport)
         // p
         add(PROGN,   NRProgn)
         add(PROGN_,  NRProgn)
@@ -57,6 +60,8 @@ object Siberia : Module("siberia") {
     }
 
     private fun initCompilers() {
+        // e
+        add(UNIVERSAL, EXPORT_, NCDefault)
         // p
         add(UNIVERSAL, PROGN_,  NCDefault)
         // u
