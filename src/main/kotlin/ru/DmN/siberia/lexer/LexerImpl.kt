@@ -78,13 +78,11 @@ class LexerImpl(val input: String) : Lexer() {
                     // MULTILINE
                     inc()
                     inc()
-                    val str = StringBuilder()
+                    val sb = StringBuilder()
                     var prev: Char? = null
-                    var flag = true
-                    var sc = symbols
                     while (true) {
                         val c = input[ptr++]
-                        str.append(
+                        sb.append(
                             when (c) {
                                 '"' -> {
                                     if (prev != '\\' && input[ptr] == '"' && input[ptr + 1] == '"') {
@@ -96,34 +94,48 @@ class LexerImpl(val input: String) : Lexer() {
                                 't' -> if (prev == '\\') '\t' else 't'
                                 '\\' -> {
                                     prev = if (prev == '\\') {
-                                        str.append(c)
+                                        sb.append(c)
                                         null
                                     } else c
                                     continue
-                                }
-                                '\n' -> {
-                                    if (flag) {
-                                        flag = false
-                                        continue
-                                    }
-                                    sc = symbols
-                                    c
-                                }
-                                ' ' -> {
-                                    if (sc-- < 0) c
-                                    else continue
-                                }
-                                '\t' -> {
-                                    sc -= 4
-                                    if (sc + 4 < 0) c
-                                    else continue
                                 }
 
                                 else -> c
                             }
                         )
                     }
-                    return Token(line, symbols, STRING, str.toString())
+                    val src = sb.trimStart('\n')
+                    var offset = 0
+                    while (true) {
+                        when (src[offset]) {
+                            ' '  -> offset++
+                            '\t' -> offset+=4
+                            else -> break
+                        }
+                    }
+                    val out = StringBuilder()
+                    var i = offset
+                    var j = 0
+                    while (i < src.length) {
+                        val c = src[i++]
+                        if (j < offset) {
+                            when (c) {
+                                ' ' -> {
+                                    j++
+                                    continue
+                                }
+                                '\t' -> {
+                                    j+=4
+                                    continue
+                                }
+                                else -> j = offset
+                            }
+                        }
+                        if (c == '\n')
+                            j = 0
+                        out.append(c)
+                    }
+                    return Token(line, symbols, STRING, out.toString())
                 } else {
                     // NORMAL STRING
                     val str = StringBuilder()
