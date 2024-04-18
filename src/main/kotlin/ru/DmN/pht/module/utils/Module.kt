@@ -113,7 +113,7 @@ open class Module(val name: String) {
     open fun init(platform: IPlatform, mp: ModulesProvider) {
         if (!init) {
             init = true
-            sources.forEach {
+            sources.asFilesSequence(name).forEach {
                 val parser = ParserImpl(String(getModuleFile(it).readBytes()), mp)
                 val pctx = ParsingContext.base().apply {
                     this.module = this@Module
