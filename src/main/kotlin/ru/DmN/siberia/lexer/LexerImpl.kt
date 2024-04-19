@@ -85,19 +85,20 @@ class LexerImpl(val input: String) : Lexer() {
                         sb.append(
                             when (c) {
                                 '"' -> {
-                                    if (prev != '\\' && input[ptr] == '"' && input[ptr + 1] == '"') {
+                                    if (input[ptr] == '"' && input[ptr + 1] == '"') {
                                         ptr += 2
                                         break
                                     } else '\"'
                                 }
-                                'n' -> if (prev == '\\') '\n' else 'n'
-                                't' -> if (prev == '\\') '\t' else 't'
+
                                 '\\' -> {
-                                    prev = if (prev == '\\') {
-                                        sb.append(c)
-                                        null
-                                    } else c
-                                    continue
+                                    if (prev != '\\' && input[ptr] == '"' && input[ptr + 1] == '"' && input[ptr + 2] == '"') {
+                                        sb.append("\"\"\"")
+                                        continue
+                                    } else {
+                                        prev = c
+                                        c
+                                    }
                                 }
 
                                 else -> c
