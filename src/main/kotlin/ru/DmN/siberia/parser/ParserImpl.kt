@@ -7,11 +7,15 @@ import ru.DmN.siberia.lexer.LexerImpl
 import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.lexer.Token.DefaultType.*
 import ru.DmN.siberia.parser.ctx.ParsingContext
+import ru.DmN.siberia.parser.utils.ParsingException
 import ru.DmN.siberia.parser.utils.parseProgn
 import ru.DmN.siberia.parser.utils.parseValn
 import ru.DmN.siberia.parser.utils.parseValue
 import ru.DmN.siberia.parsers.INodeParser
+import ru.DmN.siberia.utils.exception.MessageException
 import ru.DmN.siberia.utils.getRegex
+import ru.DmN.siberia.utils.node.ErrorNodeType
+import ru.DmN.siberia.utils.node.INodeInfo
 import java.util.*
 
 /**
@@ -22,20 +26,20 @@ open class ParserImpl(override val lexer: Lexer, override val mp: ModulesProvide
     constructor(parser: Parser) : this(parser.lexer, parser.mp, parser.tokens)
 
     override fun parseNode(ctx: ParsingContext): Node? {
-        val startToken = nextToken() ?: return null
-        return when (startToken.type) {
+        val stk = nextToken() ?: return null
+        return when (stk.type) {
             OPEN_BRACKET -> pnb {
-                val operationToken = nextToken()!!
-                when (operationToken.type) {
+                val tk = nextToken()!!
+                when (tk.type) {
                     OPEN_BRACKET -> {
-                        pushToken(operationToken)
-                        parseProgn(ctx, operationToken)
+                        pushToken(tk)
+                        parseProgn(ctx, tk)
                     }
-                    OPERATION -> get(ctx, operationToken.text!!)!!.parse(this, ctx, operationToken)
-                    else -> throw RuntimeException()
+                    OPERATION -> get(ctx, tk.text!!)!!.parse(this, ctx, tk)
+                    else -> throw ParsingException(MessageException(null, "Инструкция '${tk.text}' не найдена!"), INodeInfo.of(ErrorNodeType, ctx, tk))
                 }
             }
-            OPEN_CBRACKET -> parseValn(ctx, startToken)
+            OPEN_CBRACKET -> parseValn(ctx, stk)
             OPERATION,
             PRIMITIVE,
             CLASS,
@@ -45,9 +49,9 @@ open class ParserImpl(override val lexer: Lexer, override val mp: ModulesProvide
             INTEGER,
             FLOAT,
             DOUBLE,
-            BOOLEAN -> parseValue(ctx, startToken)
+            BOOLEAN -> parseValue(ctx, stk)
             else -> {
-                pushToken(startToken)
+                pushToken(stk)
                 null
             }
         }

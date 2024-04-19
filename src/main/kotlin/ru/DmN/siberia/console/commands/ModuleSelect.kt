@@ -2,6 +2,7 @@ package ru.DmN.siberia.console.commands
 
 import ru.DmN.pht.module.utils.Module
 import ru.DmN.pht.module.utils.getOrLoadModule
+import ru.DmN.siberia.console.BuildCommands
 import ru.DmN.siberia.console.Console
 import ru.DmN.siberia.console.ctx.module
 import ru.DmN.siberia.console.utils.Argument
@@ -10,6 +11,7 @@ import ru.DmN.siberia.console.utils.Command
 import ru.DmN.siberia.processor.utils.isPlatform
 import ru.DmN.siberia.processor.utils.mp
 import ru.DmN.siberia.processor.utils.platform
+import ru.DmN.siberia.utils.exception.BaseException
 import java.io.File
 
 object ModuleSelect : Command(
@@ -40,12 +42,22 @@ object ModuleSelect : Command(
         val mp = console.mp
         val platform = console.platform
         //
-        if (validateModule(console, name))
-            return
-        val module = mp.getOrLoadModule(name, platform)
-        console.module = module
-        module.init(platform, mp)
-        console.println("Выбран модуль '${module.name}'.")
+        console.println("Выбор модуля '$name'...")
+        try {
+            if (validateModule(console, name))
+                return
+            val module = mp.getOrLoadModule(name, platform)
+            console.module = module
+            module.init(platform, mp)
+            console.println("Выбран модуль '${module.name}'.")
+        } catch (e: BaseException) {
+            console.println("Выбор модуля '$name' окончен с ошибками:\n${e.print(BuildCommands::provider)}")
+            console.stop(1)
+        } catch (t: Throwable) {
+            console.println("Выбор модуля '$name' окончен с ошибками:")
+            t.printStackTrace(console.print)
+            console.stop(1)
+        }
     }
 
     override fun builderAppend(arguments: List<Any?>, flags: MutableMap<Any?, Any?>) {
