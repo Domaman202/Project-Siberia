@@ -6,19 +6,19 @@ import ru.DmN.pht.module.utils.getOrLoadModule
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.lexer.Token
+import ru.DmN.siberia.lexer.Token.DefaultType.OPERATION
 import ru.DmN.siberia.parser.Parser
 import ru.DmN.siberia.parser.ctx.ParsingContext
 import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.utils.IPlatform
 import ru.DmN.siberia.utils.node.INodeInfo
-import ru.DmN.siberia.utils.node.NodeTypes
 import ru.DmN.siberia.utils.node.NodeTypes.USE_CTX
 
 object NPUseCtx : INodeParser {
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node {
         val names = ArrayList<String>()
         var tk = parser.nextToken()!!
-        while (tk.type == Token.DefaultType.OPERATION) {
+        while (tk.type == OPERATION) {
             names.add(tk.text!!)
             tk = parser.nextToken()!!
         }

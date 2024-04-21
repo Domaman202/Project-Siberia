@@ -22,6 +22,8 @@ object Siberia : Module("siberia") {
     private fun initParsers() {
         // e
         add(Regex("export"),      NPExport)
+        // i
+        add(Regex("include"),     NPInclude)
         // o
         add(Regex("only-export"), NPOnlyExport)
         // p
