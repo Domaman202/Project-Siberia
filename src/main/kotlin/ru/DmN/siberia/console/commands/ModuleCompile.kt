@@ -11,6 +11,7 @@ import ru.DmN.siberia.processor.utils.mp
 import ru.DmN.siberia.processor.utils.platform
 import ru.DmN.siberia.processor.utils.tp
 import ru.DmN.siberia.utils.exception.BaseException
+import ru.DmN.siberia.utils.invokeAll
 import java.io.File
 
 object ModuleCompile : Command(
@@ -40,7 +41,7 @@ object ModuleCompile : Command(
             nodes.forEach { compiler.compile(it, ctx) }
             compiler.stageManager.runAll()
             File("dump").mkdir()
-            compiler.finalizers.forEach { it("dump") }
+            compiler.finalizers.invokeAll("dump")
             console.println("Компиляция окончена успешно!")
         } catch (e: BaseException) {
             console.println("Компиляция окончена с ошибками:\n${e.print(BuildCommands::provider)}")

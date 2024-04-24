@@ -1,9 +1,16 @@
-@file:Suppress("NOTHING_TO_INLINE")
 package ru.DmN.siberia.utils
 
 import ru.DmN.siberia.ast.Node
 import java.io.DataInputStream
 import java.io.InputStream
+
+fun <T> List<(T) -> Unit>.invokeAll(value: T) {
+    var i = 0
+    while (i < size) {
+        get(i)(value)
+        i++
+    }
+}
 
 inline fun <T, R> List<T>.mapMutable(transform: (T) -> R): MutableList<R> {
     val list = ArrayList<R>(this.size)
