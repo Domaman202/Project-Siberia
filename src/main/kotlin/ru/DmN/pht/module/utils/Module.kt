@@ -279,12 +279,14 @@ open class Module(val name: String) {
          * Преобразует имя операции в регулярное выражение.
          */
         fun String.toRegularExpr(): Regex =
-            this.replace(".", "\\.")
+            this.replace("\\", "\\\\")
+                .replace(".", "\\.")
                 .replace("^", "\\^")
                 .replace("$", "\\$")
                 .replace("[", "\\[")
                 .replace("]", "\\]")
-                .replace("\\", "\\\\")
+                .replace("|", "\\|")
+                .replace("!", "\\!")
                 .replace("?", "\\?")
                 .replace("*", "\\*")
                 .replace("+", "\\+")
