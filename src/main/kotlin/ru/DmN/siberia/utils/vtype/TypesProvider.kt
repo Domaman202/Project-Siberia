@@ -1,6 +1,7 @@
 package ru.DmN.siberia.utils.vtype
 
 import ru.DmN.siberia.utils.IPlatform
+import java.util.function.Supplier
 
 /**
  * Провайдер типов.
@@ -31,14 +32,14 @@ abstract class TypesProvider {
     }
 
     companion object {
-        private val PROVIDERS: MutableMap<IPlatform, TypesProvider> = HashMap()
+        private val PROVIDERS: MutableMap<IPlatform, Supplier<TypesProvider>> = HashMap()
 
-        fun add(platform: IPlatform, provider: TypesProvider) {
+        fun add(platform: IPlatform, provider: Supplier<TypesProvider>) {
             PROVIDERS[platform] = provider
         }
 
         fun of(platform: IPlatform) =
-            PROVIDERS[platform] ?: throw RuntimeException("Поставщик типов для платформы '$platform' не найден!")
+            PROVIDERS[platform]?.get() ?: throw RuntimeException("Поставщик типов для платформы '$platform' не найден!")
     }
 
     class VoidTypesProvider : TypesProvider()
