@@ -21,6 +21,7 @@ import ru.DmN.siberia.unparser.Unparser
 import ru.DmN.siberia.unparser.ctx.UnparsingContext
 import ru.DmN.siberia.unparsers.INodeUnparser
 import ru.DmN.siberia.utils.IPlatform
+import ru.DmN.siberia.utils.node.INodeInfo
 import ru.DmN.siberia.utils.node.INodeType
 import ru.DmN.siberia.utils.node.NodeTypes.USE_CTX
 import ru.DmN.siberia.utils.readBytes
@@ -125,7 +126,7 @@ open class Module(val name: String) {
                     parser.mp.parse(uses, parser, pctx) { parser1, context ->
                         val node = parser1.parseNode(context)!!
                         NodeUse(
-                            node.info.withType(USE_CTX),
+                            INodeInfo.of(USE_CTX),
                             mutableListOf(node),
                             uses
                         )

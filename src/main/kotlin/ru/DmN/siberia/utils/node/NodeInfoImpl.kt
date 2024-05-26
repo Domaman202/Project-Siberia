@@ -27,7 +27,7 @@ class NodeInfoImpl(override val type: INodeType, override val ti: ITokenInfo?) :
                     ]
                 """.trimIndent()
             } ?: "[\n| type: $type\n]"
-        else ti!!.run { if (line > -1) printInfo(provider, file, line, symbol, length).toString() else "[ERROR]" }
+        else ti?.run { if (line > -1) printInfo(provider, file, line, symbol, length).toString() else null } ?: "[(${type.operation})]"
 
     override fun equals(other: Any?): Boolean =
         this === other || (other is NodeInfoImpl && other.type == type && other.ti == ti)
@@ -39,9 +39,10 @@ class NodeInfoImpl(override val type: INodeType, override val ti: ITokenInfo?) :
         fun printInfo(provider: Function<String, InputStream>, file: String, line: Int, symbol: Int, length: Int): StringBuilder =
             StringBuilder()
                 .append('[').append(file).append(", ").append(line.inc()).append(", ").append(symbol.inc()).append("]\n")
-                .append(readLine(line, provider.apply(file))).append('\n').append(" ".repeat(symbol)).append('^').append("~".repeat(length.dec()))
+                .append(readLine(line, provider.apply(file))).append('\n')
+                .append(" ".repeat(symbol)).append('^').append("~".repeat(length.dec()))
 
-        private fun readLine(line: Int, stream: InputStream): StringBuilder {
+        fun readLine(line: Int, stream: InputStream): StringBuilder {
             val buff = StringBuilder()
             val input = String(stream.readBytes())
             var lines = 0

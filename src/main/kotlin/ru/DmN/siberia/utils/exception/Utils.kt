@@ -16,6 +16,8 @@ inline fun <T> parsingCatcher(info: INodeInfo, block: () -> T): T {
         return block()
     } catch (e: BaseException) {
         throw ParsingException(e, info)
+    } catch (e: NoCatherWrappedException) {
+        throw if ((e.i--) > 0) e.cause else e
     } catch (t: Throwable) {
         throw ParsingException(DecoratedException(t), info)
     }
@@ -26,6 +28,8 @@ inline fun <T> unparsingCatcher(node: Node, block: () -> T): T {
         return block()
     } catch (e: BaseException) {
         throw UnparsingException(e, node.info)
+    } catch (e: NoCatherWrappedException) {
+        throw if ((e.i--) > 0) e.cause else e
     } catch (t: Throwable) {
         throw UnparsingException(DecoratedException(t), node.info)
     }
@@ -36,6 +40,8 @@ inline fun <T> processingCatcher(node: Node, block: () -> T): T {
         return block()
     } catch (e: BaseException) {
         throw ProcessingException(e, node.info)
+    } catch (e: NoCatherWrappedException) {
+        throw if ((e.i--) > 0) e.cause else e
     } catch (t: Throwable) {
         throw ProcessingException(DecoratedException(t), node.info)
     }
@@ -46,6 +52,8 @@ inline fun <T> compilationCatcher(node: Node, block: () -> T): T {
         return block()
     } catch (e: BaseException) {
         throw CompilationException(e, node.info)
+    } catch (e: NoCatherWrappedException) {
+        throw if ((e.i--) > 0) e.cause else e
     } catch (t: Throwable) {
         throw CompilationException(DecoratedException(t), node.info)
     }
