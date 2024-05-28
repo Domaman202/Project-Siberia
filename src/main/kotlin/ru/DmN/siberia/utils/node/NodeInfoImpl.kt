@@ -32,8 +32,11 @@ class NodeInfoImpl(override val type: INodeType, override val ti: ITokenInfo?) :
     override fun equals(other: Any?): Boolean =
         this === other || (other is NodeInfoImpl && other.type == type && other.ti == ti)
 
+    private var hash: Int = 0
     override fun hashCode(): Int =
-        type.operation.hashCode() + (ti?.hashCode()?.let { it * 31 } ?: 0)
+        if (hash == 0)
+            type.operation.hashCode() + (ti?.hashCode()?.let { it * 31 } ?: 0).apply { hash = this }
+        else hash
 
     companion object {
         fun printInfo(provider: Function<String, InputStream>, file: String, line: Int, symbol: Int, length: Int): StringBuilder =

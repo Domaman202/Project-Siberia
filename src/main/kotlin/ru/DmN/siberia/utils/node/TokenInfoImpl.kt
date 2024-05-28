@@ -8,4 +8,7 @@ class TokenInfoImpl(
     override val line: Int,
     override val symbol: Int,
     override val length: Int
-) : ITokenInfo
+) : ITokenInfo {
+    override fun hashCode(): Int =
+        file.hashCode() + line * 31 + symbol * 31 * 2 + length * 31 * 3
+}
