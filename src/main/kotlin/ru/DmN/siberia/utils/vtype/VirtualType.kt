@@ -125,8 +125,8 @@ abstract class VirtualType {
                 isAbstract = Modifier.isAbstract(klass.modifiers)
                 isFinal = Modifier.isFinal(klass.modifiers) || klass.isEnum
                 fields += klass.declaredFields.map(VirtualField.Companion::of)
-                methods += klass.declaredConstructors.map(VirtualMethod.Companion::of)
-                methods += klass.declaredMethods.map(VirtualMethod.Companion::of)
+//                methods += klass.declaredConstructors.map(VirtualMethod.Companion::of)
+//                methods += klass.declaredMethods.map(VirtualMethod.Companion::of)
             }
     }
 
