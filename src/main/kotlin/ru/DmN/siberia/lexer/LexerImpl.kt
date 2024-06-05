@@ -39,8 +39,12 @@ class LexerImpl(val input: String) : Lexer() {
                             sb.append(c)
                         }
                         '<' -> {
+                            var prev: Char
                             while (c != '>') {
+                                prev = c
                                 c = input[inc()]
+                                if (c == ' ' && prev == ' ')
+                                    continue
                                 sb.append(c)
                             }
                             return Token(line, symbols, CLASS_WITH_GEN, sb.toString())
