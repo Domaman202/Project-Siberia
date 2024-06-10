@@ -92,6 +92,13 @@ open class Module(val name: String) {
     val compilers: MutableMap<IPlatform, MutableMap<INodeType, INodeCompiler<*>>> = HashMap()
 
     /**
+     * Целевая платформа.
+     *
+     * Платформа в которой будет обрабатываться модуль.
+     */
+    var platform: IPlatform? = null
+
+    /**
      * Ноды.
      *
      * Список нод получается при инициализации модуля, в процессе обработки его исходного кода.
@@ -119,7 +126,7 @@ open class Module(val name: String) {
                 val pctx = ParsingContext.base().apply {
                     this.module = this@Module
                     this.file = "$name/$it"
-                    this.platform = platform
+                    this.platform = this@Module.platform ?: platform
                 }
                 val uses = uses.toMutableList()
                 nodes.add(

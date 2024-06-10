@@ -36,7 +36,7 @@ object PlatformSelect : Command(
     override fun action(console: Console, vararg args: Any?) {
         val name = (args[0] as String).uppercase()
         //
-        val platform = IPlatform.PLATFORMS.find { it.name == name }
+        val platform = IPlatform.getOrNull(name)
         if (platform == null) {
             console.println("Платформа '$name' не найдена!")
             console.stop(1)

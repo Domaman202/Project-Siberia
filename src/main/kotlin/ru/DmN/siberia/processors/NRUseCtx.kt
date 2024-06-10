@@ -2,8 +2,8 @@ package ru.DmN.siberia.processors
 
 import ru.DmN.pht.module.utils.Module
 import ru.DmN.pht.module.utils.ModulesProvider
+import ru.DmN.siberia.ast.INodesList
 import ru.DmN.siberia.ast.Node
-import ru.DmN.siberia.ast.NodeNodesList
 import ru.DmN.siberia.ast.NodeProcessedUse
 import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.parsers.NPUseCtx.getModules
@@ -21,7 +21,7 @@ object NRUseCtx : INodeProcessor<NodeUse> {
     override fun process(node: NodeUse, processor: Processor, ctx: ProcessingContext, valMode: Boolean): Node {
         if (node.names.isEmpty())
             return NRProgn.process(nodeProgn(node.info, node.nodes), processor, ctx, valMode)
-        val exports = ArrayList<NodeNodesList>()
+        val exports = ArrayList<INodesList>()
         val processed = ArrayList<Node>()
         processor.pushTask(MODULE_POST_INIT, node) {
             processNodesList(node, processor, processor.mp.injectModules(node.names, processed, exports, processor, ctx), valMode)

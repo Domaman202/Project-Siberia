@@ -8,4 +8,7 @@ interface INodesList : Node {
      * Под-ноды.
      */
     val nodes: MutableList<Node>
+
+    override fun copy(): INodesList =
+        this
 }

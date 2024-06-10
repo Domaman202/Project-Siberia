@@ -11,6 +11,16 @@ interface IPlatform {
 
     companion object {
         val PLATFORMS: MutableList<IPlatform> = ArrayList()
+
+        operator fun plusAssign(platform: IPlatform) {
+            PLATFORMS += platform
+        }
+
+        operator fun get(name: String): IPlatform =
+            getOrNull(name)!!
+
+        fun getOrNull(name: String): IPlatform? =
+            PLATFORMS.find { it.name == name }
     }
 
     /**
