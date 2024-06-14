@@ -52,6 +52,10 @@ abstract class VirtualType {
     abstract val isAbstract: Boolean
 
     /**
+     * Тип нативный?
+     */
+    abstract val isNative: Boolean
+    /**
      * Тип конечный?
      */
     abstract val isFinal: Boolean
@@ -123,6 +127,7 @@ abstract class VirtualType {
                 componentType = klass.componentType?.let(Companion::ofKlass)
                 isInterface = klass.isInterface
                 isAbstract = Modifier.isAbstract(klass.modifiers)
+                isNative = true
                 isFinal = Modifier.isFinal(klass.modifiers) || klass.isEnum
                 fields += klass.declaredFields.map(VirtualField.Companion::of)
 //                methods += klass.declaredConstructors.map(VirtualMethod.Companion::of)
@@ -144,6 +149,7 @@ abstract class VirtualType {
         //
         override var isInterface: Boolean = false,
         override var isAbstract: Boolean = false,
+        override var isNative: Boolean = false,
         override var isFinal: Boolean = false,
         override var isFile: Boolean = false,
     ) : VirtualType()
