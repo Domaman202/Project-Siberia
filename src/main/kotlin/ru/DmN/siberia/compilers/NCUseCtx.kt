@@ -22,7 +22,7 @@ object NCUseCtx : INodeCompiler<NodeProcessedUse> {
         val context = ctx.subCtx()
         node.names.forEach { getOrThrow(it).load(compiler, context) }
         node.processed.forEach { compiler.compile(it, context) }
-        node.exports.forEach { NCDefault.compile(it, compiler, ctx) }
+        node.exports.forEach { NCDefault.compile(it, compiler, context) }
         return context
     }
 }

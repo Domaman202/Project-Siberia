@@ -5,21 +5,6 @@ package ru.DmN.siberia.utils.vtype
  */
 data class MethodModifiers(
     /**
-     * Метод принимает переменное число аргументов?
-     */
-    var varargs: Boolean = false,
-
-    /**
-     * Метод является конструктором?
-     */
-    var ctor: Boolean = false,
-
-    /**
-     * Метод статический?
-     */
-    var static: Boolean = false,
-
-    /**
      * Метод абстрактный?
      */
     var abstract: Boolean = false,
@@ -30,19 +15,39 @@ data class MethodModifiers(
     var extension: Boolean = false,
 
     /**
-     * Метод конечный?
+     * Метод принимает переменное число аргументов?
      */
-    var final: Boolean = false,
+    var varargs: Boolean = false,
 
     /**
-     * Метод синхронизуемый?
+     * Метод статический?
      */
-    var sync: Boolean = false,
+    var static: Boolean = false,
 
     /**
      * Метод встраиваемый?
      */
     var inline: Boolean = false,
+
+    /**
+     * Метод конечный?
+     */
+    var final: Boolean = false,
+
+    /**
+     * Метод нативный?
+     */
+    var native: Boolean = false,
+
+    /**
+     * Метод является конструктором?
+     */
+    var ctor: Boolean = false,
+
+    /**
+     * Метод синхронизуемый?
+     */
+    var sync: Boolean = false,
 
     /**
      * Метод описывает функционал файла или может быть представлен в виде файла?

@@ -16,7 +16,7 @@ abstract class TypesProvider {
      * Ищет тип по имени, иначе выкидывает исключение.
      */
     open fun typeOf(name: String): VirtualType =
-        typeOfOrNull(name) ?: throw ClassNotFoundException("Type '$name not founded!'")
+        typeOfOrNull(name) ?: throw ClassNotFoundException("Type '$name' not founded!")
 
     /**
      * Ищет тип по имени, иначе возвращает null.
