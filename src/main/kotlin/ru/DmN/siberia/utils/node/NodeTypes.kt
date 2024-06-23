@@ -8,7 +8,7 @@ enum class NodeTypes : INodeType {
     EXPORT("export", PARSED),
     EXPORT_("export", PROCESSED),
     // o
-    ONLY_EXPORT("only-export", false, false),
+    EXPORT_ONLY("export-only", false, false),
     // p
     PROGN("progn", PARSED),
     PROGN_("progn", PROCESSED),

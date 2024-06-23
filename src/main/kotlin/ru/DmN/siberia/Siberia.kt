@@ -25,7 +25,7 @@ object Siberia : Module("siberia") {
         // i
         add(Regex("include"),     NPInclude)
         // o
-        add(Regex("only-export"), NPOnlyExport)
+        add(Regex("export-only"), NPExportOnly)
         // p
         add(Regex("progn"),       NPProgn)
         // u
@@ -38,7 +38,7 @@ object Siberia : Module("siberia") {
         add(EXPORT,      NUDefault)
         add(EXPORT_,     NUDefault)
         // o
-        add(ONLY_EXPORT, NUDefault)
+        add(EXPORT_ONLY, NUDefault)
         // p
         add(PROGN,       NUDefault)
         add(PROGN_,      NUDefault)
