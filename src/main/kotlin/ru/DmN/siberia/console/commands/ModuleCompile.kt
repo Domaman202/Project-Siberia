@@ -6,10 +6,9 @@ import ru.DmN.siberia.console.BuildCommands
 import ru.DmN.siberia.console.BuildCommands.processModule
 import ru.DmN.siberia.console.Console
 import ru.DmN.siberia.console.ctx.isModule
+import ru.DmN.siberia.console.ctx.module
 import ru.DmN.siberia.console.utils.Command
-import ru.DmN.siberia.processor.utils.mp
-import ru.DmN.siberia.processor.utils.platform
-import ru.DmN.siberia.processor.utils.tp
+import ru.DmN.siberia.processor.utils.*
 import ru.DmN.siberia.utils.exception.BaseException
 import ru.DmN.siberia.utils.invokeAll
 import java.io.File
@@ -31,13 +30,14 @@ object ModuleCompile : Command(
     override fun action(console: Console, vararg args: Any?) {
         val mp = console.mp
         val tp = console.tp
+        val module = console.module
         val platform = console.platform
         //
         console.println("Компиляция...")
         try {
             val nodes = processModule(console)
             val compiler = CompilerImpl(mp, tp)
-            val ctx = CompilationContext.base().apply { this.platform = platform }
+            val ctx = CompilationContext.base().with(platform).apply { this.module = module }
             nodes.forEach { compiler.compile(it, ctx) }
             compiler.stageManager.runAll()
             File("dump").mkdir()

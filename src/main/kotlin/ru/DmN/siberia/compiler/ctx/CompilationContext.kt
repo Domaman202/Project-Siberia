@@ -1,11 +1,11 @@
 package ru.DmN.siberia.compiler.ctx
 
-import ru.DmN.siberia.Siberia
-import ru.DmN.siberia.utils.ctx.IContextCollection
-import ru.DmN.siberia.utils.ctx.IContextKey
 import ru.DmN.pht.module.utils.Module
+import ru.DmN.siberia.Siberia
 import ru.DmN.siberia.utils.SubList
 import ru.DmN.siberia.utils.SubMap
+import ru.DmN.siberia.utils.ctx.IContextCollection
+import ru.DmN.siberia.utils.ctx.IContextKey
 
 /**
  * Контекст компиляции.
@@ -27,7 +27,7 @@ class CompilationContext(
         CompilationContext(SubList(loadedModules), SubMap(contexts))
 
     override fun with(key: IContextKey, ctx: Any?): CompilationContext =
-        CompilationContext(loadedModules, contexts.toMutableMap().apply { this[key] = ctx })
+        CompilationContext(loadedModules, SubMap(contexts).apply { this[key] = ctx })
 
     companion object {
         /**

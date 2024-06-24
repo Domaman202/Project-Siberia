@@ -2,9 +2,9 @@ package ru.DmN.siberia.processors
 
 import ru.DmN.pht.module.utils.Module
 import ru.DmN.pht.module.utils.ModulesProvider
-import ru.DmN.siberia.ast.INodesList
 import ru.DmN.siberia.ast.Node
 import ru.DmN.siberia.ast.NodeProcessedUse
+import ru.DmN.siberia.ast.NodeProcessedUse.ProcessedData
 import ru.DmN.siberia.ast.NodeUse
 import ru.DmN.siberia.parsers.NPUseCtx.getModules
 import ru.DmN.siberia.processor.Processor
@@ -21,54 +21,39 @@ object NRUseCtx : INodeProcessor<NodeUse> {
     override fun process(node: NodeUse, processor: Processor, ctx: ProcessingContext, valMode: Boolean): Node {
         if (node.names.isEmpty())
             return NRProgn.process(nodeProgn(node.info, node.nodes), processor, ctx, valMode)
-        val exports = ArrayList<INodesList>()
-        val processed = ArrayList<Node>()
+        val data = ArrayList<ProcessedData>()
         processor.pushTask(MODULE_POST_INIT, node) {
-            processNodesList(node, processor, processor.mp.injectModules(node.names, processed, exports, processor, ctx), valMode)
+            processNodesList(node, processor, processor.mp.injectModules(node.names, data, processor, ctx), valMode)
         }
-        return NodeProcessedUse(node.info.withType(USE_CTX_), node.nodes, node.names, exports, processed)
+        return NodeProcessedUse(node.info.withType(USE_CTX_), node.nodes, data)
     }
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T : Node> ModulesProvider.injectModules(names: MutableList<String>, processed: MutableList<Node>, exports: MutableList<T>, processor: Processor, ctx: ProcessingContext): ProcessingContext {
+    fun ModulesProvider.injectModules(names: MutableList<String>, data: MutableList<ProcessedData>, processor: Processor, ctx: ProcessingContext): ProcessingContext {
         val context = ctx.subCtx()
         injectModules(
             context.loadedModules,
             getModules(names.asSequence(), ctx.platform),
-            {
-                it.load(processor, context, names)
+            { module ->
+                module.load(processor, context, names)
                 val tmpContext = context.subCtx()
-                tmpContext.module = it
-                it.nodes.forEach { nd ->
+                tmpContext.module = module
+                val list = (data.find { it.module == module } ?: ProcessedData(module).apply { data += this }).processed
+                module.nodes.forEach { nd ->
                     processor.process(nd.copy(), tmpContext, false)?.let { pn ->
-                        processed += pn
+                        list += pn
                     }
                 }
             },
-            {
+            { module ->
                 context.module = ctx.module
-                it.exports.forEach { nd -> exports += NRProgn.process(nd.copy(), processor, context, false) as T }
+                val list = (data.find { it.module == module } ?: ProcessedData(module).apply { data += this }).exports
+                module.exports.forEach { nd ->
+                    list += NRProgn.process(nd.copy(), processor, context, false)
+                }
             }
         )
         return context
     }
-
-    /**
-     * Загружает модули в контекст процессинга из ноды.
-     *
-     * @param processed Список в который будут помещены обработанные ноды из модулей.
-     */
-    fun ModulesProvider.injectModules(node: NodeUse, processor: Processor, ctx: ProcessingContext, processed: MutableList<Node>): List<Module> =
-        getModules(node.names, ctx.platform).onEach { it ->
-            if (it.load(processor, ctx, node.names)) {
-                ctx.module = it
-                it.nodes.forEach { it1 ->
-                    processor.process(it1.copy(), ctx, false)?.let {
-                        processed += it
-                    }
-                }
-            }
-        }
 
     /**
      * Загружает незагруженные модули.

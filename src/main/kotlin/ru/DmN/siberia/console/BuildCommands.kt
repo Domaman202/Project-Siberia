@@ -1,6 +1,7 @@
 package ru.DmN.siberia.console
 
 import ru.DmN.siberia.ast.Node
+import ru.DmN.siberia.ast.NodeProcessedUse
 import ru.DmN.siberia.console.commands.*
 import ru.DmN.siberia.console.ctx.module
 import ru.DmN.siberia.processor.ProcessorImpl
@@ -26,7 +27,9 @@ object BuildCommands {
         //
         val processed = ArrayList<Node>()
         val processor = ProcessorImpl(mp, tp)
-        mp.injectModules(mutableListOf(module.name), processed, processed, processor, ProcessingContext.base().with(platform).apply { this.module = module })
+        val list = ArrayList<NodeProcessedUse.ProcessedData>()
+        mp.injectModules(mutableListOf(module.name), list, processor, ProcessingContext.base().with(platform).apply { this.module = module })
+        list.forEach { processed += it.processed; processed += it.exports }
         processor.stageManager.runAll()
         //
         console.println("Обработка успешна завершена!")
