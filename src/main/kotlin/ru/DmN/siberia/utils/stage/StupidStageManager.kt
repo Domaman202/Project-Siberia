@@ -13,7 +13,11 @@ class StupidStageManager<S : Enum<S>>(
     /**
      * Текущая стадия.
      */
-    private var stage: S
+    private var stage: S,
+    /**
+     * Список стадий.
+     */
+    private var stages: Array<S>
 ) : StageManager<S>() {
     /**
      * Список задач.
@@ -36,14 +40,14 @@ class StupidStageManager<S : Enum<S>>(
         tasks.asSequence().map { Pair(it.key, it.value.asSequence()) }
 
     override fun runAll() {
-        tasks.forEach {
-            stage = it.key
-            it.value.forEach(Runnable::run)
+        stages.forEach {
+            stage = it
+            tasks[it].forEach(Runnable::run)
         }
     }
 
     companion object {
-        inline fun <reified S : Enum<S>> of(initial: S) =
-            StupidStageManager(S::class.java, initial)
+        inline fun <reified S : Enum<S>> of(initial: S, stages: Array<S>) =
+            StupidStageManager(S::class.java, initial, stages)
     }
 }

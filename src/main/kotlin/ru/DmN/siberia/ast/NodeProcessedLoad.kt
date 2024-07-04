@@ -5,21 +5,21 @@ import ru.DmN.siberia.utils.indent
 import ru.DmN.siberia.utils.node.INodeInfo
 
 /**
- * Обработанная нода использования модулей.
+ * Обработанная нода загрузки модулей.
  */
-class NodeProcessedUse(
+class NodeProcessedLoad(
     info: INodeInfo,
     nodes: MutableList<Node>,
-    val data: List<ProcessedData>
+    val modules: List<Module>
 ) : NodeNodesList(info, nodes) {
-    override fun copy(): NodeProcessedUse =
-        NodeProcessedUse(info, copyNodes(), data)
+    override fun copy(): NodeProcessedLoad =
+        NodeProcessedLoad(info, copyNodes(), modules)
 
     override fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder {
         return builder.apply {
             indent(indent).append('[').append(info.type).append('\n')
                 .indent(indent + 1).append("(modules =")
-            data.forEach { builder.append(' ').append(it.module.name) }
+            modules.forEach { builder.append(' ').append(it.name) }
             append(')')
             if (nodes.isNotEmpty()) {
                 append('\n').indent(indent + 1).append("(NODES:\n")
@@ -37,24 +37,4 @@ class NodeProcessedUse(
             append(']')
         }
     }
-
-    /**
-     * Результат обработки модуля.
-     */
-    data class ProcessedData(
-        /**
-         * Модуль.
-         */
-        val module: Module,
-
-        /**
-         * Обработанные ноды модуля.
-         */
-        var processed: MutableList<Node> = ArrayList(),
-
-        /**
-         * Обработанные ноды экспорта модуля.
-         */
-        val exports: MutableList<Node> = ArrayList()
-    )
 }

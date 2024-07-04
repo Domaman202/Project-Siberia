@@ -1,12 +1,12 @@
 package ru.DmN.siberia.ast
 
-import ru.DmN.siberia.utils.node.INodeInfo
 import ru.DmN.siberia.utils.indent
+import ru.DmN.siberia.utils.node.INodeInfo
 
 /**
  * Нода использования модулей.
  */
-open class NodeUse(
+class NodeUse(
     info: INodeInfo,
     nodes: MutableList<Node>,
     /**

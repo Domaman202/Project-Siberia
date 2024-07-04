@@ -6,11 +6,11 @@ import ru.DmN.siberia.lexer.Token
 import ru.DmN.siberia.lexer.Token.DefaultType.OPERATION
 import ru.DmN.siberia.parser.Parser
 import ru.DmN.siberia.parser.ctx.ParsingContext
-import ru.DmN.siberia.parsers.NPUseCtx.loadModules
+import ru.DmN.siberia.parsers.NPUseCtx.parse
 import ru.DmN.siberia.utils.node.INodeInfo
-import ru.DmN.siberia.utils.node.NodeTypes.USE
+import ru.DmN.siberia.utils.node.NodeTypes.LOAD_CTX
 
-object NPUse : INodeParser {
+object NPLoadCtx : INodeParser {
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node {
         val names = ArrayList<String>()
         var tk = parser.nextToken()!!
@@ -19,11 +19,6 @@ object NPUse : INodeParser {
             tk = parser.nextToken()!!
         }
         parser.pushToken(tk)
-        return parse(names, token, parser, ctx)
-    }
-
-    fun parse(names: MutableList<String>, token: Token, parser: Parser, ctx: ParsingContext): NodeUse {
-        parser.mp.loadModules(names, parser, ctx)
-        return NodeUse(INodeInfo.of(USE, ctx, token), ArrayList(), names)
+        return parser.mp.parse(names, parser, ctx) { p, c -> NPProgn.parse(p, c) { NodeUse(INodeInfo.of(LOAD_CTX, ctx, token), it, names) } }
     }
 }

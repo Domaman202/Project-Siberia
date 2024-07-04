@@ -23,6 +23,7 @@ import ru.DmN.siberia.unparsers.INodeUnparser
 import ru.DmN.siberia.utils.IPlatform
 import ru.DmN.siberia.utils.node.INodeInfo
 import ru.DmN.siberia.utils.node.INodeType
+import ru.DmN.siberia.utils.node.NodeTypes.LOAD_CTX
 import ru.DmN.siberia.utils.node.NodeTypes.USE_CTX
 import ru.DmN.siberia.utils.readBytes
 import java.io.File
@@ -55,6 +56,11 @@ open class Module(val name: String) {
      * Зависимости модуля.
      */
     var deps: List<String> = ArrayList()
+
+    /**
+     * Загружаемые модули.
+     */
+    var loads: List<String> = ArrayList()
 
     /**
      * Используемые модули.
@@ -128,15 +134,24 @@ open class Module(val name: String) {
                     this.file = "$name/$it"
                     this.platform = this@Module.platform ?: platform
                 }
+                val loads = loads.toMutableList()
                 val uses = uses.toMutableList()
                 nodes.add(
-                    parser.mp.parse(uses, parser, pctx) { parser1, context ->
-                        val node = parser1.parseNode(context)!!
-                        NodeUse(
-                            INodeInfo.of(USE_CTX),
-                            mutableListOf(node),
-                            uses
-                        )
+                    parser.mp.parse(loads, parser, pctx) { parser1, context1 ->
+                        parser1.mp.parse(uses, parser1, context1) { parser2, context2 ->
+                            val node = parser2.parseNode(context2)!!
+                            NodeUse(
+                                INodeInfo.of(LOAD_CTX),
+                                mutableListOf(
+                                    NodeUse(
+                                        INodeInfo.of(USE_CTX),
+                                        mutableListOf(node),
+                                        uses
+                                    )
+                                ),
+                                loads
+                            )
+                        }
                     },
                 )
             }

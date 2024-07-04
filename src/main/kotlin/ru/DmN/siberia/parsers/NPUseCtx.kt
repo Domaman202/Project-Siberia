@@ -64,7 +64,7 @@ object NPUseCtx : INodeParser {
      * @return Список модулей.
      */
     fun ModulesProvider.getModules(names: List<String>, platform: IPlatform): List<Module> =
-        names.map { getOrLoadModule(it, platform)}
+        names.map { getOrLoadModule(it, platform) }
 
     /**
      * Получает список модулей по их имени.

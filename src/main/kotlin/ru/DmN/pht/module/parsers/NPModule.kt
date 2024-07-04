@@ -17,7 +17,6 @@ import ru.DmN.siberia.utils.IPlatform
 import ru.DmN.siberia.utils.node.INodeInfo
 
 object NPModule : SimpleNP(MODULE) {
-    @Suppress("UNCHECKED_CAST")
     override fun parse(parser: Parser, ctx: ParsingContext, token: Token): Node {
         val context = ctx.subCtx()
         context.loadedModules.add(0, Helper)
@@ -25,24 +24,38 @@ object NPModule : SimpleNP(MODULE) {
             NodeModule(INodeInfo.of(MODULE, ctx, token), it.associate { it as NodeArgument; Pair(it.name, it.value) }).apply {
                 val name = data["name"] as String
                 module = parser.mp.getOrPut(name) {
-                    if (data["class"] == null)
-                        Module(name)
-                    else Class.forName(data["class"] as String).getField("INSTANCE").get(null) as Module
-                }
-                if (!module.init) {
-                    (data["author"] as String?)?.let { module.author = it }
-                    (data["deps"] as List<String>?)?.let {
-                        module.deps += it
-                        parser.mp.loadModules(it.toMutableList(), parser, ctx)
+                    data.get<String?>("class").let {
+                        it ?: return@let Module(name)
+                        Class.forName(it).getField("INSTANCE").get(null) as Module
                     }
-                    (data["platform"] as String?)?.let { module.platform = IPlatform[it] }
-                    (data["res"] as List<String>?)?.let { module.resources += it }
-                    (data["src"] as List<String>?)?.let { module.sources += it }
-                    (data["uses"] as List<String>?)?.let { module.uses += it }
-                    (data["version"] as String?)?.let { module.version = it }
-                    module.init(ctx.platform, parser.mp)
+                }
+                module.apply {
+                    if (!init) {
+                        data["author"]<String> { author = it }
+                        data["deps"]<List<String>> {
+                            deps += it
+                            parser.mp.loadModules(it.toMutableList(), parser, ctx)
+                        }
+                        data["loads"]<List<String>> { loads += it }
+                        data["platform"]<String> { platform = IPlatform[it] }
+                        data["res"]<List<String>> { resources += it }
+                        data["src"]<List<String>> { sources += it }
+                        data["uses"]<List<String>> { uses += it }
+                        data["version"]<String> { version = it }
+                        init(ctx.platform, parser.mp)
+                    }
                 }
             }
         }
     }
+
+    @Suppress("UNCHECKED_CAST")
+    private inline operator fun <T> Any?.invoke(block: (T) -> Unit) {
+        this ?: return
+        block(this as T)
+    }
+
+    @Suppress("UNCHECKED_CAST", "EXTENSION_SHADOWED_BY_MEMBER", "NOTHING_TO_INLINE")
+    private inline fun <R> Map<String, Any?>.get(key: String): R =
+        get(key) as R
 }

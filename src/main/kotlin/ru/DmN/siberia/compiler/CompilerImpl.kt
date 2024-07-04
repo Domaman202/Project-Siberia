@@ -6,7 +6,8 @@ import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.compiler.utils.CompilingStage
 import ru.DmN.siberia.compilers.INodeCompiler
 import ru.DmN.siberia.processor.utils.platform
-import ru.DmN.siberia.utils.IPlatform
+import ru.DmN.siberia.utils.IPlatform.UNIVERSAL
+import ru.DmN.siberia.utils.SubMap
 import ru.DmN.siberia.utils.Variable
 import ru.DmN.siberia.utils.ctx.IContextKey
 import ru.DmN.siberia.utils.exception.compilationCatcher
@@ -17,9 +18,12 @@ import ru.DmN.siberia.utils.vtype.TypesProvider
 /**
  * Стандартная реализация компилятора.
  */
-open class CompilerImpl(override val mp: ModulesProvider, override val tp: TypesProvider) : Compiler() {
-    override val stageManager: StageManager<CompilingStage> = StupidStageManager.of(CompilingStage.UNKNOWN)
+open class CompilerImpl(
+    override val mp: ModulesProvider,
+    override val tp: TypesProvider,
     override val contexts: MutableMap<IContextKey, Any?> = HashMap()
+) : Compiler() {
+    override val stageManager: StageManager<CompilingStage> = StupidStageManager.of(CompilingStage.UNKNOWN, CompilingStage.entries.toTypedArray())
     override val finalizers: MutableList<(String) -> Unit> = ArrayList()
 
     override fun compile(node: Node, ctx: CompilationContext) = compilationCatcher(node) {
@@ -39,8 +43,11 @@ open class CompilerImpl(override val mp: ModulesProvider, override val tp: Types
         val platform = ctx.platform
         val type = node.info.type
         ctx.loadedModules.forEach { it -> it.compilers[ctx.platform]?.get(type)?.let { return it as INodeCompiler<Node> } }
-        if (platform != IPlatform.UNIVERSAL)
-            ctx.loadedModules.forEach { it -> it.compilers[IPlatform.UNIVERSAL]?.get(type)?.let { return it as INodeCompiler<Node> } }
+        if (platform != UNIVERSAL)
+            ctx.loadedModules.forEach { it -> it.compilers[UNIVERSAL]?.get(type)?.let { return it as INodeCompiler<Node> } }
         throw RuntimeException("Compiler for \"$type\" not founded!")
     }
+
+    override fun subCompiler(ctx: CompilationContext?): Compiler =
+        CompilerImpl(mp, tp, SubMap(contexts))
 }

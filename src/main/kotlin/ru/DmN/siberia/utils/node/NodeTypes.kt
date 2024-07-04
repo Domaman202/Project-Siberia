@@ -7,14 +7,15 @@ enum class NodeTypes : INodeType {
     // e
     EXPORT("export", PARSED),
     EXPORT_("export", PROCESSED),
+    // l
+    LOAD_CTX("load-ctx", PARSED),
+    LOAD_CTX_("load-ctx", PROCESSED),
     // o
     EXPORT_ONLY("export-only", false, false),
     // p
     PROGN("progn", PARSED),
     PROGN_("progn", PROCESSED),
     // u
-    USE("use", PARSED),
-    USE_("use", PROCESSED),
     USE_CTX("use-ctx", PARSED),
     USE_CTX_("use-ctx", PROCESSED);
 

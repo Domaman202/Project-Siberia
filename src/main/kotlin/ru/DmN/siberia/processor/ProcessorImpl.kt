@@ -16,7 +16,7 @@ import ru.DmN.siberia.utils.vtype.VirtualType
  * Стандартная реализация обработчика.
  */
 class ProcessorImpl(override val mp: ModulesProvider, override val tp: TypesProvider) : Processor() {
-    override val stageManager: StageManager<ProcessingStage> = StupidStageManager.of(ProcessingStage.UNKNOWN)
+    override val stageManager: StageManager<ProcessingStage> = StupidStageManager.of(ProcessingStage.UNKNOWN, ProcessingStage.entries.toTypedArray())
     override val contexts: MutableMap<IContextKey, Any?> = HashMap()
 
     override fun calc(node: Node, ctx: ProcessingContext): VirtualType? = processingCatcher(node) {

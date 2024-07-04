@@ -27,6 +27,7 @@ object ModuleInfo : Command(
             console.println(" |> Версия: $version")
             console.println(" |> Автор(ы): $author")
             console.println(" |> Зависимости: $deps")
+            console.println(" |> Загружает модули: $loads")
             console.println(" |> Использует модули: $uses")
             console.println(" |> Исходный код: $sources")
             console.println(" |> Ресурсные: $resources")

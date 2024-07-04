@@ -11,15 +11,12 @@ import ru.DmN.siberia.utils.vtype.VirtualType
 /**
  * Обработчик нод с под-нодами.
  */
-object NRProgn : INodeProcessor<Node> {
-    override fun calc(node: Node, processor: Processor, ctx: ProcessingContext): VirtualType? {
-        node as INodesList
-        return processor.calc(node.nodes.last(), ctx)
-    }
+object NRProgn : INodeProcessor<INodesList> {
+    override fun calc(node: INodesList, processor: Processor, ctx: ProcessingContext): VirtualType? =
+        processor.calc(node.nodes.last(), ctx)
 
-    override fun process(node: Node, processor: Processor, ctx: ProcessingContext, valMode: Boolean): NodeNodesList {
-        node as INodesList
-        return NodeNodesList(
+    override fun process(node: INodesList, processor: Processor, ctx: ProcessingContext, valMode: Boolean): NodeNodesList =
+        NodeNodesList(
             node.info.withType(PROGN_),
             if (node.nodes.isEmpty())
                 ArrayList()
@@ -27,11 +24,9 @@ object NRProgn : INodeProcessor<Node> {
                 val list = ArrayList<Node>()
                 val nodes = node.nodes
                 for (i in 0 until nodes.size - 1)
-                    processor.process(nodes[i], ctx, false)
-                        .let { if (it != null) list += it }
+                    processor.process(nodes[i], ctx, false).let { if (it != null) list += it }
                 processor.process(node.nodes.last(), ctx, true)?.let { list += it }
                 list
             }
         )
-    }
 }

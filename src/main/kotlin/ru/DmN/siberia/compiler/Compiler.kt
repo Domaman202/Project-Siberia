@@ -54,4 +54,11 @@ abstract class Compiler {
      * Возвращает компилятор нод.
      */
     abstract fun get(ctx: CompilationContext, node: Node): INodeCompiler<Node>
+
+    /**
+     * Создаёт новый компилятор, наследует глобальный контекст.
+     *
+     * @param ctx Контекст компиляции.
+     */
+    abstract fun subCompiler(ctx: CompilationContext?): Compiler
 }
