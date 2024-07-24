@@ -5,14 +5,19 @@ package ru.DmN.siberia.utils.vtype
  */
 data class MethodModifiers(
     /**
+     * Метод является расширением?
+     */
+    var extension: Boolean = false,
+
+    /**
      * Метод абстрактный?
      */
     var abstract: Boolean = false,
 
     /**
-     * Метод является расширением?
+     * Метод является генератором?
      */
-    var extension: Boolean = false,
+    var generator: Boolean = false,
 
     /**
      * Метод принимает переменное число аргументов?
