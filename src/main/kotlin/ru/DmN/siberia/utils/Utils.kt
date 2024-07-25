@@ -4,6 +4,14 @@ import ru.DmN.siberia.ast.Node
 import java.io.DataInputStream
 import java.io.InputStream
 
+inline fun <T> List<T>.safeForEach(block: (T) -> Unit) {
+    var i = 0
+    while (i < size) {
+        block(get(i++))
+    }
+}
+
+
 fun <T> List<(T) -> Unit>.invokeAll(value: T) {
     var i = 0
     while (i < size) {

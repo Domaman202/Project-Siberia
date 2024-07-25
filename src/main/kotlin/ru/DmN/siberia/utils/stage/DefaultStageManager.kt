@@ -1,5 +1,7 @@
 package ru.DmN.siberia.utils.stage
 
+import ru.DmN.siberia.utils.safeForEach
+
 class DefaultStageManager(
     private var stage: IStage,
     private val stages: MutableList<IStage>
@@ -33,9 +35,15 @@ class DefaultStageManager(
         stages.indexOf(stage)
 
     override fun pushTask(stage: IStage, task: Runnable) {
-        tasks.getOrPut(stage) { ArrayList() }.add(task)
+        if (getPosition(stage) <= getPosition(this.stage))
+            task.run()
+        else tasks.getOrPut(stage) { ArrayList() } += task
     }
 
-    override fun runAll() =
-        stages.asSequence().mapNotNull(tasks::get).forEach { it.forEach(Runnable::run) }
+    override fun runAll() {
+        stages.forEach {
+            stage = it
+            tasks[it]?.forEach(Runnable::run)
+        }
+    }
 }
