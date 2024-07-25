@@ -11,8 +11,8 @@ import ru.DmN.siberia.utils.SubMap
 import ru.DmN.siberia.utils.Variable
 import ru.DmN.siberia.utils.ctx.IContextKey
 import ru.DmN.siberia.utils.exception.compilationCatcher
+import ru.DmN.siberia.utils.stage.DefaultStageManager
 import ru.DmN.siberia.utils.stage.StageManager
-import ru.DmN.siberia.utils.stage.StupidStageManager
 import ru.DmN.siberia.utils.vtype.TypesProvider
 
 /**
@@ -23,7 +23,7 @@ open class CompilerImpl(
     override val tp: TypesProvider,
     override val contexts: MutableMap<IContextKey, Any?> = HashMap()
 ) : Compiler() {
-    override val stageManager: StageManager<CompilingStage> = StupidStageManager.of(CompilingStage.UNKNOWN, CompilingStage.entries.toTypedArray())
+    override val stageManager: StageManager = DefaultStageManager(CompilingStage.UNKNOWN, CompilingStage.entries.toMutableList())
     override val finalizers: MutableList<(String) -> Unit> = ArrayList()
 
     override fun compile(node: Node, ctx: CompilationContext) = compilationCatcher(node) {

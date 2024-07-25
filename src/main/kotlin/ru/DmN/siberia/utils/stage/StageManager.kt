@@ -3,28 +3,46 @@ package ru.DmN.siberia.utils.stage
 /**
  * Менеджер стадий.
  */
-abstract class StageManager<S : Enum<S>> {
+abstract class StageManager {
     /**
-     * Получает стадию.
+     * Добавляет новую стадию.
+     * Указывается стадия которая идёт после новой.
+     *
+     * @param stage Новая стадия.
+     * @param other Следующая стадия.
+     */
+    abstract fun addStageBefore(stage: IStage, other: IStage)
+
+    /**
+     * Добавляет новую стадию.
+     * Указывается стадия которая идёт до новой.
+     *
+     * @param stage Новая стадия.
+     * @param other Предыдущая стадия.
+     */
+    abstract fun addStageAfter(stage: IStage, other: IStage)
+
+    /**
+     * Получает текущую стадию.
      *
      * @return [Порядковый номер; Стадия]
      */
-    abstract fun getStage(): Pair<Int, S>
+    abstract fun getStage(): Pair<Int, IStage>
 
     /**
      * Получает порядковый номер стадии.
+     *
+     * @return Порядковый номер.
      */
-    abstract fun getPosition(stage: S): Int
+    abstract fun getPosition(stage: IStage): Int
 
     /**
      * Добавляет новую задачу.
+     *
+     * @param stage Стадия в которой будет запускаться задача.
+     * @param task Задача.
      */
-    abstract fun pushTask(stage: S, task: Runnable)
-
-    /**
-     * Возвращает Sequence со всеми стадиями.
-     */
-    abstract fun asSequence(): Sequence<Pair<S, Sequence<Runnable>>>
+    abstract fun pushTask(stage: IStage, task: Runnable)
 
     /**
      * Запускает все стадии.

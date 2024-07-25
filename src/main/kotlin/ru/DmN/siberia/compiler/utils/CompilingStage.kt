@@ -1,9 +1,11 @@
 package ru.DmN.siberia.compiler.utils
 
+import ru.DmN.siberia.utils.stage.IStage
+
 /**
  * Стадии компиляции.
  */
-enum class CompilingStage {
+enum class CompilingStage : IStage {
     /**
      * Неизвестная.
      */

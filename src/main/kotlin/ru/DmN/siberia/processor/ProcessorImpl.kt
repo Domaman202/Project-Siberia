@@ -7,8 +7,8 @@ import ru.DmN.siberia.processor.utils.ProcessingStage
 import ru.DmN.siberia.processors.INodeProcessor
 import ru.DmN.siberia.utils.ctx.IContextKey
 import ru.DmN.siberia.utils.exception.processingCatcher
+import ru.DmN.siberia.utils.stage.DefaultStageManager
 import ru.DmN.siberia.utils.stage.StageManager
-import ru.DmN.siberia.utils.stage.StupidStageManager
 import ru.DmN.siberia.utils.vtype.TypesProvider
 import ru.DmN.siberia.utils.vtype.VirtualType
 
@@ -16,7 +16,7 @@ import ru.DmN.siberia.utils.vtype.VirtualType
  * Стандартная реализация обработчика.
  */
 class ProcessorImpl(override val mp: ModulesProvider, override val tp: TypesProvider) : Processor() {
-    override val stageManager: StageManager<ProcessingStage> = StupidStageManager.of(ProcessingStage.UNKNOWN, ProcessingStage.entries.toTypedArray())
+    override val stageManager: StageManager = DefaultStageManager(ProcessingStage.UNKNOWN, ProcessingStage.entries.toMutableList())
     override val contexts: MutableMap<IContextKey, Any?> = HashMap()
 
     override fun calc(node: Node, ctx: ProcessingContext): VirtualType? = processingCatcher(node) {

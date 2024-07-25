@@ -1,9 +1,11 @@
 package ru.DmN.siberia.processor.utils
 
+import ru.DmN.siberia.utils.stage.IStage
+
 /**
  * Стадии обработки.
  */
-enum class ProcessingStage {
+enum class ProcessingStage : IStage {
     /**
      * Неизвестная.
      */
