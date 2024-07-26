@@ -67,8 +67,24 @@ inline fun Processor.pushTask(stage: ProcessingStage, node: Node, crossinline bl
     }
 }
 
+inline fun Processor.pushOrRunTask(stage: ProcessingStage, node: Node, crossinline block: () -> Unit) {
+    this.stageManager.pushOrRunTask(stage) {
+        processingCatcher(node) {
+            block()
+        }
+    }
+}
+
 inline fun Compiler.pushTask(stage: CompilingStage, node: Node, crossinline block: () -> Unit) {
     this.stageManager.pushTask(stage) {
+        processingCatcher(node) {
+            block()
+        }
+    }
+}
+
+inline fun Compiler.pushOrRunTask(stage: CompilingStage, node: Node, crossinline block: () -> Unit) {
+    this.stageManager.pushOrRunTask(stage) {
         processingCatcher(node) {
             block()
         }

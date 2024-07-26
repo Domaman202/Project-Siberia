@@ -10,40 +10,44 @@ class DefaultStageManager(
 
     override fun addStageBefore(stage: IStage, other: IStage) {
         var i = 0
-        while (i < stages.size) {
-            if (stages[i] == other)
+        while (i < this.stages.size) {
+            if (this.stages[i] == other)
                 break
             i++
         }
-        stages.add(i, stage)
+        this.stages.add(i, stage)
     }
 
     override fun addStageAfter(stage: IStage, other: IStage) {
         var i = 0
-        while (i < stages.size) {
-            if (stages[i] == other)
+        while (i < this.stages.size) {
+            if (this.stages[i] == other)
                 break
             i++
         }
-        stages.add(i + 1, stage)
+        this.stages.add(i + 1, stage)
     }
 
     override fun getStage(): Pair<Int, IStage> =
-        Pair(getPosition(stage), stage)
+        Pair(getPosition(this.stage), this.stage)
 
     override fun getPosition(stage: IStage): Int =
-        stages.indexOf(stage)
+        this.stages.indexOf(stage)
 
     override fun pushTask(stage: IStage, task: Runnable) {
+        this.tasks.getOrPut(if (getPosition(stage) <= getPosition(this.stage)) this.stage else stage) { ArrayList() } += task
+    }
+
+    override fun pushOrRunTask(stage: IStage, task: Runnable) {
         if (getPosition(stage) <= getPosition(this.stage))
             task.run()
-        else tasks.getOrPut(stage) { ArrayList() } += task
+        else this.tasks.getOrPut(stage) { ArrayList() } += task
     }
 
     override fun runAll() {
-        stages.forEach {
-            stage = it
-            tasks[it]?.forEach(Runnable::run)
+        this.stages.forEach {
+            this.stage = it
+            this.tasks[it]?.safeForEach(Runnable::run)
         }
     }
 }
