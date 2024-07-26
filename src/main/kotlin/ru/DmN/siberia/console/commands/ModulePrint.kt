@@ -40,7 +40,7 @@ object ModulePrint : Command(
         try {
             File("dump").mkdir()
             val nodes = processModule(console)
-            FileOutputStream("dump/print.pht").use { out ->
+            FileOutputStream(if (mode) "dump/print.short.pht" else "dump/print.pht").use { out ->
                 val sb = StringBuilder()
                 if (mode)
                     nodes.forEach { it.printShort(sb, 0) }
