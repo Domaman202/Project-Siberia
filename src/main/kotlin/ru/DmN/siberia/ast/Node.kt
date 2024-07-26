@@ -45,10 +45,17 @@ interface Node {
     /**
      * Печатает ноду.
      *
-     * @param indent отступ.
-     * @param short Режим краткого вывода.
+     * @param indent Отступ.
      */
-    fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder =
+    fun print(builder: StringBuilder, indent: Int): StringBuilder =
+        this.printShort(builder, indent)
+
+    /**
+     * Печатает ноду в кратком варианте.
+     *
+     * @param indent Отступ.
+     */
+    fun printShort(builder: StringBuilder, indent: Int): StringBuilder =
         builder.indent(indent).append('[').append(info.type).append(']')
 
     /**
@@ -57,5 +64,7 @@ interface Node {
      * @param short Режим краткого вывода.
      */
     fun print(short: Boolean = true): String =
-        print(StringBuilder(), 0, short).toString()
+        if (short)
+            printShort(StringBuilder(), 0).toString()
+        else print(StringBuilder(), 0).toString()
 }

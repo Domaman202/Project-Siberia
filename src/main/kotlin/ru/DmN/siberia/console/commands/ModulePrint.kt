@@ -42,7 +42,9 @@ object ModulePrint : Command(
             val nodes = processModule(console)
             FileOutputStream("dump/print.pht").use { out ->
                 val sb = StringBuilder()
-                nodes.forEach { it.print(sb, 0, mode) }
+                if (mode)
+                    nodes.forEach { it.printShort(sb, 0) }
+                else nodes.forEach { it.print(sb, 0) }
                 out.write(sb.toString().toByteArray())
             }
             console.println("Печать окончена успешно!")

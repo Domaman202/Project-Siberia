@@ -29,10 +29,9 @@ open class BaseMetaNode(info: INodeInfo, open val metadata: Lazy<MetadataContain
             BaseMetaNode(info, lazyOf(metadata.value.copy()))
         else BaseMetaNode(info)
 
-    override fun print(builder: StringBuilder, indent: Int, short: Boolean): StringBuilder = builder.apply {
+    override fun print(builder: StringBuilder, indent: Int): StringBuilder = builder.apply {
         indent(indent).append('[').append(info.type)
-        if (!short)
-            printMetadata(this, indent)
+        printMetadata(this, indent)
         append(']')
     }
 
