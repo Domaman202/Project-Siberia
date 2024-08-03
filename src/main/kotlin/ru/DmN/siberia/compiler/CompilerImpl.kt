@@ -23,7 +23,7 @@ open class CompilerImpl(
     override val tp: TypesProvider,
     override val contexts: MutableMap<IContextKey, Any?> = HashMap()
 ) : Compiler() {
-    override val stageManager: StageManager = DefaultStageManager(CompilingStage.UNKNOWN, CompilingStage.entries.toMutableList())
+    override val sm: StageManager = DefaultStageManager(CompilingStage.UNKNOWN, CompilingStage.entries.toMutableList())
     override val finalizers: MutableList<(String) -> Unit> = ArrayList()
 
     override fun compile(node: Node, ctx: CompilationContext) = compilationCatcher(node) {

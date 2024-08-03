@@ -4,7 +4,7 @@ import ru.DmN.siberia.utils.safeForEach
 
 class DefaultStageManager(
     private var stage: IStage,
-    private val stages: MutableList<IStage>
+    val stages: MutableList<IStage>
 ) : StageManager() {
     private val tasks: MutableMap<IStage, MutableList<Runnable>> = HashMap()
 
@@ -28,6 +28,9 @@ class DefaultStageManager(
         this.stages.add(i + 1, stage)
     }
 
+    override fun containsStage(stage: IStage): Boolean =
+        this.stages.contains(stage)
+
     override fun getStage(): Pair<Int, IStage> =
         Pair(getPosition(this.stage), this.stage)
 
@@ -45,7 +48,7 @@ class DefaultStageManager(
     }
 
     override fun runAll() {
-        this.stages.forEach {
+        this.stages.safeForEach {
             this.stage = it
             this.tasks[it]?.safeForEach(Runnable::run)
         }

@@ -26,7 +26,7 @@ abstract class Processor {
     /**
      * Менеджер стадий обработки.
      */
-    abstract val stageManager: StageManager
+    abstract val sm: StageManager
 
     /**
      * Глобальные контексты.

@@ -17,41 +17,6 @@ enum class ProcessingStage : IStage {
     MODULE_POST_INIT,
 
     /**
-     * Определение макросов.
-     */
-    MACROS_DEFINE,
-
-    /**
-     * Импорт макросов.
-     */
-    MACROS_IMPORT,
-
-    /**
-     * Импорт типов.
-     */
-    TYPES_IMPORT,
-
-    /**
-     * Предопределение типов.
-     */
-    TYPES_PREDEFINE,
-
-    /**
-     * Определение типов.
-     */
-    TYPES_DEFINE,
-
-    /**
-     * Импорт расширений.
-     */
-    EXTENSIONS_IMPORT,
-
-    /**
-     * Обработка тел методов.
-     */
-    METHODS_BODY,
-
-    /**
      * Окончание всей обработки.
      */
     FINALIZATION

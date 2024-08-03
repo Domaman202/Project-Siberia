@@ -52,6 +52,11 @@ abstract class VirtualType {
     abstract val isAbstract: Boolean
 
     /**
+     * Тип диначеского вида?
+     */
+    abstract val isDynamic: Boolean
+
+    /**
      * Тип нативный?
      */
     abstract val isNative: Boolean
@@ -149,6 +154,7 @@ abstract class VirtualType {
         //
         override var isInterface: Boolean = false,
         override var isAbstract: Boolean = false,
+        override val isDynamic: Boolean = false,
         override var isNative: Boolean = false,
         override var isFinal: Boolean = false,
         override var isFile: Boolean = false,

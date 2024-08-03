@@ -14,7 +14,7 @@ import java.io.InputStream
 
 object BuildCommands {
     @JvmStatic
-    val ALL_COMMANDS = listOf(PlatformSelect, ModuleSelect, ModuleInfo, ModulePrint, ModuleUnparse, ModuleCompile)
+    val ALL_COMMANDS = listOf(PlatformSelect, ModuleSelect, ModuleInfo, ModulePrint, ModuleUnparse, ModuleCompile, ModuleCompileSplit)
 
     @JvmStatic
     fun processModule(console: Console): List<Node> {
@@ -30,7 +30,7 @@ object BuildCommands {
         val list = ArrayList<NodeProcessedUse.ProcessedData>()
         mp.injectModules(mutableListOf(module.name), list, processor, ProcessingContext.base().with(platform).apply { this.module = module })
         list.forEach { processed += it.processed; processed += it.exports }
-        processor.stageManager.runAll()
+        processor.sm.runAll()
         //
         console.println("Обработка успешна завершена!")
         return processed

@@ -2,6 +2,7 @@ package ru.DmN.siberia.console.commands
 
 import ru.DmN.siberia.compiler.CompilerImpl
 import ru.DmN.siberia.compiler.ctx.CompilationContext
+import ru.DmN.siberia.compiler.ctx.splitModuleBuild
 import ru.DmN.siberia.console.BuildCommands
 import ru.DmN.siberia.console.BuildCommands.processModule
 import ru.DmN.siberia.console.Console
@@ -13,12 +14,12 @@ import ru.DmN.siberia.utils.exception.BaseException
 import ru.DmN.siberia.utils.invokeAll
 import java.io.File
 
-object ModuleCompile : Command(
-    "module-compile",
-    "mc",
+object ModuleCompileSplit : Command(
+    "module-compile-split",
+    "mcs",
     "Модуль",
-    "Компиляция модуля",
-    "Компилирует модуль.",
+    "Раздельняа компиляция модуля",
+    "Компилирует модуль (подмодули компилируется отдельно).",
     emptyList()
 ) {
     override fun available(console: Console): Boolean =
@@ -37,6 +38,7 @@ object ModuleCompile : Command(
         try {
             val nodes = processModule(console)
             val compiler = CompilerImpl(mp, tp)
+            compiler.contexts.splitModuleBuild = true
             val ctx = CompilationContext.base().with(platform).apply { this.module = module }
             nodes.forEach { compiler.compile(it, ctx) }
             compiler.sm.runAll()

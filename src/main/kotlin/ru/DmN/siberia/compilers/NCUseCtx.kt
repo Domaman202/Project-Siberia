@@ -35,7 +35,7 @@ object NCUseCtx : INodeCompiler<NodeProcessedUse> {
                     val tmpContext = CompilationContext.base().with(it.module).apply { this.platform = platform }
                     val tmpCompiler = compiler.subCompiler(tmpContext)
                     it.processed.forEach { tmpCompiler.compile(it, tmpContext) }
-                    tmpCompiler.stageManager.runAll()
+                    tmpCompiler.sm.runAll()
                     compiler.finalizers += tmpCompiler.finalizers::invokeAll
                 }
                 it.exports.forEach { NCDefault.compile(it, compiler, context) }

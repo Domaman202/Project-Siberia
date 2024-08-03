@@ -10,6 +10,7 @@ import ru.DmN.siberia.processor.utils.ProcessingException
 import ru.DmN.siberia.processor.utils.ProcessingStage
 import ru.DmN.siberia.unparser.utils.UnparsingException
 import ru.DmN.siberia.utils.node.INodeInfo
+import ru.DmN.siberia.utils.stage.IStage
 
 inline fun <T> parsingCatcher(info: INodeInfo, block: () -> T): T {
     try {
@@ -59,32 +60,32 @@ inline fun <T> compilationCatcher(node: Node, block: () -> T): T {
     }
 }
 
-inline fun Processor.pushTask(stage: ProcessingStage, node: Node, crossinline block: () -> Unit) {
-    this.stageManager.pushTask(stage) {
+inline fun Processor.pushTask(stage: IStage, node: Node, crossinline block: () -> Unit) {
+    this.sm.pushTask(stage) {
         processingCatcher(node) {
             block()
         }
     }
 }
 
-inline fun Processor.pushOrRunTask(stage: ProcessingStage, node: Node, crossinline block: () -> Unit) {
-    this.stageManager.pushOrRunTask(stage) {
+inline fun Processor.pushOrRunTask(stage: IStage, node: Node, crossinline block: () -> Unit) {
+    this.sm.pushOrRunTask(stage) {
         processingCatcher(node) {
             block()
         }
     }
 }
 
-inline fun Compiler.pushTask(stage: CompilingStage, node: Node, crossinline block: () -> Unit) {
-    this.stageManager.pushTask(stage) {
+inline fun Compiler.pushTask(stage: IStage, node: Node, crossinline block: () -> Unit) {
+    this.sm.pushTask(stage) {
         processingCatcher(node) {
             block()
         }
     }
 }
 
-inline fun Compiler.pushOrRunTask(stage: CompilingStage, node: Node, crossinline block: () -> Unit) {
-    this.stageManager.pushOrRunTask(stage) {
+inline fun Compiler.pushOrRunTask(stage: IStage, node: Node, crossinline block: () -> Unit) {
+    this.sm.pushOrRunTask(stage) {
         processingCatcher(node) {
             block()
         }

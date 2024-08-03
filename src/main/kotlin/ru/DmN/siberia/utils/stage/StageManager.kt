@@ -23,6 +23,13 @@ abstract class StageManager {
     abstract fun addStageAfter(stage: IStage, other: IStage)
 
     /**
+     * Проверяет наличие стадии в списоке стадий.
+     *
+     * @return true - стадия есть в списке.
+     */
+    abstract fun containsStage(stage: IStage): Boolean
+
+    /**
      * Получает текущую стадию.
      *
      * @return [Порядковый номер; Стадия]

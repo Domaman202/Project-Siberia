@@ -27,7 +27,7 @@ abstract class Compiler {
     /**
      * Менеджер стадий компиляции.
      */
-    abstract val stageManager: StageManager
+    abstract val sm: StageManager
 
     /**
      * Глобальные контексты.
