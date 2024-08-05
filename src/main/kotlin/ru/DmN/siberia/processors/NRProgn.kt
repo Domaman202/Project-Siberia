@@ -13,7 +13,7 @@ import ru.DmN.siberia.utils.vtype.VirtualType
  */
 object NRProgn : INodeProcessor<INodesList> {
     override fun calc(node: INodesList, processor: Processor, ctx: ProcessingContext): VirtualType? =
-        processor.calc(node.nodes.last(), ctx)
+        node.nodes.let { if (it.isEmpty()) null else processor.calc(it.last(), ctx) }
 
     override fun process(node: INodesList, processor: Processor, ctx: ProcessingContext, valMode: Boolean): NodeNodesList =
         NodeNodesList(
